@@ -20,6 +20,11 @@ const authSchema = new mongoose.Schema({
         trim:true
     },
 
+    password:{
+        type:String,
+        trim:true
+    },
+
     countryCode:{
         type:String,
         default:"+91"
@@ -109,7 +114,7 @@ const authSchema = new mongoose.Schema({
     },
 
     //    SECURITY & SESSION CONTROL
-    
+
     lastLoginAt: {
       type: Date,
     },
@@ -126,10 +131,6 @@ const authSchema = new mongoose.Schema({
     refreshTokenVersion: {
       type: Number,
       default: 0,
-    },
-
-    tokenInvalidBefore: {
-      type: Date,
     },
 
     //    OTP ABUSE PREVENTION
