@@ -4,24 +4,22 @@ import { ApiError } from "./ApiError.js";
 const generateAccessAndRefreshToken = async (userId)=>{
    try {
 
-     if(!userId) return null;
+     if(!userId) throw new ApiError(400, "UserId is required to generate tokens");
      
      const authUser = await AuthUser.findById(userId);
      if(!authUser) throw new ApiError(404,"User dont have an account! ");
  
-     const accessToken = generateAccessToken();
-     const refreshToken = generateRefreshToken();
- 
-     authUser.refreshToken = refreshToken;
-     await authUser.save({validateBeforeSave:false});
+     const accessToken = authUser.generateAccessToken();
+     const refreshToken = authUser.generateRefreshToken();
+
 
      return { accessToken, refreshToken};
 
    } catch (error) {
 
     console.log("TOKENS ERROR:- ", error);
-    ApiError(500,error?.message || "FAILED TO GENERATE TOKENS!");
-    
+    throw new ApiError(500,error?.message || "FAILED TO GENERATE TOKENS!");
+
    }
 }
 

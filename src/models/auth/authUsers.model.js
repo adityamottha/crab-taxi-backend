@@ -130,9 +130,10 @@ const authSchema = new mongoose.Schema({
       default: 0,
     },
 
-    refreshToken:{
-      type:String
-    },
+  refreshTokenVersion: {
+  type: Number,
+  default: 0
+},
 
     //    OTP ABUSE PREVENTION
    
