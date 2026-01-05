@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const authSchema = new mongoose.Schema({
 
@@ -128,9 +130,8 @@ const authSchema = new mongoose.Schema({
       default: 0,
     },
 
-    refreshTokenVersion: {
-      type: Number,
-      default: 0,
+    refreshToken:{
+      type:String
     },
 
     //    OTP ABUSE PREVENTION
@@ -189,4 +190,57 @@ const authSchema = new mongoose.Schema({
 
 },{timestamps:true});
 
+// PASSWORD HASH (ENCRYPTION)
+authSchema.pre("save", async function(next){
+  try {
+
+    if(!this.isModified("password")) return next();
+  
+    this.password = await bcrypt.hash(this.password, 10);
+    next();
+
+  } catch (error) {
+    console.log("BCRYPT ERROR:- ",error?.message || "Failed to hash password!");
+    next(error);
+  }
+});
+
+// COMPARE PASSWORD (DE-ENCRYPTION)
+authSchema.methods.isPasswordCorrect = async function (password){
+  try {
+    return await bcrypt.compare(password,this.password);
+  } catch (error) {
+    console.log("BCRYPT ERROR:- ",error?.message || "Failed to compare password!");
+    
+  }
+};
+
+// GENERATE ACCESS TOKEN
+authSchema.methods.generateAccessToken = function(){
+  return jwt.sign(
+    {
+      userId:this._id,
+      role: this.role
+    },
+
+    process.env.ACCESS_TOKEN_KEY,
+    {
+      expiresIn:process.env.ACCESS_TOKEN_EXPIRY || "1h"
+    }
+  );
+};
+
+// GENERATE REFRESH TOKEN 
+authSchema.methods.generateRefreshToken = function (){
+  return jwt.sign(
+    {
+      userId:this._id
+    },
+
+    process.env.REFRESH_TOKEN_KEY,
+    {
+      expiresIn:process.env.REFRESH_TOKEN_EXPIRY || "6d"
+    }
+  )
+}
 export const AuthUser = mongoose.model("AuthUser",authSchema)
