@@ -17,7 +17,8 @@ const driverProfileSchema = new mongoose.Schema({
     },
     avatar:{
         type:String,
-        uploadedAt:Date
+        uploadedAt:Date,
+        required:true
     },
 
     dateOfBirth:{
@@ -59,7 +60,7 @@ const driverProfileSchema = new mongoose.Schema({
         min:1,
         max:5
     },
-    ratingAcout:{
+    ratingAccount:{
         type:Number,
         default:0
     },
