@@ -1,4 +1,4 @@
-import { AuthUser } from "../models/auth/AuthUsers.model";
+import { AuthUser } from "../models/authModel/AuthUsers.model.js";
 import { ApiError } from "./ApiError.js";
 
 const generateAccessAndRefreshToken = async (userId)=>{
