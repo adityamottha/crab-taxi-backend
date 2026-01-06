@@ -25,6 +25,7 @@ const authUserSchema = new mongoose.Schema({
     },
 
     password:{
+      required:true,
         type:String,
         trim:true,
         select:false
@@ -195,13 +196,12 @@ const authUserSchema = new mongoose.Schema({
 },{timestamps:true});
 
 // PASSWORD HASH (ENCRYPTION)
-authUserSchema.pre("save", async function(next){
+authUserSchema.pre("save", async function(){
   try {
 
-    if(!this.isModified("password")) return next();
+    if(!this.isModified("password")) return;
   
     this.password = await bcrypt.hash(this.password, 10);
-    next();
 
   } catch (error) {
     console.log("BCRYPT ERROR:- ",error?.message || "Failed to hash password!");

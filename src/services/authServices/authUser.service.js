@@ -1,57 +1,62 @@
 import { AuthUser } from "../../models/authModel/AuthUsers.model.js";
 import { ApiError } from "../../utils/ApiError.js";
+import { checkValidEmail } from "../../utils/validEmailPassword.js";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
-import  validator  from "validator";
 
-const registerService = async ({phoneNumber,email,password,role }) =>{
+const registerService = async ({ phoneNumber, email, password, role }) => {
 
-    // check all fields are required
-    if([phoneNumber,email,password,role].some(fields=>!fields?.trim())){
-        throw new ApiError(404,"All fields are required!");
-    };
+  // Required checks
+  if (!phoneNumber) {
+    throw new ApiError(400, "Phone number is required!");
+  }
 
-    // check is user already existed 
-    const existedUser = await AuthUser.findOne({
-        $or:[{phoneNumber},{email}]
-    });
+  if (!email?.trim() || !password?.trim() || !role) {
+    throw new ApiError(400, "All fields are required!");
+  }
 
-    if(existedUser) throw new ApiError(402,"User already existed!");
+  // Email validation
+  if (!checkValidEmail(email)) {
+    throw new ApiError(400, "Invalid email!");
+  }
 
-    // check email is valid 
-    const checkValidEmail = (e)=>{
-        return validator.isEmail(e)
-    }
-    if(!checkValidEmail(email)){
-        throw new ApiError(400,"Invalid Email!")
-    }
+  // Phone validation + formatting
+  const parsedPhone = parsePhoneNumberFromString(phoneNumber);
 
+  if (!parsedPhone || !parsedPhone.isValid()) {
+    throw new ApiError(400, "Invalid phone number");
+  }
 
-    // check number is valid 
-     const checkValidNumber = (phone) => {
-     const phoneNumber = parsePhoneNumberFromString(phone);
-     return phoneNumber && phoneNumber.isValid();
-     };
+  phoneNumber = parsedPhone.format("E.164");
 
-     if (!checkValidNumber(phoneNumber)) throw new ApiError(400, "Invalid phone number");
+  // Check existing user
+  const existedUser = await AuthUser.findOne({
+    $or: [{ phoneNumber }, { email: email.toLowerCase() }],
+  });
 
+  if (existedUser) {
+    throw new ApiError(409, "User already exists!");
+  }
 
-    // created user 
+  // Create user
+  const user = await AuthUser.create({
+    phoneNumber,
+    email: email.toLowerCase(),
+    password,
+    role,
+    authProvider: "EMAIL",
+    accountStatus: "ACTIVE",
+    driverApprovalStatus: role === "DRIVER" ? "PENDING" : "NOT_APPLICABLE",
+    kycRequired: role === "DRIVER",
+  });
 
-    const insertUser = await AuthUser.create({
-        phoneNumber,
-        email,
-        role,
-        password,
-        authProvider: "EMAIL",
-        accountStatus: "ACTIVE",
-        driverApprovalStatus: role === "DRIVER" ? "PENDING" : "NOT_APPLICABLE",
-        kycRequired: role === "DRIVER"
-    });
+  // Remove sensitive data
+  const createdUser = await AuthUser.findById(user._id).select("-password");
 
-    if(!insertUser) throw new ApiError(500,"user failed to register!");
+  if (!createdUser) {
+    throw new ApiError(500, "User failed to register!");
+  }
 
-    // return for response 
-    return createUser;
-}
+  return createdUser;
+};
 
-export { registerService }
+export { registerService };

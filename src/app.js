@@ -19,5 +19,8 @@ app.use(cookieParser());
 
 import authRegister from "./routes/authRoute/auth.routes.js";
 app.use("/api/v1/users",authRegister);
+import errorMiddleware from "./middlewares/error.middleware.js";
+
+app.use(errorMiddleware);
 
 export { app }
