@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const userProfileSchema = new mongoose.Schema({
+const riderProfileSchema = new mongoose.Schema({
     authUserId:{
         type:Schema.Types.ObjectId,
         ref:"AuthUser",
@@ -36,4 +36,4 @@ const userProfileSchema = new mongoose.Schema({
     }
 },{timestamps:true});
 
-export const UserProfile = mongoose.model("UserProfile",userProfileSchema)
+export const RiderProfile = mongoose.model("RiderProfile",riderProfileSchema)

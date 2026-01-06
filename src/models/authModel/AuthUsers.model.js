@@ -2,7 +2,9 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const authSchema = new mongoose.Schema({
+const { Schema } = mongoose;
+
+const authUserSchema = new mongoose.Schema({
 
     // CORE IDENTITY
 
@@ -24,7 +26,8 @@ const authSchema = new mongoose.Schema({
 
     password:{
         type:String,
-        trim:true
+        trim:true,
+        select:false
     },
 
     countryCode:{
@@ -60,7 +63,7 @@ const authSchema = new mongoose.Schema({
     },
 
     phoneNumberVerifiedAt:{
-        type:date
+        type:Date
     },
 
     // ACCOUNT LIFECYCLE 
@@ -192,7 +195,7 @@ const authSchema = new mongoose.Schema({
 },{timestamps:true});
 
 // PASSWORD HASH (ENCRYPTION)
-authSchema.pre("save", async function(next){
+authUserSchema.pre("save", async function(next){
   try {
 
     if(!this.isModified("password")) return next();
@@ -207,7 +210,7 @@ authSchema.pre("save", async function(next){
 });
 
 // COMPARE PASSWORD (DE-ENCRYPTION)
-authSchema.methods.isPasswordCorrect = async function (password){
+authUserSchema.methods.isPasswordCorrect = async function (password){
   try {
     return await bcrypt.compare(password,this.password);
   } catch (error) {
@@ -217,7 +220,7 @@ authSchema.methods.isPasswordCorrect = async function (password){
 };
 
 // GENERATE ACCESS TOKEN
-authSchema.methods.generateAccessToken = function(){
+authUserSchema.methods.generateAccessToken = function(){
   return jwt.sign(
     {
       userId:this._id,
@@ -232,7 +235,7 @@ authSchema.methods.generateAccessToken = function(){
 };
 
 // GENERATE REFRESH TOKEN 
-authSchema.methods.generateRefreshToken = function (){
+authUserSchema.methods.generateRefreshToken = function (){
   return jwt.sign(
     {
       userId:this._id
@@ -244,4 +247,4 @@ authSchema.methods.generateRefreshToken = function (){
     }
   )
 }
-export const AuthUser = mongoose.model("AuthUser",authSchema)
+export const AuthUser = mongoose.model("AuthUser",authUserSchema)
