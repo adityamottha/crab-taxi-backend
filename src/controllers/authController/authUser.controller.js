@@ -1,5 +1,5 @@
 import { AsyncHandler } from "../../utils/AsyncHandler.js";
-import { registerService } from "../../services/authServices/authUser.service.js";
+import { registerService, loginService } from "../../services/authServices/authUser.service.js";
 import { ApiResponse } from "../../utils/ApiResponse.js"
 
 const registerController = AsyncHandler(async (req,res)=>{
@@ -16,4 +16,37 @@ const registerController = AsyncHandler(async (req,res)=>{
    );
 });
 
-export { registerController }
+// LOGIN CONTROLLER--------------
+const loginController = AsyncHandler(async (req,res)=>{
+   //GET DATA
+   const {loggedInUser,refreshToken,accessToken} = await loginService(
+      {
+         email:req.body.email,
+         password:req.body.password
+      }
+   )
+
+   //COOKIE OPTIONS
+   const options={
+      httpOnly:true,
+      secure:true,
+      sameSite:"strict"
+   };
+
+   return res.status(200)
+   .cookie("refreshToken",refreshToken,options)
+   .cookie("accessToken",accessToken,options)
+   .json(
+      new ApiResponse(200,
+         {
+            user:loggedInUser,refreshToken,accessToken
+         },
+         "User logged in Successfully!"
+     )
+   )
+})
+
+export { 
+   registerController,
+   loginController
+}

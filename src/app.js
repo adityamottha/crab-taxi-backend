@@ -17,10 +17,19 @@ app.use(express.urlencoded({limit:"16kb",extended:true}));
 app.use(express.static("public/temp"));
 app.use(cookieParser());
 
+//REGISTER
 import authRegister from "./routes/authRoute/auth.routes.js";
 app.use("/api/v1/users",authRegister);
-import errorMiddleware from "./middlewares/error.middleware.js";
 
+
+//LOGIN
+import authLogin from "./routes/authRoute/auth.routes.js";
+app.use("/api/v1/users",authLogin);
+
+
+
+// ERROR MIDDLEWARE
+import errorMiddleware from "./middlewares/error.middleware.js";
 app.use(errorMiddleware);
 
 export { app }

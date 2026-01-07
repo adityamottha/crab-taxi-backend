@@ -229,7 +229,7 @@ authUserSchema.methods.generateAccessToken = function(){
 
     process.env.ACCESS_TOKEN_KEY,
     {
-      expiresIn:process.env.ACCESS_TOKEN_EXPIRY || "1h"
+      expiresIn:process.env.ACCESS_TOKEN_EXPIRY
     }
   );
 };
@@ -243,7 +243,7 @@ authUserSchema.methods.generateRefreshToken = function (){
 
     process.env.REFRESH_TOKEN_KEY,
     {
-      expiresIn:process.env.REFRESH_TOKEN_EXPIRY || "6d"
+      expiresIn:process.env.REFRESH_TOKEN_EXPIRY
     }
   )
 }
