@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { loginController, registerController } from "../../controllers/authController/authUser.controller.js";
+import { loginController, logoutController, registerController } from "../../controllers/authController/authUser.controller.js";
+import { verifyJWT } from "../../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -7,6 +8,10 @@ const router = Router();
 router.route("/register").post(registerController);
 
 //LOGIN ROUTE
-router.route("/login").post(loginController)
+router.route("/login").post(loginController);
+
+//LOGOUT ROUTE
+router.route("/logout").post(verifyJWT,logoutController);
+
 export default router;
 

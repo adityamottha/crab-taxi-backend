@@ -1,5 +1,5 @@
 import { AsyncHandler } from "../../utils/AsyncHandler.js";
-import { registerService, loginService } from "../../services/authServices/authUser.service.js";
+import { registerService, loginService, logoutService } from "../../services/authServices/authUser.service.js";
 import { ApiResponse } from "../../utils/ApiResponse.js"
 
 const registerController = AsyncHandler(async (req,res)=>{
@@ -46,7 +46,32 @@ const loginController = AsyncHandler(async (req,res)=>{
    )
 })
 
+
+// Logout controller------------------
+
+const logoutController = AsyncHandler(async (req,res)=>{
+
+   // req comes from verifyJWT middleware 
+   const userId = req.user._id;
+
+   await logoutService(userId)
+
+   const options ={
+      httpOnly:true,
+      secure:true
+   }
+
+   // response send 
+
+   return res
+   .status(200)
+   .clearCookie("accessToken", options)
+   .clearCookie("refreshToken", options)
+   .json( new ApiResponse(200, {}, "User Logged out!"))
+})
+
 export { 
    registerController,
-   loginController
+   loginController,
+   logoutController
 }

@@ -103,7 +103,22 @@ const loginService = async ({email,password})=>{
 
 }
 
+//LOGOUT SERVICE---------------
+const logoutService = async (userId)=>{
+  if(!userId) throw new ApiError(402,"userId is required for logout!");
+
+  await AuthUser.findByIdAndUpdate(
+    userId,
+    {$inc:{ refreshTokenVersion: 1}},
+    { new:true}
+   );
+
+   return true;
+}
+
+
 export { 
   registerService,
-  loginService
+  loginService,
+  logoutService
 };
