@@ -1,7 +1,7 @@
 import { AuthUser } from "../../models/authModel/AuthUsers.model.js";
 import { ApiError } from "../../utils/ApiError.js";
-import { checkValidEmail } from "../../utils/validEmailPassword.js";
-import { parsePhoneNumberFromString } from "libphonenumber-js";
+// import { checkValidEmail } from "../../utils/validEmailPassword.js";
+// import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 const registerService = async ({ phoneNumber, email, password, role }) => {
 
@@ -14,23 +14,23 @@ const registerService = async ({ phoneNumber, email, password, role }) => {
     throw new ApiError(400, "All fields are required!");
   }
 
-  // Email validation
-  if (!checkValidEmail(email)) {
-    throw new ApiError(400, "Invalid email!");
-  }
+  // // Email validation
+  // if (!checkValidEmail(email)) {
+  //   throw new ApiError(400, "Invalid email!");
+  // }
 
-  // Phone validation + formatting
-  const parsedPhone = parsePhoneNumberFromString(phoneNumber);
+  // // Phone validation + formatting
+  // const parsedPhone = parsePhoneNumberFromString(phoneNumber);
 
-  if (!parsedPhone || !parsedPhone.isValid()) {
-    throw new ApiError(400, "Invalid phone number");
-  }
+  // if (!parsedPhone || !parsedPhone.isValid()) {
+  //   throw new ApiError(400, "Invalid phone number");
+  // }
 
-  phoneNumber = parsedPhone.format("E.164");
+  // phoneNumber = parsedPhone.format("E.164");
 
   // Check existing user
   const existedUser = await AuthUser.findOne({
-    $or: [{ phoneNumber }, { email: email.toLowerCase() }],
+    $or: [{ phoneNumber }, {email}],
   });
 
   if (existedUser) {
