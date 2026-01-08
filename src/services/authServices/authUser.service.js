@@ -93,7 +93,8 @@ const loginService = async ({email,password})=>{
     // set lastLogin and LoginCount 
     user.lastLoginAt = new Date();
     user.loginCount += 1;
-
+    
+    await user.save();
     // remove sensetive fields
     const loggedInUser = await AuthUser.findById(user._id).select("-password");
     if(!loggedInUser) throw new ApiError(500,"User failed to login!");
