@@ -1,6 +1,7 @@
 import { AsyncHandler } from "../../utils/AsyncHandler.js";
-import { registerService, loginService, logoutService } from "../../services/authServices/authUser.service.js";
+import { registerService, loginService, logoutService, refreshAccessTokenService } from "../../services/authServices/authUser.service.js";
 import { ApiResponse } from "../../utils/ApiResponse.js"
+// import { ApiError } from "../../utils/ApiError.js";
 
 const registerController = AsyncHandler(async (req,res)=>{
 
@@ -68,10 +69,39 @@ const logoutController = AsyncHandler(async (req,res)=>{
    .clearCookie("accessToken", options)
    .clearCookie("refreshToken", options)
    .json( new ApiResponse(200, {}, "User Logged out!"))
-})
+});
+
+// Refresh-AccessToken
+const refreshAccessTokenController = AsyncHandler(async (req, res) => {
+
+  const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
+
+  const { accessToken, refreshToken } =
+   await refreshAccessTokenService(incomingRefreshToken);
+
+  const options = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax"
+  };
+
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        { accessToken },
+        "Access token refreshed successfully"
+      )
+    );
+});
+
 
 export { 
    registerController,
    loginController,
-   logoutController
+   logoutController,
+   refreshAccessTokenController
 }

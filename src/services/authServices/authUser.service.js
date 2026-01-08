@@ -1,6 +1,7 @@
 import { AuthUser } from "../../models/authModel/AuthUsers.model.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { generateAccessAndRefreshToken } from "../../utils/RefAccTokens.js"
+import jwt from "jsonwebtoken";
 // import { checkValidEmail } from "../../utils/validEmailPassword.js";
 // import { parsePhoneNumberFromString } from "libphonenumber-js";
 
@@ -115,11 +116,37 @@ const logoutService = async (userId)=>{
    );
 
    return true;
-}
+};
+
+// Access-token generting for continue login
+const refreshAccessTokenService = async (incomingRefreshToken) => {
+
+  if (!incomingRefreshToken) {
+    throw new ApiError(401, "Unauthorized request!");
+  }
+
+  const decodedToken = jwt.verify(
+    incomingRefreshToken,
+    process.env.REFRESH_TOKEN_KEY
+  );
+
+  const user = await AuthUser.findById(decodedToken.userId);
+  if (!user) throw new ApiError(401, "Invalid refresh token");
+
+  if (decodedToken.tokenVersion !== user.refreshTokenVersion) {
+    throw new ApiError(401, "Refresh token expired or revoked");
+  }
+
+  const { accessToken, refreshToken } =
+    await generateAccessAndRefreshToken(user._id);
+
+  return { accessToken, refreshToken };
+};
 
 
 export { 
   registerService,
   loginService,
-  logoutService
+  logoutService,
+  refreshAccessTokenService
 };
