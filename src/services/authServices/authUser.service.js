@@ -88,7 +88,7 @@ const loginService = async ({email,password})=>{
     ) throw new ApiError(400,"Account is not Approved by ADMIN!");
 
     // generate tokens 
-    const {refreshToken, accessToken} = generateAccessAndRefreshToken(user._id);
+    const {refreshToken, accessToken} = await generateAccessAndRefreshToken(user._id);
 
     // set lastLogin and LoginCount 
     user.lastLoginAt = new Date();

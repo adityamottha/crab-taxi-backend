@@ -29,8 +29,8 @@ const loginController = AsyncHandler(async (req,res)=>{
    //COOKIE OPTIONS
    const options={
       httpOnly:true,
-      secure:true,
-      sameSite:"strict"
+      secure:false,
+      sameSite:"lax"
    };
 
    return res.status(200)
@@ -58,7 +58,7 @@ const logoutController = AsyncHandler(async (req,res)=>{
 
    const options ={
       httpOnly:true,
-      secure:true
+      secure:false
    }
 
    // response send 

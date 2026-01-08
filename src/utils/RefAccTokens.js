@@ -12,7 +12,9 @@ const generateAccessAndRefreshToken = async (userId)=>{
      const accessToken = authUser.generateAccessToken();
      const refreshToken = authUser.generateRefreshToken();
 
-
+    //  console.log("AccessToken: ",accessToken);
+    //  console.log("RefreshToken: ",refreshToken);
+     
      return { accessToken, refreshToken};
 
    } catch (error) {

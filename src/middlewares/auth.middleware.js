@@ -1,28 +1,35 @@
+import jwt from "jsonwebtoken";
 import { AuthUser } from "../models/authModel/AuthUsers.model.js";
 import { AsyncHandler } from "../utils/AsyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
-import jwt from "jsonwebtoken";
 
-const verifyJWT = AsyncHandler(async (req, _, next)=>{
-    try {
-        const token = await req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
+const verifyJWT = AsyncHandler(async (req, _, next) => {
+  try {
+    const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
 
-        if(!token) throw new ApiError(401,"Unauthorized request!");
+    // console.log("TOKEN:", token);
 
-        const decodeToken = jwt.verify(token, process.env.ACCESS_TOKEN_KEY);
+    if (!token) throw new ApiError(401, "Unauthorized request!");
 
-        const user = await AuthUser.findById(decodeToken?.userId).select("-password");
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_KEY);
 
-        if(!user) throw new ApiError(401,"Invalid Access token!");
+    const user = await AuthUser.findById(decoded.userId).select("-password");
 
-        req.user = user;
-        req.userRole = decoded.role;
+    if (!user) throw new ApiError(401, "Invalid Access token!");
 
-        next();
-    } catch (error) {
-        console.log("verifyJWT ERROR:- ",error);
-        throw new ApiError(500,error?.message || "INTERNAL SERVER ERROR:- ")
-    }
+    req.user = user;
+    req.userRole = decoded.role;
+
+    next();
+  } catch (error) {
+    console.log("verifyJWT ERROR:- ", error.message);
+
+    throw new ApiError(
+      error.name === "JsonWebTokenError" ? 401 : 500,
+      error.message
+    );
+  }
 });
 
-export { verifyJWT }
+
+export { verifyJWT };
