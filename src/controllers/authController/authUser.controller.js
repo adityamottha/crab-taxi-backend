@@ -34,6 +34,7 @@ const loginController = AsyncHandler(async (req,res)=>{
       sameSite:"lax"
    };
 
+   // send the response with cookies 
    return res.status(200)
    .cookie("refreshToken",refreshToken,options)
    .cookie("accessToken",accessToken,options)
@@ -55,15 +56,16 @@ const logoutController = AsyncHandler(async (req,res)=>{
    // req comes from verifyJWT middleware 
    const userId = req.user._id;
 
+   // call the logoutService and pass th userId from req 
    await logoutService(userId)
 
+   // set cookies options 
    const options ={
       httpOnly:true,
       secure:false
    }
 
-   // response send 
-
+   // response send and clear the cookies for logout (clear ref and acc tokens)
    return res
    .status(200)
    .clearCookie("accessToken", options)
@@ -71,20 +73,26 @@ const logoutController = AsyncHandler(async (req,res)=>{
    .json( new ApiResponse(200, {}, "User Logged out!"))
 });
 
-// Refresh-AccessToken
+
+// Refresh-AccessToken Controller--------------------------------
+
 const refreshAccessTokenController = AsyncHandler(async (req, res) => {
 
+   // get a refresh token from cookies (from body for mobile app)
   const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
 
+//   call the service function and pass the token
   const { accessToken, refreshToken } =
    await refreshAccessTokenService(incomingRefreshToken);
 
+   // set the cookies 
   const options = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax"
   };
 
+//   send refreshToken as request and get the new access toke behalf of that
   return res
     .status(200)
     .cookie("accessToken", accessToken, options)

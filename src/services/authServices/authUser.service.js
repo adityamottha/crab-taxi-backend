@@ -107,39 +107,49 @@ const loginService = async ({email,password})=>{
 
 //LOGOUT SERVICE---------------
 const logoutService = async (userId)=>{
+
+  // through err if not provide a userId 
   if(!userId) throw new ApiError(402,"userId is required for logout!");
 
+// find user and update (increase a refreshToken and gives updated one)
   await AuthUser.findByIdAndUpdate(
     userId,
     {$inc:{ refreshTokenVersion: 1}},
     { new:true}
    );
 
+  //  return true 
    return true;
 };
 
 // Access-token generting for continue login
 const refreshAccessTokenService = async (incomingRefreshToken) => {
 
+  // check token is available 
   if (!incomingRefreshToken) {
     throw new ApiError(401, "Unauthorized request!");
   }
 
+  // Verifies the incoming refresh token using secret key and decodes its payload
   const decodedToken = jwt.verify(
     incomingRefreshToken,
     process.env.REFRESH_TOKEN_KEY
   );
 
+  //find the user by userId and validate if user exist
   const user = await AuthUser.findById(decodedToken.userId);
   if (!user) throw new ApiError(401, "Invalid refresh token");
 
+  // check refresh-token is still valid by comaring token version
   if (decodedToken.tokenVersion !== user.refreshTokenVersion) {
     throw new ApiError(401, "Refresh token expired or revoked");
   }
 
+  // generate a new refresh and access token by id
   const { accessToken, refreshToken } =
     await generateAccessAndRefreshToken(user._id);
 
+    // return for controller 
   return { accessToken, refreshToken };
 };
 
