@@ -8,14 +8,15 @@ const riderProfileSchema = new mongoose.Schema({
         unique:true,
         index:true
     },
-    name:{
+    fullname:{
         type:String,
-        trim:true
+        trim:true,
+        required:true
     },
     gender:{
         type:String,
         enum:["MALE","FEMALE","OTHERS"],
-        default:"MALE"
+        required:true
     },
     userAvatar:{
         type:String // cloudniary
@@ -26,12 +27,12 @@ const riderProfileSchema = new mongoose.Schema({
     },
     totalRides:{
         type:Number,
-        default:true
+        default:0
     },
     rating:{
         type:Number,
         default:5,
-        min:1,
+        min:0,
         max:5
     }
 },{timestamps:true});
