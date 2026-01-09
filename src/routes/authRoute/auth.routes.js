@@ -6,7 +6,7 @@ import {
     registerController 
 
     } from "../../controllers/authController/authUser.controller.js";
-import { verifyJWT } from "../../middlewares/auth.middleware.js";
+import { verifyJWT } from "../../middlewares/authMiddleware/auth.middleware.js";
 
 const router = Router();
 
