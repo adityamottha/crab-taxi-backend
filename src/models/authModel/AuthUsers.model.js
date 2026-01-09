@@ -51,6 +51,11 @@ const authUserSchema = new mongoose.Schema({
         index:true,
     },
 
+    isProfileCompleted:{
+      type:Boolean,
+      default:false
+    },
+
     permission:{
         type:[String],
         default:[]
