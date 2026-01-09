@@ -18,8 +18,12 @@ app.use(express.static("public/temp"));
 app.use(cookieParser());
 
 //AUTH
-import authRegister from "./routes/authRoute/auth.routes.js";
-app.use("/api/v1/users",authRegister);
+import auth from "./routes/authRoute/auth.routes.js";
+app.use("/api/v1/users",auth);
+
+// ADMIN ROUTE
+import admin from "./routes/adminRoute/admin.routes.js";
+app.use("/api/v1/admin",admin)
 
 // ERROR MIDDLEWARE
 import errorMiddleware from "./middlewares/error.middleware.js";

@@ -1,6 +1,6 @@
 import { ApiError } from "../../utils/ApiError.js";
 
-const authrizeRole = (role)=>{
+const authorizeRole = (role)=>{
 
     return (req,_,next)=>{
         if(!req.userRole) throw new ApiError(401,"Unauthorized request!");
@@ -13,4 +13,4 @@ const authrizeRole = (role)=>{
     }
 }
 
-export { authrizeRole }
+export { authorizeRole }
