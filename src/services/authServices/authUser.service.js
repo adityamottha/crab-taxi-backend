@@ -82,11 +82,11 @@ const loginService = async ({email,password})=>{
     if(user.accountStatus !== "ACTIVE") throw new ApiError(200,"Account is not active!");
 
     // check if role is DRIVER and not approved by ADMIN give error 
-    if(
-      user.role === "DRIVER" 
-      && 
-      user.driverApprovalStatus !== "APPROVED"
-    ) throw new ApiError(400,"Account is not Approved by ADMIN!");
+    // if(
+    //   user.role === "DRIVER" 
+    //   && 
+    //   user.driverApprovalStatus !== "APPROVED"
+    // ) throw new ApiError(400,"Account is not Approved by ADMIN!");
 
     // generate tokens 
     const {refreshToken, accessToken} = await generateAccessAndRefreshToken(user._id);
