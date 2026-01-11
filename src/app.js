@@ -29,6 +29,10 @@ app.use("/api/v1/admin",admin)
 import rider from "./routes/riderRoute/rider.route.js";
 app.use("/api/v1/rider",rider);
 
+//DRIVER ROUTE
+import driver from "./routes/driverRoute/driver.route.js";
+app.use("/api/vi/driver",driver)
+
 // ERROR MIDDLEWARE
 import errorMiddleware from "./middlewares/error.middleware.js";
 app.use(errorMiddleware);
