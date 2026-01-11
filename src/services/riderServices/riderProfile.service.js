@@ -1,9 +1,8 @@
 import { ApiError } from "../../utils/ApiError.js";
 import { RiderProfile } from "../../models/riderModel/RiderProfile.model.js";
-import { AuthUser } from "../../models/authModel/AuthUsers.model.js";
 import { uploadOnCloudinary } from "../../utils/cloudinary.js";
 
- const riderprofileService = async ({fullname,gender,avatarLocalPath})=>{
+ const riderprofileService = async ({fullname,gender,avatarLocalPath,user})=>{
 
     //check fields are not empty
     if([fullname,gender].some(fields=>!fields?.trim())){
@@ -11,8 +10,13 @@ import { uploadOnCloudinary } from "../../utils/cloudinary.js";
     }
 
     //check Rider profile does not existed
-    const existedProfile = await RiderProfile.findOne({authUserId:AuthUser._id});
-    if(existedProfile || AuthUser.isProfileCompleted === true){
+    const existedProfile = await RiderProfile.findOne(
+        {
+            authUserId:user._id
+        }
+    );
+
+    if(existedProfile || user.isProfileCompleted === true){
         throw new ApiError(403,"Profile Already completed!");
     }
 
@@ -21,19 +25,21 @@ import { uploadOnCloudinary } from "../../utils/cloudinary.js";
 
     // send avatar to cloudinary
     const avatar = await uploadOnCloudinary(avatarLocalPath);
-    if(!avatar.url) throw new ApiError(500,"User-Avatar failed to upload on cloudinary");
+    if(!avatar.secure_url) throw new ApiError(500,"User-Avatar failed to upload on cloudinary");
 
     // insert user data on db 
-    const rider = RiderProfile.create({
+    const rider = await RiderProfile.create({
+        authUserId:user._id,
         fullname,
-        gender:gender.toLowerCase(),
-        avatarLocalPath:avatarLocalPath.url
+        gender:gender.toUpperCase(),
+        userAvatar:avatarLocalPath.secure_url
     });
     if(!rider) throw new ApiError(500, "Rider failed to complete the profile!");
 
     // mark profile is completed in AuthUser 
     if(rider){
-        RiderProfile.isProfileCompleted = true
+        user.isProfileCompleted = true
+        user.save({validateBeforeSave:false})
     }
 
     // return 

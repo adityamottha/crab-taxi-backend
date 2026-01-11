@@ -4,13 +4,14 @@ import { AsyncHandler } from "../../utils/AsyncHandler.js";
 
 const riderProfileController = AsyncHandler(async (req,res)=>{
     // find avatar on local path
-    const avatarLocalPath = await req.files?.userAvatar?.path;
+    const avatarLocalPath = await req.files?.userAvatar?.[0]?.path;
 
     // get a rider service 
     const {rider} = await riderprofileService({
         fullname:req.body.fullname,
         gender:req.body.gender,
-        avatarLocalPath
+        avatarLocalPath,
+        user:req.user
     });
    
     return res.status(200).json(
