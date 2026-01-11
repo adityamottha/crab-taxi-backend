@@ -32,7 +32,7 @@ import { uploadOnCloudinary } from "../../utils/cloudinary.js";
         authUserId:user._id,
         fullname,
         gender:gender.toUpperCase(),
-        userAvatar:avatarLocalPath.secure_url
+        userAvatar:avatar.secure_url
     });
     if(!rider) throw new ApiError(500, "Rider failed to complete the profile!");
 
