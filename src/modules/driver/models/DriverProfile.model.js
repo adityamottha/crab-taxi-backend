@@ -9,7 +9,7 @@ const driverProfileSchema = new mongoose.Schema({
         index:true
     },
 
-    name:{
+    fullName:{
         type:String,
         required:true,
         trim:true,
