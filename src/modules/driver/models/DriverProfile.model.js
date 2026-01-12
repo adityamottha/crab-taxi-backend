@@ -1,5 +1,53 @@
 import mongoose, { Schema } from "mongoose";
 
+const driverAddress = new mongoose.Schema({
+    houseNumber:{
+        type:String,
+        trim:true,
+        required:true
+    },
+
+    area:{
+        type:String,
+        trim:true,
+        required:true
+    },
+
+    landmark:{
+        type:String,
+        trim:true,
+        required:true
+    },
+
+    city:{
+        type:String,
+        trim:true
+    },
+
+    state:{
+        type:String,
+        trim:true,
+        required:true
+    },
+
+    country:{
+        type:String,
+        trim:true,
+        required:true
+    },
+
+    pincode:{
+        type:String,
+        trim:true,
+        required:true
+    },
+
+    isVarified:{
+        type:Boolian,
+        default:false,
+    }
+})
+
 const driverProfileSchema = new mongoose.Schema({
     authUserId:{
         type:Schema.Types.ObjectId,
@@ -24,6 +72,8 @@ const driverProfileSchema = new mongoose.Schema({
     dateOfBirth:{
         type:Date
     },
+
+    address:[driverAddress],
    
     //DRIVER STATUS AT RUNTIME
     driverStatus:{
