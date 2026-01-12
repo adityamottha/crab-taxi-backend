@@ -1,6 +1,6 @@
-import { riderprofileService } from "../../services/riderServices/riderProfile.service.js";
-import { ApiResponse } from "../../utils/ApiResponse.js";
-import { AsyncHandler } from "../../utils/AsyncHandler.js";
+import { riderprofileService } from "../services/riderProfile.service.js";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
+import { AsyncHandler } from "../../../utils/AsyncHandler.js";
 
 const riderProfileController = AsyncHandler(async (req,res)=>{
     // find avatar on local path

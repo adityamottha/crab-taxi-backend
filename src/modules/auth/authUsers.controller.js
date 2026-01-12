@@ -1,5 +1,5 @@
 import { AsyncHandler } from "../../utils/AsyncHandler.js";
-import { registerService, loginService, logoutService, refreshAccessTokenService } from "../../services/authServices/authUser.service.js";
+import { registerService, loginService, logoutService, refreshAccessTokenService } from "./authUsers.service.js";
 import { ApiResponse } from "../../utils/ApiResponse.js"
 // import { ApiError } from "../../utils/ApiError.js";
 

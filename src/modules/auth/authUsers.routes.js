@@ -5,8 +5,8 @@ import {
     refreshAccessTokenController,
     registerController 
 
-    } from "../../controllers/authController/authUser.controller.js";
-import { verifyJWT } from "../../middlewares/authMiddleware/auth.middleware.js";
+    } from "./authUsers.controller.js";
+import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
 
 const router = Router();
 

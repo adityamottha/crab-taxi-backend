@@ -1,5 +1,5 @@
-import { AuthUser } from "../../models/authModel/AuthUsers.model.js";
-import { ApiError } from "../../utils/ApiError.js";
+import { AuthUser } from "./authUsers.models.js"
+import { ApiError } from "../../utils/ApiError.js"
 import { generateAccessAndRefreshToken } from "../../utils/RefAccTokens.js"
 import jwt from "jsonwebtoken";
 // import { checkValidEmail } from "../../utils/validEmailPassword.js";

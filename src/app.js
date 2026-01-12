@@ -18,19 +18,19 @@ app.use(express.static("public/temp"));
 app.use(cookieParser());
 
 //AUTH
-import auth from "./routes/authRoute/auth.routes.js";
+import auth from "./modules/auth/authUsers.routes.js";
 app.use("/api/v1/users",auth);
 
 // ADMIN ROUTE
-import admin from "./routes/adminRoute/admin.routes.js";
+import admin from "./modules/admin/admin.routes.js";
 app.use("/api/v1/admin",admin)
 
 // RIDER ROUTE 
-import rider from "./routes/riderRoute/rider.route.js";
+import rider from "./modules/rider/rider.route.js";
 app.use("/api/v1/rider",rider);
 
 //DRIVER ROUTE
-import driver from "./routes/driverRoute/driver.route.js";
+import driver from "./modules/driver/driver.route.js";
 app.use("/api/v1/driver",driver)
 
 // ERROR MIDDLEWARE

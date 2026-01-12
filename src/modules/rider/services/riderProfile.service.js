@@ -1,6 +1,6 @@
-import { ApiError } from "../../utils/ApiError.js";
-import { RiderProfile } from "../../models/riderModel/RiderProfile.model.js";
-import { uploadOnCloudinary } from "../../utils/cloudinary.js";
+import { ApiError } from "../../../utils/ApiError.js";
+import { RiderProfile } from "../models/riderProfile.model.js";
+import { uploadOnCloudinary } from "../../../utils/cloudinary.js";
 
  const riderprofileService = async ({fullname,gender,avatarLocalPath,user})=>{
 

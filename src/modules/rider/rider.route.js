@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { verifyJWT } from "../../middlewares/authMiddleware/auth.middleware.js";
+import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
 import { upload } from "../../middlewares/multer.middleware.js";
-import { authorizeRole } from "../../middlewares/authMiddleware/authorizeRole.middleware.js";
-import { riderProfileController } from "../../controllers/riderController/riderProfile.controller.js";
+import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
+import { riderProfileController } from "./controllers/riderProfile.controller.js";
 
 
 const router = Router();
