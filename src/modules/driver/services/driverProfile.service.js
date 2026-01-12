@@ -1,5 +1,5 @@
 
-const driverProfileService =async ()=>{
+const driverProfileService =async ({fullname,avatar,dateOfBirth,})=>{
 
 }
 

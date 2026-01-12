@@ -20,11 +20,6 @@ const vehicleSchema = new mongoose.Schema({
       trim: true,
     },
 
-    model: {
-      type: String,
-      trim: true,
-    },
-
     registrationNumber: {
       type: String,
       required: true,
@@ -37,10 +32,24 @@ const vehicleSchema = new mongoose.Schema({
       type: String,
     },
 
+    numberPlateNumber:{
+      type:String,
+      trim:true
+    },
+
+    model: {
+      type: String,
+      trim: true,
+    },
+
     manufacturingYear: {
       type: Number,
     },
 
+    modelExpiryDate:{
+      type:Date,
+    },
+    
     seatCapacity: {
       type: Number,
       default: 4,
