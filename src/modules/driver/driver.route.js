@@ -3,9 +3,11 @@ import { driverProfileController } from "./controllers/driverProfile.controller.
 import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
 import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
 import { upload } from "../../middlewares/multer.middleware.js";
+import { driverDocumentController } from "./controllers/driverDocuments.controller.js";
 
 const router = Router();
 
+// Driver-Profile Router
 router.route("/driver-profile").post(
     verifyJWT,
     authorizeRole("DRIVER"),
@@ -14,6 +16,14 @@ router.route("/driver-profile").post(
         maxCount:1 
     }]),
     driverProfileController
+);
+
+// Driver-Documents Router
+
+router.route("/driver-documents").post(
+     verifyJWT,
+    authorizeRole("DRIVER"),
+    driverDocumentController
 );
 
 export default router;
