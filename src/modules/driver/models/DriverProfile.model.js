@@ -42,7 +42,7 @@ const driverAddress = new mongoose.Schema({
         required:true
     },
 
-    isVarified:{
+    isVerified:{
         type:Boolian,
         default:false,
     }
@@ -65,15 +65,18 @@ const driverProfileSchema = new mongoose.Schema({
     },
     avatar:{
         type:String,
-        uploadedAt:Date,
         required:true
+    },
+
+    avatarUploadedAt:{
+        type:Date
     },
 
     dateOfBirth:{
         type:Date
     },
 
-    address:[driverAddress],
+    address:driverAddress,
    
     //DRIVER STATUS AT RUNTIME
     driverStatus:{
