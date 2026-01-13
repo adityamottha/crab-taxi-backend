@@ -57,7 +57,7 @@ const driverProfileSchema = new mongoose.Schema({
         index:true
     },
 
-    fullName:{
+    fullname:{
         type:String,
         required:true,
         trim:true,
@@ -76,7 +76,7 @@ const driverProfileSchema = new mongoose.Schema({
         type:Date
     },
 
-    address:driverAddress,
+    address:[driverAddress],
    
     //DRIVER STATUS AT RUNTIME
     driverStatus:{
