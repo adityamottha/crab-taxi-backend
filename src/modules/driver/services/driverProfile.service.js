@@ -1,11 +1,11 @@
 import { DriverProfile } from "../models/DriverProfile.model.js"
 import { ApiError } from "../../../utils/ApiError.js"
-import { uploadOnCloudinary } from "../../../utils/cloudinary.js"
+import { uploadOnCloudinary } from "../../../utils/cloudinary.js";
 
 const driverProfileService =async ({fullname,dateOfBirth,driverAvatar,address,user})=>{
     
 // check fields 
-if([fullname,address,dateOfBirth].some(fields=>!fields?.trim())){
+if([fullname,dateOfBirth].some(fields=>!fields?.trim())){
     throw new ApiError(404,"All fields are required!")
 }
 
@@ -26,6 +26,7 @@ const driver = await DriverProfile.create(
         fullname,
         dateOfBirth,
         driverAvatar:avatar.secure_url,
+        address,
         authUserId:user
     }
 )

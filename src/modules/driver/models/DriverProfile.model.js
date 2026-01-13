@@ -43,7 +43,7 @@ const driverAddress = new mongoose.Schema({
     },
 
     isVerified:{
-        type:Boolian,
+        type:Boolean,
         default:false,
     }
 })
