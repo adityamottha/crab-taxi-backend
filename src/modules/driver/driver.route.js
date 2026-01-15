@@ -4,6 +4,7 @@ import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
 import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
 import { upload } from "../../middlewares/multer.middleware.js";
 import { driverDocumentController } from "./controllers/driverDocuments.controller.js";
+import { isProfileCompleted } from "../../middlewares/profileComplete.middleware.js";
 
 const router = Router();
 
@@ -23,6 +24,7 @@ router.route("/driver-profile").post(
 router.route("/driver-documents").post(
      verifyJWT,
     authorizeRole("DRIVER"),
+    isProfileCompleted(),
     driverDocumentController
 );
 
