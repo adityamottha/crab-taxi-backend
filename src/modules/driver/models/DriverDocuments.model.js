@@ -1,41 +1,82 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-const driverDocumentSchema = new mongoose.Schema({
+// documents credential
+const documentCredentialsSchema = new Schema(
+  {
+    documentNumber: {
+      type: String,
+      required: true,
+      unique:true,
+      trim: true,
+    },
+
+    issuedAt: {
+      type: Date,
+      required: true,
+    },
+
+    expiryDate: {
+      type: Date,
+      required: true,
+    },
+  },
+  { _id: false }
+);
+
+
+ // Document block schema
+ 
+const documentBlockSchema = new Schema(
+  {
+    urls: {
+      type: [String], // Cloudinary URLs
+      required: true,
+    },
+
+    credentials: {
+      type: documentCredentialsSchema,
+      required: true,
+    },
+
+    status: {
+      type: String,
+      enum: ["PENDING", "APPROVED", "REJECTED"],
+      default: "PENDING",
+    },
+
+    rejectionReason: {
+      type: String,
+    },
+  },
+  { _id: false }
+);
+
+
+ // Main DriverDocuments schema
+
+const driverDocumentSchema = new Schema(
+  {
     driverProfileId: {
       type: Schema.Types.ObjectId,
       ref: "DriverProfile",
       required: true,
+      unique: true,
       index: true,
     },
 
-    documentType: {
-      type: String,
-      enum: [
-        "DRIVER_LICENSE",
-        "VEHICLE_RC",
-        "AADHAAR_CARD",
-        "PAN_CARD",
-        "INSURANCE",
-      ],
+    driverLicense: {
+      type: documentBlockSchema,
       required: true,
-      index: true,
     },
 
-    documentNumber: {
-      type: String,
+    insurance: {
+      type: documentBlockSchema,
       required: true,
-      trim: true,
     },
 
-    documentImage: {
-      url: {
-        type: String,
-        required: true, // Cloudinary 
-      },
-      uploadedAt: {
-        type: Date,
-        default: Date.now,
-      },
+    vehicleRC: {
+      type: documentBlockSchema,
+      required: true,
     },
 
     verificationStatus: {
@@ -47,7 +88,7 @@ const driverDocumentSchema = new mongoose.Schema({
 
     verifiedBy: {
       type: Schema.Types.ObjectId,
-      ref: "AuthUser", // admin
+      ref: "AuthUser", // Admin
     },
 
     verifiedAt: {
@@ -57,12 +98,8 @@ const driverDocumentSchema = new mongoose.Schema({
     rejectionReason: {
       type: String,
     },
+  },
+  { timestamps: true }
+);
 
-    expiryDate: {
-      type: Date, // very important for license & insurance
-    },
-
-
-},{timestamps:true});
-
-export const DriverDocuments = mongoose.model("DriverDocumnets",driverDocumentSchema)
+export const DriverDocuments = mongoose.model("DriverDocuments",driverDocumentSchema);
