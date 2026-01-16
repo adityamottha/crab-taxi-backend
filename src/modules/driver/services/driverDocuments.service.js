@@ -1,7 +1,7 @@
 import { ApiError } from "../../../utils/ApiError"
 
 const driverDocumentService = async ({
-    user,
+    userId,
     driverLicenceFiles,
     insuranceFiles,
     vehicleRCFiles,
@@ -9,6 +9,13 @@ const driverDocumentService = async ({
     insuranceCredentials,
     vehicleRCCredentials
 })=>{
+
+    // check driver profile  existed 
+    // check driver documents ? submitted? or not ?
+    //get upload helper
+    // upload driverLicence
+    // upload insurance 
+    // upload Vehicle RC 
 
 }
 
