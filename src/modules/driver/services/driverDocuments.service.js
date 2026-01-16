@@ -14,12 +14,12 @@ const driverDocumentService = async ({
 })=>{
 
     // check files fields are available 
-    if([driverLicenceFiles,insuranceFiles,vehicleRCFiles].some(fields=>!fields?.trim())){
+    if(!driverLicenceFiles || !insuranceFiles || !vehicleRCFiles){
         throw new ApiError(404,"All files fields are required!");
     };
 
     // check credentials fields are available
-    if([driverLicenseCredentials,insuranceCredentials,vehicleRCCredentials].some(fields=>!fields?.trim())){
+    if(!driverLicenseCredentials || !insuranceCredentials || !vehicleRCCredentials){
         throw new ApiError(404,"All credentials are required!");
     }
 

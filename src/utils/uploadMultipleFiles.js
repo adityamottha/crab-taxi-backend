@@ -1,5 +1,5 @@
 import { ApiError } from "./ApiError.js";
-import { Cloudinary } from "./cloudinary.js";
+import { uploadOnCloudinary } from "./cloudinary.js";
 
 // funtion for upload multiple files 
 

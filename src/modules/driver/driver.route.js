@@ -25,6 +25,20 @@ router.route("/driver-documents").post(
      verifyJWT,
     authorizeRole("DRIVER"),
     isProfileCompleted(),
+    upload.fields([
+        {
+        name:"driverLicense",
+        maxCount:2
+      },
+      {
+        name:"insurance",
+        maxCount:2
+      },
+      {
+        name:"vehicleRC",
+        maxCount:2
+      }
+    ]),
     driverDocumentController
 );
 

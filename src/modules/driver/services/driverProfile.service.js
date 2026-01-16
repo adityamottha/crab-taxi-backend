@@ -1,4 +1,4 @@
-import { DriverProfile } from "../models/DriverProfile.model.js"
+import { DriverProfile } from "../models/driverProfile.model.js";
 import { ApiError } from "../../../utils/ApiError.js"
 import { uploadOnCloudinary } from "../../../utils/cloudinary.js";
 import { AuthUser } from "../../auth/authUsers.models.js";
