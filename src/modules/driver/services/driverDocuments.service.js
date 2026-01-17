@@ -14,7 +14,7 @@ const driverDocumentService = async ({
 })=>{
 
     // check files fields are available 
-    if(!driverLicenceFiles || !insuranceFiles || !vehicleRCFiles){
+    if(!driverLicenceFiles || !insuranceFiles || !vehicleRCFiles ){
         throw new ApiError(404,"All files fields are required!");
     };
 
@@ -24,11 +24,13 @@ const driverDocumentService = async ({
     }
 
     // check driver profile  existed 
+     console.log("USER ID:", userId);
+console.log("TYPE:", typeof userId);
     const driverprofile = await DriverProfile.findOne({authUserId:userId});
     if(!driverprofile) throw new ApiError(401,"First complete your Profile!");
-
+   
     // check driver documents ? submitted? or not ?
-    const existedDocs = await DriverDocuments.findById({driverProfileId:driverprofile._id});
+    const existedDocs = await DriverDocuments.findOne({driverProfileId:driverprofile._id});
     if(existedDocs) throw new ApiError(409,"Documents already submitted!");
 
     // upload files
