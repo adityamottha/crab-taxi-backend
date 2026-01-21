@@ -34,6 +34,7 @@ const vehicleSchema = new mongoose.Schema({
 
     numberPlateNumber:{
       type:String,
+      unique:true,
       trim:true
     },
 
