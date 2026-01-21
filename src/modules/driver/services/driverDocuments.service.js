@@ -24,8 +24,9 @@ const driverDocumentService = async ({
     }
 
     // check driver profile  existed 
-     console.log("USER ID:", userId);
-     console.log("TYPE:", typeof userId);
+    //  console.log("USER ID:", userId);
+    //  console.log("TYPE:", typeof userId);
+
     const driverprofile = await DriverProfile.findOne({authUserId:userId});
     if(!driverprofile) throw new ApiError(401,"First complete your Profile!");
    

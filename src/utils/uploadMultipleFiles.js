@@ -9,10 +9,10 @@ const uploadMultipleFiles = async(files=[])=>{
 
     const urls = [];
     for (const file of files) {
-        console.log("FILE RECIEVED:- ", file.path);
+        // console.log("FILE RECIEVED:- ", file.path);
         
         const uploadedFile = await uploadOnCloudinary(file.path);
-        console.log("CLOUDINARY RESULT:-", uploadedFile);
+        // console.log("CLOUDINARY RESULT:-", uploadedFile);
             
             
             if(!uploadedFile || !uploadedFile?.secure_url) throw new ApiError(500,"Failed to upload files");
