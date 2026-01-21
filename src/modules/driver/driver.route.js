@@ -5,6 +5,7 @@ import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
 import { upload } from "../../middlewares/multer.middleware.js";
 import { driverDocumentController } from "./controllers/driverDocuments.controller.js";
 import { isProfileCompleted } from "../../middlewares/profileComplete.middleware.js";
+import { vehicleController } from "./controllers/vehicle.controller.js";
 
 const router = Router();
 
@@ -41,5 +42,9 @@ router.route("/driver-documents").post(
     ]),
     driverDocumentController
 );
+
+// Vehicle-Router
+
+router.route("/vehicle").post(vehicleController);
 
 export default router;

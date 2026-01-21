@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+import { Schema } from "mongoose";
 const vehicleSchema = new mongoose.Schema({
     driverProfileId: {
       type: Schema.Types.ObjectId,
