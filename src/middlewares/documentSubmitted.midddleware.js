@@ -1,5 +1,12 @@
 import { ApiError } from "../utils/ApiError.js";
 
-const isDocumentSubmitted = async ()=>{
-    
+const isDocumentSubmitted =  ()=>{
+    return (req,_,next)=>{
+        if(!req.user?.isDocumentSubmitted){
+            throw new ApiError(409,"First Submit your documents!");
+        }
+        next()
+    }
 }
+
+export { isDocumentSubmitted };

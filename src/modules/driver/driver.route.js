@@ -6,6 +6,7 @@ import { upload } from "../../middlewares/multer.middleware.js";
 import { driverDocumentController } from "./controllers/driverDocuments.controller.js";
 import { isProfileCompleted } from "../../middlewares/profileComplete.middleware.js";
 import { vehicleController } from "./controllers/vehicle.controller.js";
+import { isDocumentSubmitted } from "../../middlewares/documentSubmitted.midddleware.js";
 
 const router = Router();
 
@@ -45,6 +46,9 @@ router.route("/driver-documents").post(
 
 // Vehicle-Router
 
-router.route("/vehicle").post(vehicleController);
+router.route("/vehicle").post(
+isDocumentSubmitted,
+vehicleController
+);
 
 export default router;
