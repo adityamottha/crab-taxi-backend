@@ -56,6 +56,11 @@ const authUserSchema = new mongoose.Schema({
       default:false
     },
 
+    isDocumentSubmitted:{
+      type:Boolean,
+      default:false
+    },
+
     permission:{
         type:[String],
         default:[]

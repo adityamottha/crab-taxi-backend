@@ -9,11 +9,6 @@ const vehicleSchema = new mongoose.Schema({
       index: true,
     },
 
-    isDocumentsSubmitted:{
-      type:Boolean,
-      default:false
-    },
-
     vehicleType: {
       type: String,
       enum: ["CAR", "BIKE", "AUTO"],
