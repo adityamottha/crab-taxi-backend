@@ -1,17 +1,28 @@
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
+import { ApiError } from "../../../utils/ApiError.js";
 import { driverDocumentService } from "../services/driverDocuments.service.js";
 
 const driverDocumentController = AsyncHandler(async (req,res)=>{
-   const driverLicenceFiles = req.files?.driverLicense?.[0].path;
-   const insuranceFiles = req.files?.insurance?.[0]?.path;
-   const vehicleRCFiles = req.files?.vehicleRC?.[0]?.path;
-//    console.log("FILES-KEYS: ",Object.keys(req.files || {}));
-   
 
-   const driverLicenseCredentials = JSON.parse(req.body.driverLicenseCredentials);
-   const insuranceCredentials = JSON.parse(req.body.insuranceCredentials);
-   const vehicleRCCredentials = JSON.parse(req.body.vehicleRCCredentials);
+   if (!req.files || Object.keys(req.files).length === 0) {
+    throw new ApiError(400, "No files uploaded");
+  }
+
+   const driverLicenceFiles = req.files?.driverLicense;
+   const insuranceFiles = req.files?.insurance;
+   const vehicleRCFiles = req.files?.vehicleRC;
+
+  let driverLicenseCredentials, insuranceCredentials, vehicleRCCredentials;
+
+   try {
+      driverLicenseCredentials = JSON.parse(req.body.driverLicenseCredentials);
+      insuranceCredentials = JSON.parse(req.body.insuranceCredentials);
+      vehicleRCCredentials = JSON.parse(req.body.vehicleRCCredentials);
+   } catch (error) {
+      throw new ApiError(400, error?.message || "Invalid credentials JSON format");
+   }
+
 //    console.log("BODY: ",req.body)
 
    const documents = await driverDocumentService({

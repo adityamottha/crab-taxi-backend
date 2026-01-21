@@ -14,7 +14,7 @@ const driverDocumentService = async ({
 })=>{
 
     // check files fields are available 
-    if(!driverLicenceFiles || !insuranceFiles || !vehicleRCFiles ){
+    if(!driverLicenceFiles?.length || !insuranceFiles?.length || !vehicleRCFiles?.length ){
         throw new ApiError(404,"All files fields are required!");
     };
 
@@ -25,7 +25,7 @@ const driverDocumentService = async ({
 
     // check driver profile  existed 
      console.log("USER ID:", userId);
-console.log("TYPE:", typeof userId);
+     console.log("TYPE:", typeof userId);
     const driverprofile = await DriverProfile.findOne({authUserId:userId});
     if(!driverprofile) throw new ApiError(401,"First complete your Profile!");
    
@@ -41,7 +41,7 @@ console.log("TYPE:", typeof userId);
     //inserts documents in db
     const documents = await DriverDocuments.create({
 
-        driverProfileId:userId,
+        driverProfileId: driverprofile._id,
 
         driverLicense:{
             urls:driverLicence,

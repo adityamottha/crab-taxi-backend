@@ -66,16 +66,19 @@ const driverDocumentSchema = new Schema(
 
     driverLicense: {
       type: documentBlockSchema,
+      unique:true,
       required: true,
     },
 
     insurance: {
       type: documentBlockSchema,
+      unique:true,
       required: true,
     },
 
     vehicleRC: {
       type: documentBlockSchema,
+      unique:true,
       required: true,
     },
 
