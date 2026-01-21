@@ -1,12 +1,17 @@
 import mongoose from "mongoose";
-
 import { Schema } from "mongoose";
+
 const vehicleSchema = new mongoose.Schema({
     driverProfileId: {
       type: Schema.Types.ObjectId,
       ref: "DriverProfile",
       required: true,
       index: true,
+    },
+
+    isDocumentsSubmitted:{
+      type:Boolean,
+      default:false
     },
 
     vehicleType: {
@@ -44,12 +49,12 @@ const vehicleSchema = new mongoose.Schema({
       trim: true,
     },
 
-    manufacturingYear: {
-      type: Number,
+    modelManufacturingYear: {
+      type: Date
     },
 
     modelExpiryDate:{
-      type:Date,
+      type:Date
     },
     
     seatCapacity: {
