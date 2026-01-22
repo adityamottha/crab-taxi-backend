@@ -50,6 +50,12 @@ router.route("/vehicle").post(
   verifyJWT,
   authorizeRole("DRIVER"),
   isDocumentSubmitted(),
+  upload.fields([
+    {
+      name:"images",
+      maxCount:8
+    }
+  ]),
   vehicleController
 );
 

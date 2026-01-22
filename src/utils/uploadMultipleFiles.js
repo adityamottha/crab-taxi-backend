@@ -21,4 +21,26 @@ const uploadMultipleFiles = async(files=[])=>{
         return urls;
 }
 
-export { uploadMultipleFiles }
+
+const uploadMultipleFilesWithUrl = async (files) => {
+  if (!files || files.length === 0) {
+    throw new ApiError(400, "No files provided");
+  }
+
+  const uploadedImages = [];
+
+  for (const file of files) {
+    const result = await uploadOnCloudinary(file.path);
+    uploadedImages.push({
+      url: result.secure_url,
+      uploadedAt: new Date()
+    });
+  }
+
+  return uploadedImages;
+};
+
+export { 
+    uploadMultipleFiles,
+    uploadMultipleFilesWithUrl 
+};

@@ -60,7 +60,7 @@ const vehicleSchema = new mongoose.Schema({
     images: [
       {
         url: {
-          type: [String],
+          type: String,
           required: true,
         },
         uploadedAt: {
