@@ -47,7 +47,7 @@ router.route("/driver-documents").post(
 // Vehicle-Router
 
 router.route("/vehicle").post(
-isDocumentSubmitted,
+isDocumentSubmitted(),
 vehicleController
 );
 

@@ -2,6 +2,7 @@ import { ApiError } from "../../../utils/ApiError.js";
 import { DriverProfile } from ".././models/driverProfile.model.js";
 import { DriverDocuments } from ".././models/driverDocuments.model.js";
 import { uploadMultipleFiles } from "../../../utils/uploadMultipleFiles.js";
+import { AuthUser } from "../../auth/authUsers.models.js";
 
 const driverDocumentService = async ({
     userId,
@@ -60,7 +61,13 @@ const driverDocumentService = async ({
         }
     });
 
-    // return 
+    //check submitted or not 
+    if(!documents) throw new ApiError(500,"Failed to submit documents!");
+
+    // update field
+    await AuthUser.findByIdAndUpdate(userId,{isDocumentSubmitted:true},{new:true});
+
+    //return
     return documents;
 }
 
