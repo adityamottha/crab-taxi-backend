@@ -47,8 +47,10 @@ router.route("/driver-documents").post(
 // Vehicle-Router
 
 router.route("/vehicle").post(
-isDocumentSubmitted(),
-vehicleController
+  verifyJWT,
+  authorizeRole("DRIVER"),
+  isDocumentSubmitted(),
+  vehicleController
 );
 
 export default router;
