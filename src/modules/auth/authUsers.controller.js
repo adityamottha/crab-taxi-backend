@@ -1,5 +1,5 @@
 import { AsyncHandler } from "../../utils/AsyncHandler.js";
-import { registerService, loginService, logoutService, refreshAccessTokenService } from "./authUsers.service.js";
+import { registerService, loginService, logoutService, refreshAccessTokenService, changePasswordService } from "./authUsers.service.js";
 import { ApiResponse } from "../../utils/ApiResponse.js"
 // import { ApiError } from "../../utils/ApiError.js";
 
@@ -106,10 +106,19 @@ const refreshAccessTokenController = AsyncHandler(async (req, res) => {
     );
 });
 
+// forget password 
+const changePasswordController = AsyncHandler(async (req,res)=>{
+   await changePasswordService()
+   res.status(200).json(
+      new ApiResponse(200,{},"Change password Api working well.")
+   );
+});
+
 
 export { 
    registerController,
    loginController,
    logoutController,
-   refreshAccessTokenController
+   refreshAccessTokenController,
+   changePasswordController
 }

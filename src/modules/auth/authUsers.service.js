@@ -153,10 +153,15 @@ const refreshAccessTokenService = async (incomingRefreshToken) => {
   return { accessToken, refreshToken };
 };
 
+// change password service
+const changePasswordService = async (userId,oldPassword,newPassword)=>{
+  
+};
 
 export { 
   registerService,
   loginService,
   logoutService,
-  refreshAccessTokenService
+  refreshAccessTokenService,
+  changePasswordService
 };

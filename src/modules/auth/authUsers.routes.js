@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+    changePasswordController,
     loginController,
     logoutController, 
     refreshAccessTokenController,
@@ -21,6 +22,9 @@ router.route("/logout").post(verifyJWT,logoutController);
 
 //GENERATE NEW ACCESS TOKEN ACCESS-TOKEN
 router.route("/refresh-token").post(refreshAccessTokenController)
+
+//CHANGE PASSWORD 
+router.route("/change-password").post(verifyJWT,changePasswordController)
 
 export default router;
 
