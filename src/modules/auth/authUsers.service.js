@@ -153,10 +153,37 @@ const refreshAccessTokenService = async (incomingRefreshToken) => {
   return { accessToken, refreshToken };
 };
 
-// change password service
+// CHANGE PASSWORD --------------------------------
+
 const changePasswordService = async (userId,oldPassword,newPassword)=>{
-  
+
+//check all fields are required
+if([oldPassword,newPassword].some(fields=>!fields?.trim())){
+  throw new ApiError(404,"All fields are required!");
 };
+
+// check new password is different from old password 
+if(oldPassword === newPassword) throw new ApiError(409,"New-password must be different!");
+
+// find user +password 
+const user = await AuthUser.findById(userId).select("+password");
+if(!user) throw new ApiError(400,"User is not registered!");
+
+// compare old password
+const isMatchOldPassword = await user.isPasswordCorrect(oldPassword);
+if(!isMatchOldPassword) throw new ApiError(402,"Old password is wrong!");
+
+// replace newPassword to oldPassword in db 
+user.password = newPassword
+
+// increase refreshTokenVersion for loggedOut from all device
+user.refreshTokenVersion += 1;
+
+// save user 
+await user.save();
+
+};
+
 
 export { 
   registerService,

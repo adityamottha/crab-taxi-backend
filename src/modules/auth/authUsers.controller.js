@@ -108,11 +108,23 @@ const refreshAccessTokenController = AsyncHandler(async (req, res) => {
 
 // forget password 
 const changePasswordController = AsyncHandler(async (req,res)=>{
-   await changePasswordService()
+   console.log("BODY: ", req.body);
+   console.log("USER-ID: ",req.user._id)
+   // get user id 
+   const userId = await req.user._id;
+
+    // get data from body 
+    const { oldPassword, newPassword } = req.body;
+
+   //  call the service function 
+   await changePasswordService(userId,oldPassword,newPassword);
+
+   // send response 
    res.status(200).json(
-      new ApiResponse(200,{},"Change password Api working well.")
+      new ApiResponse(200,{oldPassword,newPassword},"Password has been changed successfully.")
    );
 });
+
 
 
 export { 
