@@ -1,5 +1,5 @@
 import { AsyncHandler } from "../../utils/AsyncHandler.js";
-import { registerService, loginService, logoutService, refreshAccessTokenService, changePasswordService, changeEmailService } from "./authUsers.service.js";
+import { registerService, loginService, logoutService, refreshAccessTokenService, changePasswordService, changeEmailService, changePhoneNumberService } from "./authUsers.service.js";
 import { ApiResponse } from "../../utils/ApiResponse.js"
 // import { ApiError } from "../../utils/ApiError.js";
 
@@ -150,6 +150,30 @@ const changePasswordController = AsyncHandler(async (req,res)=>{
    .json(
       new ApiResponse(200,{oldEmail,newEmail},"Email has been changed.")
    )
+ });
+
+
+ // CHANGE PHONE_NUMBER ------------------
+
+ const changePhoneNumberController = AsyncHandler(async (req,res)=>{
+   // get a userId from req.user jwt 
+   const userId = req.user?._id;
+
+   // get a data from req.Body
+   const {oldPhoneNumber, newPhoneNumber} = req.body;
+
+   // call a service function
+   await changePhoneNumberService({
+      userId,
+      oldPhoneNumber,
+      newPhoneNumber
+   });
+
+   //send response 
+   return res.status(200)
+   .json(
+      new ApiResponse(200,{newPhoneNumber,oldPhoneNumber},"Phone number has been changed successfully!")
+   );
  })
 
 export { 
@@ -158,5 +182,6 @@ export {
    logoutController,
    refreshAccessTokenController,
    changePasswordController,
-   changeEmailController
+   changeEmailController,
+   changePhoneNumberController
 }
