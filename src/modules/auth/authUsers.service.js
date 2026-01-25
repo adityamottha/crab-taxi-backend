@@ -213,14 +213,20 @@ const changeEmailService = async ({userId,oldEmail, newEmail})=>{
   const user = await AuthUser.findById(userId);
   if(!user) throw new ApiError(409,"User is not valid!");
 
+  // Add a limit to change a email only 24h in once 
+  if(user.emailChangedAt && Date.now() - user.emailChangedAt.getTime() < ONE_DAY){
+    throw new ApiError(400,"You can only change a email once in 24h!");
+  }
+
   // check email must be match from oldEmail
   if(user.email !== oldEmail){
     throw new ApiError(400,"Old Email is wrong!");
   };
 
-  // change email to newEmail
+  // change email to newEmail + update date
   user.email = newEmail;
-
+  user.emailChangedAt = new Date();
+  
   // save user 
   await user.save();
 
