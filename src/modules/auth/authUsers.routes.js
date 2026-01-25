@@ -24,7 +24,10 @@ router.route("/logout").post(verifyJWT,logoutController);
 router.route("/refresh-token").post(refreshAccessTokenController)
 
 //CHANGE PASSWORD 
-router.route("/change-password").post(verifyJWT,changePasswordController)
+router.route("/change-password").post(verifyJWT,changePasswordController);
+
+//CHANGE EMAIL
+router.route('/change-email').post()
 
 export default router;
 

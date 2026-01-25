@@ -126,6 +126,13 @@ const changePasswordController = AsyncHandler(async (req,res)=>{
 });
 
 
+// CHANGE EMAIL------------------------
+ const changeEmailController = AsyncHandler(async (req,res)=>{
+   // get user id from jwt-loggedIn-User 
+   // get data from body
+   //call a service function and pass parameter
+   //send response 
+ })
 
 export { 
    registerController,

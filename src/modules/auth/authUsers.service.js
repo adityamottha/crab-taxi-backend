@@ -184,6 +184,16 @@ await user.save();
 
 };
 
+// CHANGE EMAIL ------------------
+
+const changeEmailService = async (userId,oldPhoneNumber, newPhoneNumber)=>{
+  // check all fields are required 
+  // check new number must be diffrant from new number 
+  // find user by id
+  // check mobile number must be match
+  // check phoneNumber to newPhoneNumber
+  // save user 
+}
 
 export { 
   registerService,
