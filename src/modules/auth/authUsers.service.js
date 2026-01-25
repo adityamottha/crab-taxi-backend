@@ -2,6 +2,7 @@ import { AuthUser } from "./authUsers.models.js"
 import { ApiError } from "../../utils/ApiError.js"
 import { generateAccessAndRefreshToken } from "../../utils/RefAccTokens.js"
 import jwt from "jsonwebtoken";
+import { ONE_DAY } from "../../constants.js";
 // import { checkValidEmail } from "../../utils/validEmailPassword.js";
 // import { parsePhoneNumberFromString } from "libphonenumber-js";
 
@@ -169,12 +170,18 @@ if(oldPassword === newPassword) throw new ApiError(409,"New-password must be dif
 const user = await AuthUser.findById(userId).select("+password");
 if(!user) throw new ApiError(400,"User is not registered!");
 
+//  Add a password change limit in 24h 
+if(user.passwordChangedAt && Date.now() - user.passwordChangedAt.getTime() < ONE_DAY){
+  throw new ApiError(400,"You can change email only one in 24h!");
+};
+
 // compare old password
 const isMatchOldPassword = await user.isPasswordCorrect(oldPassword);
 if(!isMatchOldPassword) throw new ApiError(402,"Old password is wrong!");
 
-// replace newPassword to oldPassword in db 
-user.password = newPassword
+// Update email and changedAt date
+user.password = newPassword;
+user.passwordChangedAt = new Date();
 
 // increase refreshTokenVersion for loggedOut from all device
 user.refreshTokenVersion += 1;
@@ -224,7 +231,7 @@ const changeEmailService = async ({userId,oldEmail, newEmail})=>{
 // CHANGE PHONE_NUMBER ----------------------------
 
 const changePhoneNumberService = async ({userId,oldPhoneNumber,newPhoneNumber})=>{
-  
+
   // check all fields are required 
   if([oldPhoneNumber,newPhoneNumber].some(fields=>!fields?.trim())){
     throw new ApiError(404,"All fields are required!");
