@@ -154,7 +154,6 @@ const changePasswordController = AsyncHandler(async (req,res)=>{
 
 
  // CHANGE PHONE_NUMBER ------------------
-
  const changePhoneNumberController = AsyncHandler(async (req,res)=>{
    // get a userId from req.user jwt 
    const userId = req.user?._id;

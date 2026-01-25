@@ -224,6 +224,7 @@ const changeEmailService = async ({userId,oldEmail, newEmail})=>{
 // CHANGE PHONE_NUMBER ----------------------------
 
 const changePhoneNumberService = async ({userId,oldPhoneNumber,newPhoneNumber})=>{
+  
   // check all fields are required 
   if([oldPhoneNumber,newPhoneNumber].some(fields=>!fields?.trim())){
     throw new ApiError(404,"All fields are required!");
