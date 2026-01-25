@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
     changeEmailController,
     changePasswordController,
+    changePhoneNumberController,
     loginController,
     logoutController, 
     refreshAccessTokenController,
@@ -29,6 +30,9 @@ router.route("/change-password").post(verifyJWT,changePasswordController);
 
 //CHANGE EMAIL
 router.route('/change-email').post(verifyJWT,changeEmailController);
+
+//CHANGE PHONE_NUMBER
+router.route("/change-phone-number").post(verifyJWT,changePhoneNumberController);
 
 export default router;
 
