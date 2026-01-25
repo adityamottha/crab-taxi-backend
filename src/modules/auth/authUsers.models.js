@@ -15,6 +15,12 @@ const authUserSchema = new mongoose.Schema({
         required:true,
         trim:true,
     },
+
+    phoneNumberChangedAt:{
+      type:Date,
+      default:null
+    },
+
     email:{
         type:String,
         unique:true,
@@ -24,6 +30,11 @@ const authUserSchema = new mongoose.Schema({
         trim:true
     },
 
+    emailChangedAt:{
+      type:Date,
+      default:null
+    },
+
     password:{
       required:true,
         type:String,
@@ -31,6 +42,11 @@ const authUserSchema = new mongoose.Schema({
         select:false
     },
 
+    passwordChangedAt:{
+      type:Date,
+      default:null
+    },
+    
     countryCode:{
         type:String,
         default:"+91"
