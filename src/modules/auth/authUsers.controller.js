@@ -128,11 +128,11 @@ const changePasswordController = AsyncHandler(async (req,res)=>{
 
 // CHANGE EMAIL------------------------
  const changeEmailController = AsyncHandler(async (req,res)=>{
-   console.log("BODY:- ", req.body);
+   // console.log("BODY:- ", req.body);
    
    // get user id from jwt-loggedIn-User 
    const userId = await req.user?._id;
-   console.log("USERID:- ",userId);
+   // console.log("USERID:- ",userId);
 
    // get data from body
    const {oldEmail,newEmail} = req.body;

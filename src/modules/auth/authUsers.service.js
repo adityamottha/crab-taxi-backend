@@ -194,12 +194,12 @@ await user.save();
 // CHANGE EMAIL ------------------
 
 const changeEmailService = async ({userId,oldEmail, newEmail})=>{
-  console.log("USER_SERVICE_USERID:- ",userId.oldEmail);
+  // console.log("USER_SERVICE_USERID:- ",userId.oldEmail);
   
   // check all fields are required 
   if([oldEmail,newEmail].some(fields=>!fields?.trim())){
-    console.log("OLD_EMAIL:- ",oldEmail);
-    console.log("NEW_EMAIL:- ",newEmail);
+    // console.log("OLD_EMAIL:- ",oldEmail);
+    // console.log("NEW_EMAIL:- ",newEmail);
     throw new ApiError(404,"All fields are required!");
   };
 
@@ -226,7 +226,7 @@ const changeEmailService = async ({userId,oldEmail, newEmail})=>{
   // change email to newEmail + update date
   user.email = newEmail;
   user.emailChangedAt = new Date();
-  
+
   // save user 
   await user.save();
 
@@ -252,13 +252,19 @@ const changePhoneNumberService = async ({userId,oldPhoneNumber,newPhoneNumber})=
   const user = await AuthUser.findById(userId);
   if(!user) throw new ApiError(409,"User is not registered!");
 
+  //Added User only change the number once in a 24h
+  if(user.phoneNumberChangedAt && Date.now() - user.phoneNumberChangedAt.getTime() < ONE_DAY){
+    throw new ApiError(400,"You can only changed a Phone-Number once in a 24h!");
+  };
+
   // check old phoneNumber is same as db phoneNumber
   if(user.phoneNumber !== oldPhoneNumber){
     throw new ApiError(404,"oldNumber is not valid number!");
   };
 
-  // Update old phone number to new phone number
+  // Update old phone number to new phone number + date of Updated at
   user.phoneNumber = newPhoneNumber;
+  user.phoneNumberChangedAt = new Date();
 
   // save user 
    await user.save();
