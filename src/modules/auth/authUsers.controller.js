@@ -1,5 +1,5 @@
 import { AsyncHandler } from "../../utils/AsyncHandler.js";
-import { registerService, loginService, logoutService, refreshAccessTokenService, changePasswordService } from "./authUsers.service.js";
+import { registerService, loginService, logoutService, refreshAccessTokenService, changePasswordService, changeEmailService } from "./authUsers.service.js";
 import { ApiResponse } from "../../utils/ApiResponse.js"
 // import { ApiError } from "../../utils/ApiError.js";
 
@@ -108,8 +108,8 @@ const refreshAccessTokenController = AsyncHandler(async (req, res) => {
 
 // forget password 
 const changePasswordController = AsyncHandler(async (req,res)=>{
-   console.log("BODY: ", req.body);
-   console.log("USER-ID: ",req.user._id)
+   // console.log("BODY: ", req.body);
+   // console.log("USER-ID: ",req.user._id)
    // get user id 
    const userId = await req.user._id;
 
@@ -128,10 +128,28 @@ const changePasswordController = AsyncHandler(async (req,res)=>{
 
 // CHANGE EMAIL------------------------
  const changeEmailController = AsyncHandler(async (req,res)=>{
+   console.log("BODY:- ", req.body);
+   
    // get user id from jwt-loggedIn-User 
+   const userId = await req.user?._id;
+   console.log("USERID:- ",userId);
+
    // get data from body
+   const {oldEmail,newEmail} = req.body;
+
    //call a service function and pass parameter
+
+    await changeEmailService({
+      userId,
+      oldEmail,
+      newEmail
+   });
+
    //send response 
+   return res.status(200)
+   .json(
+      new ApiResponse(200,{oldEmail,newEmail},"Email has been changed.")
+   )
  })
 
 export { 

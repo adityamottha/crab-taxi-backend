@@ -186,13 +186,40 @@ await user.save();
 
 // CHANGE EMAIL ------------------
 
-const changeEmailService = async (userId,oldPhoneNumber, newPhoneNumber)=>{
+const changeEmailService = async (userId,oldEmail, newEmail)=>{
+  console.log("USER_SERVICE_USERID:- ",userId.oldEmail);
+  
   // check all fields are required 
-  // check new number must be diffrant from new number 
+  if([oldEmail,newEmail].some(fields=>!fields?.trim())){
+    console.log("OLD_EMAIL:- ",oldEmail);
+    console.log("NEW_EMAIL:- ",newEmail);
+    throw new ApiError(404,"All fields are required!");
+  };
+
+  
+
+  // check new Email must be diffrant from Old-Email
+  if(newEmail === oldEmail){
+    throw new ApiError(402,"New Email must be diffrante from old one!");
+  };
+
   // find user by id
-  // check mobile number must be match
-  // check phoneNumber to newPhoneNumber
+  const user = await AuthUser.findById({userId});
+  if(!user) throw new ApiError(409,"User is not valid!");
+
+  // check email must be match from oldEmail
+  if(user.email !== oldEmail){
+    throw new ApiError(400,"Old mobile number is wrong!");
+  };
+
+  // change email to newEmail
+  user.email = newEmail;
+
   // save user 
+  user.save();
+
+  // return 
+  return user;
 }
 
 export { 
