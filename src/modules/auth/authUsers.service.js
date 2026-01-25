@@ -200,5 +200,6 @@ export {
   loginService,
   logoutService,
   refreshAccessTokenService,
-  changePasswordService
+  changePasswordService,
+  changeEmailService
 };

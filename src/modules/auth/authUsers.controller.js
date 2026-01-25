@@ -139,5 +139,6 @@ export {
    loginController,
    logoutController,
    refreshAccessTokenController,
-   changePasswordController
+   changePasswordController,
+   changeEmailController
 }

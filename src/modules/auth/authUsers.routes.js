@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+    changeEmailController,
     changePasswordController,
     loginController,
     logoutController, 
@@ -27,7 +28,7 @@ router.route("/refresh-token").post(refreshAccessTokenController)
 router.route("/change-password").post(verifyJWT,changePasswordController);
 
 //CHANGE EMAIL
-router.route('/change-email').post()
+router.route('/change-email').post(verifyJWT,changeEmailController);
 
 export default router;
 
