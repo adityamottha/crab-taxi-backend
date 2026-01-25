@@ -221,11 +221,44 @@ const changeEmailService = async ({userId,oldEmail, newEmail})=>{
   return user;
 }
 
+// CHANGE PHONE_NUMBER ----------------------------
+
+const changePhoneNumberService = async ({userId,oldPhoneNumber,newPhoneNumber})=>{
+  // check all fields are required 
+  if([oldPhoneNumber,newPhoneNumber].some(fields=>!fields?.trim())){
+    throw new ApiError(404,"All fields are required!");
+  };
+
+  // check new and old number are not same
+  if(newPhoneNumber === oldPhoneNumber){
+    throw new ApiError(403,"New email must be diffrante from old one!");
+  };
+
+  // get user by userId
+  const user = await AuthUser.findById(userId);
+  if(!user) throw new ApiError(409,"User is not registered!");
+
+  // check old phoneNumber is same as db phoneNumber
+  if(user.phoneNumber !== oldPhoneNumber){
+    throw new ApiError(404,"oldNumber is not valid number!");
+  };
+
+  // Update old phone number to new phone number
+  user.phoneNumber = newPhoneNumber;
+
+  // save user 
+   await user.save();
+
+  // return
+  return user;
+}
+
 export { 
-  registerService,
+  registerService,  
   loginService,
   logoutService,
   refreshAccessTokenService,
   changePasswordService,
-  changeEmailService
+  changeEmailService,
+  changePhoneNumberService
 };
