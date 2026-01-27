@@ -76,8 +76,11 @@ import { uploadOnCloudinary } from "../../../utils/cloudinary.js";
     // return 
     return riderProfile;
  }
-
+const changeGenderService = async ({userId,newGender})=>{
+    
+}
  export { 
     riderprofileService,
-    changeFullnameService
+    changeFullnameService,
+    changeGenderService
  }
