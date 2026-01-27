@@ -79,12 +79,31 @@ import { uploadOnCloudinary } from "../../../utils/cloudinary.js";
 
  // CHANGE-GENDER---------------
 const changeGenderService = async ({userId,newGender})=>{
+
     // check all fields are required
+    if(!newGender?.trim()){
+        throw new ApiError(400,"New-Gender is required!");
+    };
+
     // find riderProfile by id 
+    const riderProfile = await RiderProfile.findOne({authUserId:userId});
+    if(!riderProfile){
+        throw new ApiError(404,"Rider Profile is not Available!.");
+    };
+
     // check current gender are not same to newGender
+    if(riderProfile.gender === newGender){
+        throw new ApiError(409,"New gender must be diffrante from old one!");
+    };
+
     // update gender on db
+    riderProfile.gender = newGender;
+
     // save gender
+    riderProfile.save();
+
     // return 
+    return riderProfile;
 }
  export { 
     riderprofileService,
