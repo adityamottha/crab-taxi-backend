@@ -29,12 +29,11 @@ const changeFullnameController = AsyncHandler(async (req,res)=>{
     
 
     // get data from rq.body
-    const {oldFullname,newFullname} = req.body;
+    const {newFullname} = req.body;
 
     //call service function 
-    await changeFullnameService({
+    const riderProfile = await changeFullnameService({
         userId,
-        oldFullname,
         newFullname
     });
 
@@ -42,8 +41,8 @@ const changeFullnameController = AsyncHandler(async (req,res)=>{
     return res.status(200).json(
         new ApiResponse(
             200,
-            {newFulllname,oldFullname},
-            "Change-full-name api working well!"
+            {fullname:riderProfile.fullname},
+            "Full name updated successfully"
         )
     );
 })

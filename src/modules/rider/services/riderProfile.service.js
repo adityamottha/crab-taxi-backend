@@ -46,40 +46,35 @@ import { uploadOnCloudinary } from "../../../utils/cloudinary.js";
     return rider;
  };
 
- const changeFullnameService = async ({userId,oldFullname,newFullname}) =>{
+ const changeFullnameService = async ({userId,newFullname}) =>{
 
-    console.log("USER-ID:- ",userId);
+    // console.log("USER-ID:- ",userId);
     
-    console.log("OLD-FULLNAME:- ", oldFullname);
-    console.log("NEW-FULLNAME:- ", newFullname);
+    // console.log("OLD-FULLNAME:- ", oldFullname);
+    // console.log("NEW-FULLNAME:- ", newFullname);
     
     // Check all fields are required
-    if([oldFullname, newFullname].some(fields=>!fields?.trim())){
-        throw new ApiError(404,"All fields are required!");
-    };
-
-    // Check old name must be diffrante from new name
-    if(oldFullname === newFullname){
-        throw new ApiError(401,"New-fullname must be diffrante from old one!");
+    if(!newFullname?.trim()){
+        throw new ApiError(404,"New full name is required!");
     };
 
     // Find user by id 
-    const user = await RiderProfile.findById(userId);
-    if(!user) throw new ApiError(409,"Rider profile is nor complete!");
+    const riderProfile = await RiderProfile.findOne({authUserId:userId});
+    if(!riderProfile) throw new ApiError(409,"Rider profile is not complete!");
 
     // Check previus fullname must be same as oldFullname
-    if(user.fullname !== oldFullname){
-        throw new ApiError(404,"Wrong old-fullname");
+    if(riderProfile.fullname === newFullname){
+        throw new ApiError(409,"New-fullname must be diffrate from old one!");
     };
 
     // Update new name to db old name
-    user.fullname = newFullname;
+    riderProfile.fullname = newFullname;
 
     // save user
-    await user.save();
+    await riderProfile.save();
 
     // return 
-    return user;
+    return riderProfile;
  }
 
  export { 
