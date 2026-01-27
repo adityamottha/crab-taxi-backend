@@ -1,6 +1,7 @@
 import { ApiError } from "../../../utils/ApiError.js";
 import { RiderProfile } from "../models/riderProfile.model.js";
 import { uploadOnCloudinary } from "../../../utils/cloudinary.js";
+import { ONE_DAY } from "../../../constants.js";
 
  const riderprofileService = async ({fullname,gender,avatarLocalPath,user})=>{
 
@@ -62,14 +63,19 @@ import { uploadOnCloudinary } from "../../../utils/cloudinary.js";
     const riderProfile = await RiderProfile.findOne({authUserId:userId});
     if(!riderProfile) throw new ApiError(409,"Rider profile is not complete!");
 
+    // RIDER only change a fullname once in a 24h
+    if(riderProfile.fullnameUpdatedAt && Date.now() - riderProfile.fullnameUpdatedAt.getTime() < ONE_DAY){
+        throw new ApiError(400,"You only able to change fullname once in a 24h!");
+    };
+
     // Check previus fullname must be same as oldFullname
     if(riderProfile.fullname === newFullname){
         throw new ApiError(409,"New-fullname must be diffrate from old one!");
     };
 
-    // Update new name to db old name
+    // Update new name to db old name + time
     riderProfile.fullname = newFullname;
-
+    riderProfile.fullnameUpdatedAt = new Date()
     // save user
     await riderProfile.save();
 

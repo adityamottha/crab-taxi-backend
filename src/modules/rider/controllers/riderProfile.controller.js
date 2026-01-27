@@ -42,7 +42,10 @@ const changeFullnameController = AsyncHandler(async (req,res)=>{
     return res.status(200).json(
         new ApiResponse(
             200,
-            {fullname:riderProfile.fullname},
+            {
+                fullname:riderProfile.fullname,
+                fullnameUpdatedAt:riderProfile.fullnameUpdatedAt
+            },
             "Full name updated successfully"
         )
     );
