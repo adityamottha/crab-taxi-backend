@@ -69,7 +69,7 @@ const changeGenderController = AsyncHandler(async (req,res)=>{
 
     // send response
     return res.status(200).json(
-        new ApiResponse(200,{gender:riderProfile.gender},"Gender updated successfully!")
+        new ApiResponse(200,{gender:riderProfile.gender,genderUpdatedAt:riderProfile.genderUpdatedAt},"Gender updated successfully!")
     );
 })
 

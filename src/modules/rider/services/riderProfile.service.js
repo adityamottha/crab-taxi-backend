@@ -2,6 +2,7 @@ import { ApiError } from "../../../utils/ApiError.js";
 import { RiderProfile } from "../models/riderProfile.model.js";
 import { uploadOnCloudinary } from "../../../utils/cloudinary.js";
 import { ONE_DAY } from "../../../constants.js";
+import { setDriver } from "mongoose";
 
  const riderprofileService = async ({fullname,gender,avatarLocalPath,user})=>{
 
@@ -97,13 +98,19 @@ const changeGenderService = async ({userId,newGender})=>{
         throw new ApiError(404,"Rider Profile is not Available!.");
     };
 
+    // RIDER only change a Gender once in a 24h
+    if(riderProfile.genderUpdatedAt && Date.now() - riderProfile.genderUpdatedAt.getTime() < ONE_DAY){
+        throw new ApiError(400,"You only change Gender once in a 24h!");
+    };
+
     // check current gender are not same to newGender
     if(riderProfile.gender === newGender){
         throw new ApiError(409,"New gender must be diffrante from old one!");
     };
 
-    // update gender on db
+    // update gender on db + update time
     riderProfile.gender = newGender;
+    riderProfile.genderUpdatedAt = new Date();
 
     // save gender
     await riderProfile.save();
