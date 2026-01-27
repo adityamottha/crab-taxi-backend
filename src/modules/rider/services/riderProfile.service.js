@@ -76,8 +76,15 @@ import { uploadOnCloudinary } from "../../../utils/cloudinary.js";
     // return 
     return riderProfile;
  }
+
+ // CHANGE-GENDER---------------
 const changeGenderService = async ({userId,newGender})=>{
-    
+    // check all fields are required
+    // find riderProfile by id 
+    // check current gender are not same to newGender
+    // update gender on db
+    // save gender
+    // return 
 }
  export { 
     riderprofileService,

@@ -51,6 +51,10 @@ const changeFullnameController = AsyncHandler(async (req,res)=>{
 // CHANGE GENDER ------------------
 
 const changeGenderController = AsyncHandler(async (req,res)=>{
+    // get user id from req body
+    // get data from req.body
+    // call function assign parameter
+    // send response
     return res.status(200).json(
         new ApiError(200,{},"Gender updated successfully!")
     );
