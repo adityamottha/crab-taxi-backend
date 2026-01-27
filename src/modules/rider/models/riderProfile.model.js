@@ -13,14 +13,31 @@ const riderProfileSchema = new mongoose.Schema({
         trim:true,
         required:true
     },
+
+    fullnameUpdatedAt:{
+        type:Date,
+        default:null
+    },
+
     gender:{
         type:String,
         enum:["MALE","FEMALE","OTHERS"],
         required:true
     },
+
+    genderUpdatedAt:{
+        type:Date,
+        default:null
+    },
     userAvatar:{
         type:String // cloudniary
     },
+
+    avatarUpdatedAt:{
+        type:Date,
+        default:null
+    },
+
     walletBalance:{
         type:Number,
         default:0
