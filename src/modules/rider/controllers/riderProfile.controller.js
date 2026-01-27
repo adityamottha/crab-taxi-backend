@@ -1,4 +1,4 @@
-import { riderprofileService } from "../services/riderProfile.service.js";
+import { changeFullnameService, riderprofileService } from "../services/riderProfile.service.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
 
@@ -19,4 +19,36 @@ const riderProfileController = AsyncHandler(async (req,res)=>{
     );
 });
 
-export { riderProfileController }
+// CHANGE  FULL-NAME 
+
+const changeFullnameController = AsyncHandler(async (req,res)=>{
+    // get user ID
+    const userId = req.user?._id;
+    // console.log("USER-ID:- ",userId);
+    // console.log("BODY:- ",req.body);
+    
+
+    // get data from rq.body
+    const {oldFullname,newFullname} = req.body;
+
+    //call service function 
+    await changeFullnameService({
+        userId,
+        oldFullname,
+        newFullname
+    });
+
+    // send response 
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            {newFulllname,oldFullname},
+            "Change-full-name api working well!"
+        )
+    );
+})
+
+export { 
+    riderProfileController,
+    changeFullnameController
+}
