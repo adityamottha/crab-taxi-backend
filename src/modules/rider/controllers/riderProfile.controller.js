@@ -1,6 +1,7 @@
 import { changeFullnameService, riderprofileService } from "../services/riderProfile.service.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
+import { ApiError } from "../../../utils/ApiError.js";
 
 const riderProfileController = AsyncHandler(async (req,res)=>{
     // find avatar on local path
@@ -45,9 +46,18 @@ const changeFullnameController = AsyncHandler(async (req,res)=>{
             "Full name updated successfully"
         )
     );
+});
+
+// CHANGE GENDER ------------------
+
+const changeGenderController = AsyncHandler(async (req,res)=>{
+    return res.status(200).json(
+        new ApiError(200,{},"Gender updated successfully!")
+    );
 })
 
 export { 
     riderProfileController,
-    changeFullnameController
+    changeFullnameController,
+    changeGenderController
 }
