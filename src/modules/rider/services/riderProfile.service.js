@@ -100,7 +100,7 @@ const changeGenderService = async ({userId,newGender})=>{
     riderProfile.gender = newGender;
 
     // save gender
-    riderProfile.save();
+    await riderProfile.save();
 
     // return 
     return riderProfile;

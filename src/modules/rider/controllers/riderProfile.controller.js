@@ -1,4 +1,4 @@
-import { changeFullnameService, riderprofileService } from "../services/riderProfile.service.js";
+import { changeFullnameService, changeGenderService, riderprofileService } from "../services/riderProfile.service.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
 import { ApiError } from "../../../utils/ApiError.js";
@@ -52,11 +52,20 @@ const changeFullnameController = AsyncHandler(async (req,res)=>{
 
 const changeGenderController = AsyncHandler(async (req,res)=>{
     // get user id from req body
+    const userId = req.user?._id;
+
     // get data from req.body
+    const {newGender} = req.body;
+
     // call function assign parameter
+    const riderProfile = await changeGenderService({
+        userId,
+        newGender
+    });
+
     // send response
     return res.status(200).json(
-        new ApiError(200,{},"Gender updated successfully!")
+        new ApiError(200,{gender:riderProfile.gender},"Gender updated successfully!")
     );
 })
 
