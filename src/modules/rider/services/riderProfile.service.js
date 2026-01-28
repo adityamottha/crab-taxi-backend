@@ -120,7 +120,7 @@ const changeGenderService = async ({userId,newGender})=>{
 };
 
 // CHANGE AVATAR--------------------------------------
-const changeAvatarService = async (userId,newAvatar)=>{
+const changeAvatarService = async ({userId,newAvatar})=>{
     // check new Avatar is required
     if(!newAvatar){
         throw new ApiError(400,"Avatar is required for updation!");

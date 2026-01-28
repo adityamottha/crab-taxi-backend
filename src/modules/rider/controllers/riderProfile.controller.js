@@ -79,6 +79,8 @@ const changeAvatarController = AsyncHandler(async (req,res)=>{
 
     // check avatar in localpath
     const newAvatar = req.files?.newAvatar?.[0].path;
+    // console.log("AVATAR-PATH: ",newAvatar);
+    
 
     // call service funtion set parameter
     const riderProfile = await changeAvatarService({
@@ -87,7 +89,14 @@ const changeAvatarController = AsyncHandler(async (req,res)=>{
     })
     // send response 
     return res.status(200).json(
-        new ApiResponse(200,{newAvatar:riderProfile.userAvatar},"User-Avatar has been changed!")
+        new ApiResponse(
+            200,
+            {
+                newAvatar:riderProfile.userAvatar, 
+                avatarUpdatedAt:riderProfile.avatarUpdatedAt
+            },
+            "User-Avatar has been changed!"
+        )
     );
 });
 

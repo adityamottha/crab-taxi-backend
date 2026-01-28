@@ -46,9 +46,9 @@ router.route("/change-avatar").patch(
     upload.fields([
         {
             name:"newAvatar",
-            maxCount:1,
+            maxCount:1
         }
-    ])
+    ]),
     changeAvatarController
 )
 
