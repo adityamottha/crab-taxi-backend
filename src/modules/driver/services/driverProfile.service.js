@@ -46,11 +46,28 @@ return driver;
 // CHANGE DRIVER AVATAR 
 const changeAvatarService = async ({userId,newAvatar})=>{
 // check newAvatar is available
+if(!newAvatar) throw new ApiError(404,"Avatar is required field!");
+
 // find user by id
-// check is user has secure_url
-//change new secure_url avatar and Update timr
+const driverProfile = await DriverProfile.findOne({authUserId:userId});
+if(!driverProfile) throw new ApiError(409,"Driver profile not found!");
+
+// update avatar on cloudinary
+const updatedAvatar = await uploadOnCloudinary(newAvatar);
+if(!updatedAvatar?.secure_url){
+    throw new ApiError(500,"Driver avatar failed to update!");
+};
+
+//change new secure_url avatar and Update time
+driverProfile.avatar = updatedAvatar.secure_url;
+driverProfile.avatarUploadedAt = new Date();
+
 // save user
+await driverProfile.save();
+
 //return
+return driverProfile;
+
 }
 
 export { 
