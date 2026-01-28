@@ -41,6 +41,19 @@ if(!driver) throw new ApiError(500,"driver-profile failed to completed!,");
 // send res 
 return driver;
 
+};
+
+// CHANGE DRIVER AVATAR 
+const changeAvatarService = async ({userId,newAvatar})=>{
+// check newAvatar is available
+// find user by id
+// check is user has secure_url
+//change new secure_url avatar and Update timr
+// save user
+//return
 }
 
-export { driverProfileService }
+export { 
+    driverProfileService,
+    changeAvatarService
+ }

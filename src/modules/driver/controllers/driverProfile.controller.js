@@ -29,4 +29,19 @@ return res
     ));
 });
 
-export { driverProfileController }
+
+// CHANGE DRIVER AVATAR-----------------------------
+const changeAvatarController = AsyncHandler(async (req,res)=>{
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            {},
+            "Driver avatar updated succesfully."
+        )
+    );
+});
+
+export { 
+    driverProfileController,
+    changeAvatarController,
+}
