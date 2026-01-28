@@ -3,7 +3,7 @@ import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
 import { upload } from "../../middlewares/multer.middleware.js";
 import { isProfileCompleted } from "../../middlewares/profileComplete.middleware.js";
 import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
-import { changeFullnameController, changeGenderController, riderProfileController } from "./controllers/riderProfile.controller.js";
+import { changeAvatarController, changeFullnameController, changeGenderController, riderProfileController } from "./controllers/riderProfile.controller.js";
 
 
 const router = Router();
@@ -37,5 +37,13 @@ router.route("/change-gender").patch(
     isProfileCompleted(),
     changeGenderController
 );
+
+// AVATAR CHANGED-------------------
+router.route("/change-avatar").patch(
+    verifyJWT,
+    authorizeRole("USER"),
+    isProfileCompleted(),
+    changeAvatarController
+)
 
 export default router; 

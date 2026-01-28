@@ -117,9 +117,14 @@ const changeGenderService = async ({userId,newGender})=>{
 
     // return 
     return riderProfile;
-}
+};
+
+const changeAvatarService = async (userId,newAvatar)=>{
+    
+} 
  export { 
     riderprofileService,
     changeFullnameService,
-    changeGenderService
+    changeGenderService,
+    changeAvatarService
  }
