@@ -119,14 +119,35 @@ const changeGenderService = async ({userId,newGender})=>{
     return riderProfile;
 };
 
+// CHANGE AVATAR--------------------------------------
 const changeAvatarService = async (userId,newAvatar)=>{
     // check new Avatar is required
+    if(!newAvatar){
+        throw new ApiError(400,"Avatar is required for updation!");
+    };
+
     // find user by id
+    const riderProfile = await RiderProfile.findOne({authUserId:userId});
+    if(!riderProfile) throw new ApiError(402,"User profile not found!");
+
     // upload avatar through cloudinary
+    const updatedAvatar = await uploadOnCloudinary(newAvatar);
+    if(!updatedAvatar?.secure_url) throw new ApiError("newAvatar failed to upload on cloudinary");
+
     // change secure old url to new secure url
+    riderProfile.userAvatar = updatedAvatar.secure_url;
+
     // save user + time of updation
+     riderProfile.avatarUpdatedAt = new Date();
+    await riderProfile.save();
+
     //return
+    return riderProfile;
 } 
+
+
+
+
  export { 
     riderprofileService,
     changeFullnameService,
