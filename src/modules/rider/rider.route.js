@@ -43,6 +43,12 @@ router.route("/change-avatar").patch(
     verifyJWT,
     authorizeRole("USER"),
     isProfileCompleted(),
+    upload.fields([
+        {
+            name:"newAvatar",
+            maxCount:1,
+        }
+    ])
     changeAvatarController
 )
 
