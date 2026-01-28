@@ -75,6 +75,11 @@ const changeGenderController = AsyncHandler(async (req,res)=>{
 
 // CHANGE AVATAR 
 const changeAvatarController = AsyncHandler(async (req,res)=>{
+    //get user id
+    // get data from req.body
+    // check avatar in localpath
+    // call service funtion set parameter
+    // send response 
     return res.status(200).json(
         new ApiResponse(200,{},"User-Avatar has been changed!")
     );

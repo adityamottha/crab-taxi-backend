@@ -120,7 +120,12 @@ const changeGenderService = async ({userId,newGender})=>{
 };
 
 const changeAvatarService = async (userId,newAvatar)=>{
-    
+    // check new Avatar is required
+    // find user by id
+    // upload avatar through cloudinary
+    // change secure old url to new secure url
+    // save user + time of updation
+    //return
 } 
  export { 
     riderprofileService,
