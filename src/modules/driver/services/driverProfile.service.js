@@ -43,7 +43,8 @@ return driver;
 
 };
 
-// CHANGE DRIVER AVATAR 
+// CHANGE DRIVER AVATAR---------------------------------
+
 const changeAvatarService = async ({userId,newAvatar})=>{
 // check newAvatar is available
 if(!newAvatar) throw new ApiError(404,"Avatar is required field!");

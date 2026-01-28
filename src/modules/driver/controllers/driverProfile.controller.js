@@ -31,6 +31,7 @@ return res
 
 
 // CHANGE DRIVER AVATAR-----------------------------
+
 const changeAvatarController = AsyncHandler(async (req,res)=>{
     // get userId 
     const userId = req.user?._id;

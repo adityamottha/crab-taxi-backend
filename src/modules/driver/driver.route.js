@@ -60,6 +60,7 @@ router.route("/vehicle").post(
 );
 
 // CHANGE AVATAR 
+
 router.route("/change-avatar").patch(
   verifyJWT,
   authorizeRole("DRIVER"),
