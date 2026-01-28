@@ -32,6 +32,10 @@ return res
 
 // CHANGE DRIVER AVATAR-----------------------------
 const changeAvatarController = AsyncHandler(async (req,res)=>{
+    // get userId 
+    // get newAvatar req.body
+    // call serice function and set parameter
+    // send response
     return res.status(200).json(
         new ApiResponse(
             200,
