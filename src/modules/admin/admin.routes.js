@@ -5,7 +5,7 @@ import { allowDriverController } from "./controllers/adminDashboard.controller.j
 
 const router = Router();
 
-router.route("/dashboard").get(
+router.route("/allow-driver").get(
     verifyJWT,
     authorizeRole("ADMIN"),
     allowDriverController
