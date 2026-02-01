@@ -1,14 +1,14 @@
 import { Router } from "express";
 import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
 import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
-import { allowDriverController } from "./controllers/adminDashboard.controller.js";
+import { getAllDriversController } from "./controllers/adminDashboard.controller.js";
 
 const router = Router();
 
-router.route("/allow-driver").get(
+router.route("/drivers").get(
     verifyJWT,
     authorizeRole("ADMIN"),
-    allowDriverController
+    getAllDriversController
 );
 
 export default router;
