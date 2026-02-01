@@ -4,7 +4,6 @@ import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
 import { getAllDriversController } from "./controllers/adminDashboard.controller.js";
 
 const router = Router();
-
 router.route("/drivers").get(
     verifyJWT,
     authorizeRole("ADMIN"),
