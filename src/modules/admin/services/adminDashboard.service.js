@@ -5,7 +5,8 @@ import { DriverProfile } from "../../driver/models/driverProfile.model.js"
 
 
 const getAllDriversService = async () => {
-  return DriverProfile.aggregate([
+
+  const allDrivers = DriverProfile.aggregate([
     // Join Driver Documents
     {
       $lookup: {
@@ -55,6 +56,8 @@ const getAllDriversService = async () => {
       $sort: { createdAt: -1 }
     }
   ]);
+
+  return allDrivers;
 };
 
 
