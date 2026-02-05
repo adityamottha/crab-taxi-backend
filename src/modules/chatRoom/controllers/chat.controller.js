@@ -1,6 +1,6 @@
 import { findOrCreateRoom, sendMessage, getRoomMessages } from "../services/chat.service.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
-import { AuthUser } from "../../auth/authUsers.models.js";
+import { AuthUser } from "../../auth/authUsers.models.js"
 
 export const createRoom = async (req, res) => {
   const { roomType, rideId = null, otherUserId } = req.body;
@@ -11,7 +11,7 @@ export const createRoom = async (req, res) => {
   // participants built securely
   const participants = [
     { role: req.user.role, userId: req.user._id },
-    { role: otherUser.role, userId: otherUser._id },
+    { role: otherUser.role, userId: _id },
   ];
 
   const room = await findOrCreateRoom({ participants, roomType, rideId });
