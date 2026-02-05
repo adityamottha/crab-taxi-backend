@@ -16,5 +16,14 @@ const getAllDriversController = AsyncHandler(async (req, res) => {
 }
 );
 
+const notApprovedDriverController = AsyncHandler(async (req,res)=>{
+  return res.status(200).json(
+    new ApiResponse(200,{},"Fetch all not-approved driver")
+  );
+})
 
-export { getAllDriversController }
+
+export { 
+  getAllDriversController,
+  notApprovedDriverController
+ }
