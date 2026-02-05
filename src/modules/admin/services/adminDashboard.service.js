@@ -59,4 +59,14 @@ const getAllDriversService = async () => {
 };
 
 
-export { getAllDriversService }
+// GET ALL DRIVERS WHO'RE NOT APPROVED!--------------------------------
+
+const notApprovedDrivers = async ()=>{
+
+}
+
+export { 
+  getAllDriversService,
+  notApprovedDrivers
+
+ }
