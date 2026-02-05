@@ -1,6 +1,6 @@
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { AsyncHandler } from "../../../utils/AsyncHandler.js"
-import { getAllDriversService } from "../services/adminDashboard.service.js";
+import { getAllDriversService, notApprovedDriverService } from "../services/adminDashboard.service.js";
 
 
 const getAllDriversController = AsyncHandler(async (req, res) => {
@@ -17,8 +17,10 @@ const getAllDriversController = AsyncHandler(async (req, res) => {
 );
 
 const notApprovedDriverController = AsyncHandler(async (req,res)=>{
+  const  notApproved = await notApprovedDriverService();
+
   return res.status(200).json(
-    new ApiResponse(200,{},"Fetch all not-approved driver")
+    new ApiResponse(200,notApproved,"Fetch all not-approved driver")
   );
 })
 
