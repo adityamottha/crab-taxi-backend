@@ -85,8 +85,8 @@ const notApprovedDriverService = async ()=>{
     },
     {
       $lookup:{
-        $from: "vehicles",
-        $let:{driverId:"$_id"},
+        from: "vehicles",
+        let:{driverId:"$_id"},
         pipeline:[
           {
             $match:{
@@ -109,7 +109,9 @@ const notApprovedDriverService = async ()=>{
     {
       $sort: { createdAt: -1 }
     }
+
   ])
+  return notApprovedDriver;
 }
 
 export { 
