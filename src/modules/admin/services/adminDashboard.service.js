@@ -4,7 +4,7 @@ import { DriverProfile } from "../../driver/models/driverProfile.model.js"
 
 const getAllDriversService = async () => {
 
-  const allDrivers = DriverProfile.aggregate([
+  const allDrivers = await DriverProfile.aggregate([
     // Join Driver Documents
     {
       $lookup: {
@@ -62,7 +62,54 @@ const getAllDriversService = async () => {
 // GET ALL DRIVERS WHO'RE NOT APPROVED!--------------------------------
 
 const notApprovedDriverService = async ()=>{
+  const notApprovedDriver = await DriverProfile.aggregate([
 
+     {
+      $match:{ status:"pending"}
+    },
+    {
+      $lookup:{
+        from:"driverdocuments",
+        let:{driverId:"$_id"},
+        pipeline:[
+          {
+            $match:{
+              $expr:{
+                $eq:["$driverProfileId" , "$$driverId"]
+              }
+            }
+          }
+        ],
+        as:"documents"
+      }
+    },
+    {
+      $lookup:{
+        $from: "vehicles",
+        $let:{driverId:"$_id"},
+        pipeline:[
+          {
+            $match:{
+              $expr:{
+                $eq:["$driverProfileId","$$driverId"]
+              }
+            }
+          }
+        ],
+        as:"vehicle"
+      }
+    },
+    {
+      $addFields:{
+        documents:{  $ifNull: [{ $arrayElemAt: ["$documents", 0] }, null] },
+        vehicle:{  $ifNull: [{$arrayElemAt: ["$vehicle", 0]}, null] }
+      }
+    },
+
+    {
+      $sort: { createdAt: -1 }
+    }
+  ])
 }
 
 export { 
