@@ -13,7 +13,7 @@ router.route("/drivers").get(
 );
 
 // NOT-APPROVED-DRIVERS ROUTE
-router.route("/not-approved").get(
+router.route("/not-approved-drivers").get(
     verifyJWT,
     authorizeRole("ADMIN"),
     notApprovedDriverController
