@@ -31,7 +31,11 @@ app.use("/api/v1/rider",rider);
 
 //DRIVER ROUTE
 import driver from "./modules/driver/driver.route.js";
-app.use("/api/v1/driver",driver)
+app.use("/api/v1/driver",driver);
+
+// CHAT
+import chatRoutes from "./modules/chatRoom/chat.routes.js";
+app.use("/api/v1/chat", chatRoutes);
 
 // ERROR MIDDLEWARE
 import errorMiddleware from "./middlewares/error.middleware.js";
