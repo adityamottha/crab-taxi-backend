@@ -64,9 +64,6 @@ const getAllDriversService = async () => {
 const notApprovedDriverService = async ()=>{
   const notApprovedDriver = await DriverProfile.aggregate([
 
-     {
-      $match:{ status:"pending"}
-    },
     {
       $lookup:{
         from:"driverdocuments",
@@ -74,6 +71,7 @@ const notApprovedDriverService = async ()=>{
         pipeline:[
           {
             $match:{
+              status:"PENDING",
               $expr:{
                 $eq:["$driverProfileId" , "$$driverId"]
               }
