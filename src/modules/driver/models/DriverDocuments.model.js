@@ -37,16 +37,6 @@ const documentBlockSchema = new Schema(
       type: documentCredentialsSchema,
       required: true,
     },
-
-    status: {
-      type: String,
-      enum: ["PENDING", "APPROVED", "REJECTED"],
-      default: "PENDING",
-    },
-
-    rejectionReason: {
-      type: String,
-    },
   },
   { _id: false }
 );
@@ -101,7 +91,7 @@ const driverDocumentSchema = new Schema(
     rejectionReason: {
       type: String,
     },
-    
+
   },
   { timestamps: true }
 );

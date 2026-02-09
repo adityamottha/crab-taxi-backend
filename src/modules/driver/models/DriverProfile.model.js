@@ -86,12 +86,12 @@ const driverProfileSchema = new mongoose.Schema({
         index:true
     },
 
-    approvedBy:{
+    vehicleApprovedBy:{
         type:Schema.Types.ObjectId,
         ref:"AuthUser" // ADMIN
     },
 
-    approvedAt:{
+    vehicleApprovedAt:{
         type:Date
     },
     rejectionReason:{
