@@ -70,6 +70,16 @@ const vehicleSchema = new mongoose.Schema({
       },
     ],
 
+    vehicleApproved:{
+     type:string,
+     enum: ["PENDING", "APPROVED", "REJECTED"],
+     default:"PENDING"
+    },
+
+    vehicleApprovedAt:{
+      type:Date
+    },
+
     isActive: {
       type: Boolean,
       default: false, // becomes true after verification
