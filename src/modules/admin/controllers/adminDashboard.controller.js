@@ -25,7 +25,14 @@ const notApprovedDriverController = AsyncHandler(async (req,res)=>{
 })
 
 
+// UPDATE TO APPROVED DRIVER STATUS....
+const approvedDriverStatusController = AsyncHandler(async (req,res)=>{
+  
+});
+
+
 export { 
   getAllDriversController,
-  notApprovedDriverController
+  notApprovedDriverController,
+  approvedDriverStatusController
  }

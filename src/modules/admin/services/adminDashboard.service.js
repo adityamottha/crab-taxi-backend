@@ -113,7 +113,12 @@ const notApprovedDriverService = async ()=>{
 };
 
 // UPDATE TO APPROVED DRIVER STATUS....
-const approvedDriverStatusService = async () =>{
+const approvedDriverStatusService = async ({userId}) =>{
+// get userId from req.body
+// find use by id
+// approved status
+// update Date
+// return 
 
 }
 
