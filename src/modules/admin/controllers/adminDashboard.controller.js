@@ -27,7 +27,9 @@ const notApprovedDriverController = AsyncHandler(async (req,res)=>{
 
 // UPDATE TO APPROVED DRIVER STATUS....
 const approvedDriverStatusController = AsyncHandler(async (req,res)=>{
-  
+  return res.status(200).json(
+    new ApiResponse(200,{},"Driver status approved by admin")
+  )
 });
 
 

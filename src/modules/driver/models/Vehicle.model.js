@@ -71,7 +71,7 @@ const vehicleSchema = new mongoose.Schema({
     ],
 
     vehicleApproved:{
-     type:string,
+     type:String,
      enum: ["PENDING", "APPROVED", "REJECTED"],
      default:"PENDING"
     },
