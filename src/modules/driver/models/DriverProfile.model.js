@@ -94,6 +94,7 @@ const driverProfileSchema = new mongoose.Schema({
     vehicleApprovedAt:{
         type:Date
     },
+    
     rejectionReason:{
         type: String
     },
