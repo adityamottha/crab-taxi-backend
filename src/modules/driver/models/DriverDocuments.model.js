@@ -82,25 +82,26 @@ const driverDocumentSchema = new Schema(
       required: true,
     },
 
-    verificationStatus: {
+    documentsApprovalStatus: {
       type: String,
       enum: ["PENDING", "APPROVED", "REJECTED"],
       default: "PENDING",
       index: true,
     },
 
-    verifiedBy: {
+    documentsApprovedBy: {
       type: Schema.Types.ObjectId,
       ref: "AuthUser", // Admin
     },
 
-    verifiedAt: {
+    documentsApprovedAt: {
       type: Date,
     },
 
     rejectionReason: {
       type: String,
     },
+    
   },
   { timestamps: true }
 );
