@@ -110,10 +110,15 @@ const notApprovedDriverService = async ()=>{
 
   ])
   return notApprovedDriver;
+};
+
+// UPDATE TO APPROVED DRIVER STATUS....
+const approvedDriverStatusService = async () =>{
+
 }
 
 export { 
   getAllDriversService,
-  notApprovedDriverService
-
+  notApprovedDriverService,
+  approvedDriverStatusService
  }
