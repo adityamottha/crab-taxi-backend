@@ -1,4 +1,4 @@
-import { DriverProfile } from "../../driver/models/driverProfile.model.js"
+import { DriverProfile } from "../../driver/models/driverProfile.model.js";
 
 
 
