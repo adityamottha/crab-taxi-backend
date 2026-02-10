@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
 import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
-import { approvedDriverStatusController, getAllDriversController, notApprovedDriverController } from "./controllers/adminDashboard.controller.js";
+import { approvedDriverProfileStatusController, getAllDriversController, notApprovedDriverController } from "./controllers/adminDashboard.controller.js";
 
 const router = Router();
 
@@ -23,6 +23,6 @@ router.route("/not-approved-drivers").get(
 router.route("/driver-approved").patch(
     verifyJWT,
     authorizeRole("ADMIN"),
-    approvedDriverStatusController
+    approvedDriverProfileStatusController
 )
 export default router;
