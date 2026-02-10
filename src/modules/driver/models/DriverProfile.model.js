@@ -91,6 +91,13 @@ const driverProfileSchema = new mongoose.Schema({
         ref:"AuthUser" // ADMIN
     },
 
+     profileApprovalStatus: {
+      type: String,
+      enum: ["PENDING", "APPROVED", "REJECTED"],
+      default: "PENDING",
+      index: true,
+    },
+
     profileApprovedAt:{
         type:Date
     },
