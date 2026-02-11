@@ -1,4 +1,3 @@
-import { use } from "react";
 import { DriverDocuments } from "../../driver/models/driverDocuments.model.js";
 import { ApiError } from "../../../utils/ApiError.js";
 
@@ -7,7 +6,7 @@ const driverDocumentsApprovedService = async ({userId})=>{
     if(!userId) throw new ApiError(404,"UserId is required!");
 
     // find documents by userId
-    const driverDocuments = await DriverDocuments.findOne({userId});
+    const driverDocuments = await DriverDocuments.findOne({driverProfileId:userId});
     if(!driverDocuments) throw new ApiError(400,"documents are not submitted!");
 
     // check if documents status already approved
