@@ -29,12 +29,29 @@ const driverProfileApprovedService = async ({userId})=>{
 
 const driverProfileRejectService = async ({userId,reason})=>{
     // check userId and reason is required
-    // find driver-documents by userId
-    // check driver profile is completed
+    if(!userId?.trim()){
+        throw new ApiError(404,"UserId is required!");
+    }
+
+    if(!reason?.trim()){
+        throw new ApiError(404,"Reason is required");
+    }
+
+    // find driver-profile by userId
+    const driverProfile = await DriverProfile.findOne({userId});
+    if(!driverProfile) throw new ApiError(400,"Not a valid user");
+
     // update status to reject
+    driverProfile.profileApprovalStatus = "REJECTED";
+
     // update reason
+    driverProfile.rejectionReason = reason;
+
     // save changed
+    await driverProfile.save();
+
     // return
+   return driverProfile
 }
 
 export {
