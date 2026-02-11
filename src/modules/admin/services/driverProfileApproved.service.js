@@ -25,20 +25,19 @@ const driverProfileApprovedService = async ({userId})=>{
 
 }
 
-// DOCUMENTS APPROVAL------------------------
+// DRIVER_PROFILE REJECT------------------------
 
-const driverDocumentsApprovedService = async ({userId})=>{
-    // check userId is required
+const driverProfileRejectService = async ({userId,reason})=>{
+    // check userId and reason is required
     // find driver-documents by userId
-    // check driver submitted a documents
-    // update status to approved
-    // update time of approved
+    // check driver profile is completed
+    // update status to reject
+    // update reason
     // save changed
     // return
-
 }
 
 export {
     driverProfileApprovedService,
-    driverDocumentsApprovedService
+    driverProfileRejectService
 }
