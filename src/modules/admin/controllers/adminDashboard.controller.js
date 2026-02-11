@@ -1,7 +1,7 @@
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { AsyncHandler } from "../../../utils/AsyncHandler.js"
 import { getAllDriversService, notApprovedDriverService } from "../services/adminDashboard.service.js";
-import { driverProfileApprovedService } from "../services/driverProfileApproved.service.js"
+import { driverProfileApprovedService, driverProfileRejectService } from "../services/driverProfileApproved.service.js"
 
 const getAllDriversController = AsyncHandler(async (req, res) => {
   const drivers = await getAllDriversService();
@@ -36,13 +36,17 @@ const approvedDriverProfileStatusController = AsyncHandler(async (req,res)=>{
   )
 });
 
-// DOCUMENTS APPROVAL------------------------
+// DRIVER PROFILE REJECT------------------------
 
 const driverProfileRejectController = AsyncHandler(async (req,res)=>{
   // call service function and pass req.body in parameter
+  const rejection = await driverProfileRejectService({
+    userId:req.body.userId,
+    reason:req.body.rejection_reason
+  })
   // send res 
   return res.status(200).json(
-    new ApiResponse(200,{},"Driver profile Rejected by admin")
+    new ApiResponse(200,{rejection},"Driver profile Rejected by admin")
   );
 });
 

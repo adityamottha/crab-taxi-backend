@@ -38,7 +38,7 @@ const driverProfileRejectService = async ({userId,reason})=>{
     }
 
     // find driver-profile by userId
-    const driverProfile = await DriverProfile.findOne({userId});
+    const driverProfile = await DriverProfile.findOne({authUserId:userId});
     if(!driverProfile) throw new ApiError(400,"Not a valid user");
 
     // update status to reject
