@@ -1,6 +1,7 @@
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { AsyncHandler } from "../../../utils/AsyncHandler.js"
 import { getAllDriversService, notApprovedDriverService } from "../services/adminDashboard.service.js";
+import { driverDocumentsApprovedService } from "../services/driverDocumentsApproved.service.js";
 import { driverProfileApprovedService, driverProfileRejectService } from "../services/driverProfileApproved.service.js"
 
 const getAllDriversController = AsyncHandler(async (req, res) => {
@@ -50,9 +51,24 @@ const driverProfileRejectController = AsyncHandler(async (req,res)=>{
   );
 });
 
+// DRIVER DOCUMENTS APPROVED 
+
+const driverDocumentsApprovedController = AsyncHandler(async (req,res)=>{
+  // call service function
+  const approvedDocuments = await driverDocumentsApprovedService({
+    userId:req.body.userId
+  });
+
+  // return response 
+  return res.status(200).json(
+    new ApiResponse(200,{approvedDocuments}, "Documents approved by admin.")
+  );
+})
+
 export { 
   getAllDriversController,
   notApprovedDriverController,
   approvedDriverProfileStatusController,
-  driverProfileRejectController
+  driverProfileRejectController,
+  driverDocumentsApprovedController
  }
