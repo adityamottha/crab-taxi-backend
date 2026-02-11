@@ -25,6 +25,8 @@ const driverProfileApprovedService = async ({userId})=>{
 
 }
 
+// DOCUMENTS APPROVAL------------------------
+
 const driverDocumentsApprovedService = async ({userId})=>{
     // check userId is required
     // find driver-documents by userId

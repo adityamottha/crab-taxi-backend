@@ -36,9 +36,16 @@ const approvedDriverProfileStatusController = AsyncHandler(async (req,res)=>{
   )
 });
 
+// DOCUMENTS APPROVAL------------------------
+
+const driverDocumentsApprovedController = AsyncHandler(async (req,res)=>{
+  // call service function and pass req.body in parameter
+  // send res 
+});
 
 export { 
   getAllDriversController,
   notApprovedDriverController,
-  approvedDriverProfileStatusController
+  approvedDriverProfileStatusController,
+  driverDocumentsApprovedController
  }
