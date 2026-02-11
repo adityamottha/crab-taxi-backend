@@ -41,6 +41,9 @@ const approvedDriverProfileStatusController = AsyncHandler(async (req,res)=>{
 const driverDocumentsApprovedController = AsyncHandler(async (req,res)=>{
   // call service function and pass req.body in parameter
   // send res 
+  return res.status(200).json(
+    new ApiResponse(200,{},"Driver profile Approved by admin")
+  );
 });
 
 export { 
