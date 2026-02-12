@@ -8,7 +8,8 @@ import
      notApprovedDriverController,
      driverProfileRejectController,
      driverDocumentsRejectController,
-     driverDocumentsApprovedController 
+     driverDocumentsApprovedController, 
+     driverVehicleApprovedController
     } 
     from "./controllers/adminDashboard.controller.js";
 
@@ -55,6 +56,13 @@ router.route("/driver-documents-rejected").patch(
     authorizeRole("ADMIN"),
     driverDocumentsRejectController
 );
+
+// DRIVER-VEHICLE APPROVED ROUTE.
+router.route("/driver-vehicle-approved").patch(
+    verifyJWT,
+    authorizeRole("ADMIN"),
+    driverVehicleApprovedController
+)
 
 
 export default router;
