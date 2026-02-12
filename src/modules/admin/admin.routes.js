@@ -1,7 +1,15 @@
 import { Router } from "express";
 import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
 import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
-import { approvedDriverProfileStatusController, getAllDriversController, notApprovedDriverController, driverProfileRejectController, driverDocumentsApprovedController } from "./controllers/adminDashboard.controller.js";
+import 
+    {
+     approvedDriverProfileStatusController, 
+     getAllDriversController,
+     notApprovedDriverController,
+     driverProfileRejectController,
+     driverDocumentsApprovedController 
+    } 
+    from "./controllers/adminDashboard.controller.js";
 
 const router = Router();
 
@@ -33,11 +41,19 @@ router.route("/driver-profile-reject").patch(
     driverProfileRejectController
 );
 
-// DRIVER_DOCUMENTS APPROVED -------------------------
+// DRIVER_DOCUMENTS APPROVED  ROUTE.
 router.route("/driver-documents-approved").patch(
     verifyJWT,
     authorizeRole("ADMIN"),
     driverDocumentsApprovedController
 );
+
+// DRIVER-DOCUMENTS REJETCTED ROUTE.
+router.route("/driver-documents-rejected").patch(
+    verifyJWT,
+    authorizeRole("ADMIN"),
+    driverProfileRejectController
+);
+
 
 export default router;
