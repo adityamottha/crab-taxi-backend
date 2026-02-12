@@ -63,12 +63,22 @@ const driverDocumentsApprovedController = AsyncHandler(async (req,res)=>{
   return res.status(200).json(
     new ApiResponse(200,{approvedDocuments}, "Documents approved by admin.")
   );
-})
+});
+
+// DRIVER-DOCUMENTS-REJECTED------------------------
+const driverDocumentsRejectedController = AsyncHandler(async (req,res)=>{
+  // call the service and pass the parameter from req.body
+  // return response
+  return res.status(200).json(
+    new ApiResponse(200,{},"Driver rejected by admin.")
+  );
+});
 
 export { 
   getAllDriversController,
   notApprovedDriverController,
   approvedDriverProfileStatusController,
   driverProfileRejectController,
-  driverDocumentsApprovedController
+  driverDocumentsApprovedController,
+  driverDocumentsRejectedController
  }
