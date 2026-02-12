@@ -28,18 +28,18 @@ const driverDocumentsApprovedService = async ({userId})=>{
 };
 
 
-const driverDocumentsRejectedService = async ({userId,reason})=>{
-    // check userId is not empty
-    // check reason is not empty
-    // find driver documents by id 
-    // check if driverDocuments already rejected
-    // update status to reject
-    // update reason
-    // save changes
-    // return
-}
+// const driverDocumentsRejectedService = async ()=>{
+//     // check userId is not empty
+//     // check reason is not empty
+//     // find driver documents by id 
+//     // check if driverDocuments already rejected
+//     // update status to reject
+//     // update reason
+//     // save changes
+//     // return
+// }
 
 export {
     driverDocumentsApprovedService,
-    driverDocumentsRejectedService
+    // driverDocumentsRejectedService
 }

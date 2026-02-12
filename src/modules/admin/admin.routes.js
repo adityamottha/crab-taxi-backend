@@ -7,6 +7,7 @@ import
      getAllDriversController,
      notApprovedDriverController,
      driverProfileRejectController,
+     driverDocumentsRejectController,
      driverDocumentsApprovedController 
     } 
     from "./controllers/adminDashboard.controller.js";
@@ -52,7 +53,7 @@ router.route("/driver-documents-approved").patch(
 router.route("/driver-documents-rejected").patch(
     verifyJWT,
     authorizeRole("ADMIN"),
-    driverProfileRejectController
+    driverDocumentsRejectController
 );
 
 
