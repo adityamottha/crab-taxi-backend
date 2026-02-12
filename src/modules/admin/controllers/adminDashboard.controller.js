@@ -68,9 +68,14 @@ const driverDocumentsApprovedController = AsyncHandler(async (req,res)=>{
 // DRIVER-DOCUMENTS-REJECTED------------------------
 const driverDocumentsRejectController = AsyncHandler(async (req,res)=>{
   // call the service and pass the parameter from req.body
+  const rejected = await driverDocumentsRejectController({
+    userId:req.body.userId,
+    reason:req.body.rejection_reason
+  });
+
   // return response
   return res.status(200).json(
-    new ApiResponse(200,{},"Driver rejected by admin.")
+    new ApiResponse(200,{rejected},"Driver rejected by admin.")
   );
 });
 

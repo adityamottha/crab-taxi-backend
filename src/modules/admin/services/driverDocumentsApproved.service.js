@@ -28,18 +28,37 @@ const driverDocumentsApprovedService = async ({userId})=>{
 };
 
 
-// const driverDocumentsRejectedService = async ()=>{
-//     // check userId is not empty
-//     // check reason is not empty
-//     // find driver documents by id 
-//     // check if driverDocuments already rejected
-//     // update status to reject
-//     // update reason
-//     // save changes
-//     // return
-// }
+const driverDocumentsRejectedService = async ({userId,reason})=>{
+    // check userId is not empty
+    if(!userId) throw new ApiError(404,"userId is required!");
+
+    // check reason is not empty
+    if(!reason) throw new ApiError(404,"Rejection-Reason is required!");
+
+    // find driver documents by id 
+    const documents = await DriverDocuments.findOne({driverProfileId:userId});
+    // console.log("documents:", documents);
+    if(!documents) throw new ApiError(409,"Driver not submitted documents!");
+    
+    // check if driverDocuments already rejected
+    if(documents.documentsApprovalStatus === "REJECTED"){
+        throw new ApiError(400,"Driver documents already rejected!");
+    };
+
+    // update status to reject
+    documents.documentsApprovalStatus = "REJECTED";
+
+    // update reason
+    documents.rejectionReason = reason;
+
+    // save changes
+    await documents.save();
+
+    // return
+    return documents;
+}
 
 export {
     driverDocumentsApprovedService,
-    // driverDocumentsRejectedService
+    driverDocumentsRejectedService
 }
