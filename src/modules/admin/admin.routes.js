@@ -65,5 +65,11 @@ router.route("/driver-vehicle-approved").patch(
     driverVehicleApprovedController
 )
 
+// DRIVER-VEHICLE-REJECTED ROUTE.
+router.route("/driver-vehicle-reject").patch(
+    verifyJWT,
+    authorizeRole("ADMIN"),
+    driverVehicleRejectController
+)
 
 export default router;
