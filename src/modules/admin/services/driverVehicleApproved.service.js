@@ -31,10 +31,21 @@ const driverVehicleApprovedService = async ({userId})=>{
 // DRIVER VEHICLE REJECTED----------------------
 const driverVehicleRejectService = async ({userId, reason})=>{
     // check userId is not empty
+    if(!userId) throw new ApiError(404,"UserId is required");
+
     // check reason is not empty
+    if(!reason) throw new ApiError(404,"reason for rejection is required!");
+
     // find vehicle by userId
+    const vehicle = await Vehicle.findOne({driverProfileId:userId});
+
     // check user has vehicle details
+    if(!vehicle) throw new ApiError(400,"Driver don't have any vehicle!");
+
     // check if vehicle already rejected
+    if(vehicle.vehicleApproved === "REJECTED"){
+        throw new ApiError(409,"Vehicle already rejected by admin!");
+    }
     // reject vehicle status
     // update rejection reason
     //save changes

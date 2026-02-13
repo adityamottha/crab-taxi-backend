@@ -80,6 +80,11 @@ const vehicleSchema = new mongoose.Schema({
       type:Date
     },
 
+    vehicleRejectedReason:{
+      type:String,
+      trim:true,
+    },
+
     isActive: {
       type: Boolean,
       default: false, // becomes true after verification
