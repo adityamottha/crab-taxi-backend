@@ -3,7 +3,7 @@ import { AsyncHandler } from "../../../utils/AsyncHandler.js"
 import { getAllDriversService, notApprovedDriverService } from "../services/adminDashboard.service.js";
 import { driverDocumentsApprovedService } from "../services/driverDocumentsApproved.service.js";
 import { driverProfileApprovedService, driverProfileRejectService } from "../services/driverProfileApproved.service.js"
-import { driverVehicleApprovedService } from "../services/driverVehicleApproved.service.js";
+import { driverVehicleApprovedService, driverVehicleRejectService } from "../services/driverVehicleApproved.service.js";
 
 const getAllDriversController = AsyncHandler(async (req, res) => {
   const drivers = await getAllDriversService();
@@ -100,11 +100,18 @@ const driverVehicleApprovedController = AsyncHandler(async (req,res)=>{
 
 
 // DRIVER VEHICLE REJECTED-----------------------------
-const driverVehicleRejectController = AsyncHandler(async ()=>{
+const driverVehicleRejectController = AsyncHandler(async (req,res)=>{
   // call service function and pass parameter from req.body
+  const rejected = await driverVehicleRejectService({
+    userId:req.body.userId,
+    reason:req.body.rejection_reason
+  })
   // send response
   return res.status(200).json(
-    new ApiResponse(200,{},"Vehicle rejected by admin.")
+    new ApiResponse(
+      200,
+      {rejected_reason:rejected.vehicleRejectedReason},
+      "Vehicle rejected by admin.")
   );
 });
 
