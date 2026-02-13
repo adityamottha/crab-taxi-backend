@@ -27,4 +27,20 @@ const driverVehicleApprovedService = async ({userId})=>{
     return vehicle
 };
 
-export { driverVehicleApprovedService}
+
+const driverVehicleRejectService = async ({userId, reason})=>{
+    // check userId is not empty
+    // check reason is not empty
+    // find vehicle by userId
+    // check user has vehicle details
+    // check if vehicle already rejected
+    // reject vehicle status
+    // update rejection reason
+    //save changes
+    // return
+}
+
+export { 
+    driverVehicleApprovedService,
+    driverVehicleRejectService
+}
