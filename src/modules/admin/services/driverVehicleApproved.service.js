@@ -45,11 +45,19 @@ const driverVehicleRejectService = async ({userId, reason})=>{
     // check if vehicle already rejected
     if(vehicle.vehicleApproved === "REJECTED"){
         throw new ApiError(409,"Vehicle already rejected by admin!");
-    }
+    };
+
     // reject vehicle status
+    vehicle.vehicleApproved = "REJECTED";
+
     // update rejection reason
+    vehicle.vehicleRejectedReason = reason;
+
     //save changes
+    await vehicle.save();
+
     // return
+    return vehicle;
 }
 
 export { 
