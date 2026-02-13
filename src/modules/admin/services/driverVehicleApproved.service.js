@@ -28,6 +28,7 @@ const driverVehicleApprovedService = async ({userId})=>{
 };
 
 
+// DRIVER VEHICLE REJECTED----------------------
 const driverVehicleRejectService = async ({userId, reason})=>{
     // check userId is not empty
     // check reason is not empty

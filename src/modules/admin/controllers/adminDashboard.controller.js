@@ -96,7 +96,18 @@ const driverVehicleApprovedController = AsyncHandler(async (req,res)=>{
       "Vehicle approved by admin!"
     )
   );
-})
+});
+
+
+// DRIVER VEHICLE REJECTED-----------------------------
+const driverVehicleRejectController = AsyncHandler(async ()=>{
+  // call service function and pass parameter from req.body
+  // send response
+  return res.status(200).json(
+    new ApiResponse(200,{},"Vehicle rejected by admin.")
+  );
+});
+
 export { 
   getAllDriversController,
   notApprovedDriverController,
@@ -104,5 +115,6 @@ export {
   driverProfileRejectController,
   driverDocumentsApprovedController,
   driverDocumentsRejectController,
-  driverVehicleApprovedController
+  driverVehicleApprovedController,
+  driverVehicleRejectController
  }

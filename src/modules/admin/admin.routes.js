@@ -9,7 +9,8 @@ import
      driverProfileRejectController,
      driverDocumentsRejectController,
      driverDocumentsApprovedController, 
-     driverVehicleApprovedController
+     driverVehicleApprovedController,
+     driverVehicleRejectController
     } 
     from "./controllers/adminDashboard.controller.js";
 
