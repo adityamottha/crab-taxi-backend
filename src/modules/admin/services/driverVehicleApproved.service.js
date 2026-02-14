@@ -10,7 +10,7 @@ const driverVehicleApprovedService = async ({userId})=>{
     if(!vehicle) throw new ApiError(409,"Driver don't have vehicle yet!");
 
     // check if status already approved if not next
-    if(vehicle.vehicleApproved = "APPROVED"){
+    if(vehicle.vehicleApproved === "APPROVED"){
         throw new ApiError(400, "Vehicle already approved by admin!");
     };
 
