@@ -2,4 +2,8 @@ node_modules
 .env
 .git
 .gitignore
+<<<<<<< HEAD
 Dockerfile
+=======
+Dockerfile
+>>>>>>> 7c5be1b20e9856f1aa69e86c241d1ff2bd51fc92

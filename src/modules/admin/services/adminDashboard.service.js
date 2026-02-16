@@ -1,4 +1,4 @@
-import { DriverProfile } from "../../driver/models/driverProfile.model.js"
+import { DriverProfile } from "../../driver/models/driverProfile.model.js";
 
 
 
@@ -64,9 +64,6 @@ const getAllDriversService = async () => {
 const notApprovedDriverService = async ()=>{
   const notApprovedDriver = await DriverProfile.aggregate([
 
-     {
-      $match:{ status:"pending"}
-    },
     {
       $lookup:{
         from:"driverdocuments",
@@ -74,6 +71,7 @@ const notApprovedDriverService = async ()=>{
         pipeline:[
           {
             $match:{
+              status:"PENDING",
               $expr:{
                 $eq:["$driverProfileId" , "$$driverId"]
               }
@@ -112,10 +110,9 @@ const notApprovedDriverService = async ()=>{
 
   ])
   return notApprovedDriver;
-}
+};
 
 export { 
   getAllDriversService,
-  notApprovedDriverService
-
+  notApprovedDriverService,
  }

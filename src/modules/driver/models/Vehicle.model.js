@@ -70,10 +70,26 @@ const vehicleSchema = new mongoose.Schema({
       },
     ],
 
+    vehicleApproved:{
+     type:String,
+     enum: ["PENDING", "APPROVED", "REJECTED"],
+     default:"PENDING"
+    },
+
+    vehicleApprovedAt:{
+      type:Date
+    },
+
+    vehicleRejectedReason:{
+      type:String,
+      trim:true,
+    },
+
     isActive: {
       type: Boolean,
       default: false, // becomes true after verification
     },
 },{timestamps:true});
 
-export const Vehicle = mongoose.model("Vehicle",vehicleSchema);
+export const Vehicle = mongoose.models.Vehicle || 
+mongoose.model("Vehicle",vehicleSchema);

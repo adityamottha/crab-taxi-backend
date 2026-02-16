@@ -1,6 +1,6 @@
 import { ApiError } from "../../../utils/ApiError.js";
 import { uploadMultipleFilesWithUrl } from "../../../utils/uploadMultipleFiles.js";
-import { Vehicle } from "../models/Vehicle.model.js";
+import { Vehicle } from "../models/vehicle.model.js";
 import { DriverProfile } from "../models/driverProfile.model.js";
 
 const vehicleService = async ({

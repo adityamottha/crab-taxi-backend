@@ -86,14 +86,22 @@ const driverProfileSchema = new mongoose.Schema({
         index:true
     },
 
-    approvedBy:{
+    profileApprovedBy:{
         type:Schema.Types.ObjectId,
         ref:"AuthUser" // ADMIN
     },
 
-    approvedAt:{
+     profileApprovalStatus: {
+      type: String,
+      enum: ["PENDING", "APPROVED", "REJECTED"],
+      default: "PENDING",
+      index: true,
+    },
+
+    profileApprovedAt:{
         type:Date
     },
+    
     rejectionReason:{
         type: String
     },

@@ -1,4 +1,4 @@
-import { sendMessage } from "./services/chat.service.js";
+import { sendMessage } from "../modules/chatRoom/services/chat.service.js";
 
 export const chatSocket = (io, socket) => {
   socket.on("joinRoom", ({ roomId }) => {

@@ -1,8 +1,12 @@
+<<<<<<< HEAD
 node_modules
 .env
 .git
 .gitignore
 Dockerfile# Use official Node image (stable + common)
+=======
+# Use official Node image (stable + common)
+>>>>>>> 7c5be1b20e9856f1aa69e86c241d1ff2bd51fc92
 FROM node:18-alpine
 
 # Create app directory inside container
@@ -21,4 +25,8 @@ COPY . .
 EXPOSE 8000
 
 # Start the app
+<<<<<<< HEAD
 CMD ["npm", "start"]
+=======
+CMD ["npm", "start"]
+>>>>>>> 7c5be1b20e9856f1aa69e86c241d1ff2bd51fc92
