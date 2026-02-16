@@ -1,46 +1,43 @@
-import { findOrCreateRoom, sendMessage, getRoomMessages } from "../services/chat.service.js";
+import { createRoomService, sendMessage, getRoomMessages } from "../services/chat.service.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
-import { AuthUser } from "../../auth/authUsers.models.js";
+import { AsyncHandler } from "../../../utils/AsyncHandler.js";
 
-export const createRoom = async (req, res) => {
-  const { roomType, rideId = null, otherUserId } = req.body;
+export const createRoom = AsyncHandler(async (req, res) => {
 
-  // fetch other user from DB (driver/admin/user)
-  const otherUser = await AuthUser.findById(otherUserId).select("_id role");
+  const { roomType, rideId = null } = req.body;
 
-  // participants built securely
-  const participants = [
-    { role: req.user.role, userId: req.user._id },
-    { role: otherUser.role, userId: otherUser._id },
-  ];
+  const room = await createRoomService({
+    roomType,
+    rideId,
+    user: req.user
+  });
 
-  const room = await findOrCreateRoom({ participants, roomType, rideId });
+  return res.status(200).json(
+    new ApiResponse(200, room, "Room created successfully")
+  );
+});
 
-  return res
-    .status(200)
-    .json(new ApiResponse(200, "Room created successfully", room));
-};
+export const createMessage = AsyncHandler(async (req, res) => {
 
-export const createMessage = async (req, res) => {
   const { roomId, text } = req.body;
 
   const msg = await sendMessage({
     roomId,
     senderRole: req.user.role,
     senderId: req.user._id,
-    text,
+    text
   });
 
   return res.status(200).json(
-    new ApiResponse(200, "Message sent successfully", msg)
+    new ApiResponse(200, msg, "Message sent successfully")
   );
-};
+});
 
-export const fetchMessages = async (req, res) => {
-    const { roomId } = req.params;
+export const fetchMessages = AsyncHandler(async (req, res) => {
 
-    const messages = await getRoomMessages(roomId);
-    return res.status(200).json(
-      new ApiResponse(200, "Messages fetched successfully", messages)
-    );
-};
+  const messages = await getRoomMessages(req.params.roomId);
+
+  return res.status(200).json(
+    new ApiResponse(200, messages, "Messages fetched successfully")
+  );
+});

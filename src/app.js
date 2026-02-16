@@ -37,4 +37,8 @@ app.use("/api/v1/driver",driver)
 import errorMiddleware from "./middlewares/error.middleware.js";
 app.use(errorMiddleware);
 
+// CHAT ROUTE
+import chatRoutes from "./modules/chatRoom/chat.routes.js";
+app.use("/api/v1/chat", chatRoutes);
+
 export { app }
