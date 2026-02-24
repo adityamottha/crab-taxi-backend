@@ -1,5 +1,5 @@
 import { Ride } from "./models/ride.model.js";
-import { assignNextDriver } from "./services/rideMatching.service.js";
+import { matchDriversService } from "./services/rideMatching.service.js";
 // import { redis } from "../../db/redis.js";
 
 export const rideSocket = (io, socket) => {
@@ -9,7 +9,10 @@ export const rideSocket = (io, socket) => {
   });
 
   socket.on("driverLocation", async ({ driverId, lat, lng }) => {
-    await redis.geoadd("drivers:locations", lng, lat, driverId);
+    await AuthUser.findByIdAndUpdate(driverId, {
+      location: { lat, lng },
+      isOnline: true,
+    });
   });
 
   socket.on("acceptRide", async ({ rideId, driverId }) => {
@@ -25,6 +28,6 @@ export const rideSocket = (io, socket) => {
   });
 
   socket.on("rejectRide", async ({ rideId }) => {
-    await assignNextDriver(rideId);
+    await matchDriversService(rideId);
   });
 };

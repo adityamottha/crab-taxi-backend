@@ -4,7 +4,7 @@ import { ApiError } from "../../../utils/ApiError.js";
 
 const PRICE_PER_KM = 9;
 
-export const createRideService = async ({ user, pickup, drop, distance }) => {
+export const createRideService = async ({ user, pickup, drop, distance, io }) => {
   if (!pickup || !drop || !distance) {
     throw new ApiError(400, "Pickup, drop & distance required");
   }
@@ -19,7 +19,7 @@ export const createRideService = async ({ user, pickup, drop, distance }) => {
     price,
   });
 
-  await matchDriversService(ride);
+  await matchDriversService(ride, io);
 
   return ride;
 };

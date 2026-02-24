@@ -22,7 +22,7 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log("✅ Socket Connected:", socket.id);
+  console.log("Socket Connected:", socket.id);
   chatSocket(io, socket);
 });
 
@@ -36,9 +36,9 @@ io.on("connection", (socket) => {
 connectDB()
   .then(() => {
     server.listen(PORT, () => {
-      console.log("✅ BACKEND RUNNING ON PORT", PORT);
+      console.log("BACKEND RUNNING ON PORT", PORT);
     });
   })
   .catch((error) => {
-    console.log("❌ MONGO_DB CONNECTION ERROR:- ", error?.message);
+    console.log("MONGO_DB CONNECTION ERROR:- ", error?.message);
   });

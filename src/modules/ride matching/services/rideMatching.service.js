@@ -1,39 +1,32 @@
-// import { redis } from "../../../db/redis.js";
+import { AuthUser } from "../../auth/authUsers.models.js";
+import { Ride } from "../models/ride.model.js";
+import { getDistanceInKm } from "../../../utils/distance.helper.js";
 
-export const matchDriversService = async (ride) => {
-  const drivers = await redis.georadius(
-    "drivers:locations",
-    ride.pickup.lng,
-    ride.pickup.lat,
-    5,
-    "km",
-    "WITHDIST",
-    "ASC"
-  );
+export const matchDriversService = async (ride, io) => {
+  const drivers = await AuthUser.find({
+    role: "DRIVER",
+    isOnline: true,
+  });
 
-  if (!drivers.length) {
-    console.log("No drivers nearby");
+  const nearbyDrivers = drivers.filter((driver) => {
+    if (!driver.location) return false;
+
+    const distance = getDistanceInKm(
+      ride.pickup.lat,
+      ride.pickup.lng,
+      driver.location.lat,
+      driver.location.lng
+    );
+
+    return distance <= 5;
+  });
+
+  if (!nearbyDrivers.length) {
+    console.log("No drivers within 5km");
     return;
   }
 
-  const queueKey = `ride:${ride._id}:drivers`;
-
-  for (let driver of drivers) {
-    await redis.rpush(queueKey, driver[0]);
-  }
-
-  await assignNextDriver(ride._id);
-};
-
-export const assignNextDriver = async (rideId) => {
-  const queueKey = `ride:${rideId}:drivers`;
-
-  const driverId = await redis.lpop(queueKey);
-
-  if (!driverId) {
-    console.log("No more drivers");
-    return;
-  }
-
-  global.io.to(driverId).emit("rideRequest", { rideId });
+  nearbyDrivers.forEach((driver) => {
+    io.to(driver._id.toString()).emit("rideRequest", ride);
+  });
 };
