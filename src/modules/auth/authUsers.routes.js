@@ -6,7 +6,9 @@ import {
     loginController,
     logoutController, 
     refreshAccessTokenController,
-    registerController 
+    registerController,
+    forgotPasswordController,
+    resetPasswordController 
 
     } from "./authUsers.controller.js";
 import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
@@ -33,6 +35,12 @@ router.route('/change-email').post(verifyJWT,changeEmailController);
 
 //CHANGE PHONE_NUMBER
 router.route("/change-phone-number").post(verifyJWT,changePhoneNumberController);
+
+//FORGET PASSWORD
+router.route("/forgot-password").post(forgotPasswordController);
+
+//RESET PASSWORD
+router.route("/reset-password/:token").post(resetPasswordController);
 
 export default router;
 

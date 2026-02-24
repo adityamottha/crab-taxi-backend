@@ -41,8 +41,7 @@ app.use("/api/v1/chat", chatRoutes);
 import errorMiddleware from "./middlewares/error.middleware.js";
 app.use(errorMiddleware);
 
-// CHAT ROUTE
-import chatRoutes from "./modules/chatRoom/chat.routes.js";
-app.use("/api/v1/chat", chatRoutes);
+import ride from "./modules/ride matching/ride.route.js";
+app.use("/api/v1/ride", ride);
 
 export { app }

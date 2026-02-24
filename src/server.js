@@ -1,5 +1,4 @@
-import env from "dotenv";
-env.config({ path: "./.env" });
+import "./config/env.js";
 
 import http from "http";
 import { Server } from "socket.io";
@@ -7,6 +6,7 @@ import { Server } from "socket.io";
 import { connectDB } from "./db/databaseConn.js";
 import { app } from "./app.js";
 import { chatSocket } from "./modules/chatRoom/chat.socket.js";
+import { rideSocket } from "./modules/ride matching/ride.socket.js";
 
 const PORT = process.env.PORT || 8000;
 
@@ -24,6 +24,12 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("✅ Socket Connected:", socket.id);
   chatSocket(io, socket);
+});
+
+global.io = io;
+
+io.on("connection", (socket) => {
+  rideSocket(io, socket);
 });
 
 // Connect DB then start

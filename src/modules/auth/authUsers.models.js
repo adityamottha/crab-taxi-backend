@@ -6,272 +6,282 @@ const { Schema } = mongoose;
 
 const authUserSchema = new mongoose.Schema({
 
-    // CORE IDENTITY
+  // CORE IDENTITY
 
-    phoneNumber:{
-        type:String,
-        index:true,
-        unique:true,
-        required:true,
-        trim:true,
-    },
+  phoneNumber: {
+    type: String,
+    index: true,
+    unique: true,
+    required: true,
+    trim: true,
+  },
 
-    phoneNumberChangedAt:{
-      type:Date,
-      default:null
-    },
+  phoneNumberChangedAt: {
+    type: Date,
+    default: null
+  },
 
-    email:{
-        type:String,
-        unique:true,
-        required:true,
-        partialFilterExpression: { email: { $exists: true } },
-        lowercase:true,
-        trim:true
-    },
+  email: {
+    type: String,
+    unique: true,
+    required: true,
+    partialFilterExpression: { email: { $exists: true } },
+    lowercase: true,
+    trim: true
+  },
 
-    emailChangedAt:{
-      type:Date,
-      default:null
-    },
+  emailChangedAt: {
+    type: Date,
+    default: null
+  },
 
-    password:{
-      required:true,
-        type:String,
-        trim:true,
-        select:false
-    },
+  password: {
+    required: true,
+    type: String,
+    trim: true,
+    select: false
+  },
 
-    passwordChangedAt:{
-      type:Date,
-      default:null
-    },
-    
-    countryCode:{
-        type:String,
-        default:"+91"
-    },
+  passwordChangedAt: {
+    type: Date,
+    default: null
+  },
 
-    authProvider:{
-        type:String,
-        enum:["OTP","EMAIL","GOOGLE","APPLE",],
-        default:"OTP"
-    },
+  countryCode: {
+    type: String,
+    default: "+91"
+  },
 
-    // role based access control and Permissions
+  authProvider: {
+    type: String,
+    enum: ["OTP", "EMAIL", "GOOGLE", "APPLE",],
+    default: "OTP"
+  },
 
-    role:{
-        type:String,
-        enum:["USER","DRIVER","ADMIN"],
-        required:true,
-        index:true,
-    },
+  // role based access control and Permissions
 
-    isProfileCompleted:{
-      type:Boolean,
-      default:false
-    },
+  role: {
+    type: String,
+    enum: ["USER", "DRIVER", "ADMIN"],
+    required: true,
+    index: true,
+  },
 
-    isDocumentSubmitted:{
-      type:Boolean,
-      default:false
-    },
+  isProfileCompleted: {
+    type: Boolean,
+    default: false
+  },
 
-    permission:{
-        type:[String],
-        default:[]
-    },
+  isDocumentSubmitted: {
+    type: Boolean,
+    default: false
+  },
 
-    // Verfications 
+  permission: {
+    type: [String],
+    default: []
+  },
 
-    isOtpVerified:{
-        type:String,
-        default:false
-    },
+  // Verfications 
 
-    phoneNumberVerifiedAt:{
-        type:Date
-    },
+  isOtpVerified: {
+    type: String,
+    default: false
+  },
 
-    // ACCOUNT LIFECYCLE 
+  phoneNumberVerifiedAt: {
+    type: Date
+  },
 
-    accountStatus:{
-        type:String,
-        enum:["PENDING","ACTIVE","SUSPENDED","BLOCKED","DELETED"],
-        default:"PENDING",
-        index:true
-    },
+  // ACCOUNT LIFECYCLE 
 
-    blockedReason:{
-        type:String // example froud documentations submitted by Driver
-    },
+  accountStatus: {
+    type: String,
+    enum: ["PENDING", "ACTIVE", "SUSPENDED", "BLOCKED", "DELETED"],
+    default: "PENDING",
+    index: true
+  },
 
-    blockedAt:{
-        type:Date
-    },
+  blockedReason: {
+    type: String // example froud documentations submitted by Driver
+  },
 
-    // DRIVER APPROVAL STATUS 
+  blockedAt: {
+    type: Date
+  },
 
-    driverApprovalStatus:{
-        type:String,
-        enum:["NOT_APPLICABLE","APPROVED","PENDING","REJECT"],
-        default:"NOT_APPLICABLE"
-    },
+  // DRIVER APPROVAL STATUS 
 
-        kycRequired: {
-      type: Boolean,
-      default: false,
-    },
+  driverApprovalStatus: {
+    type: String,
+    enum: ["NOT_APPLICABLE", "APPROVED", "PENDING", "REJECT"],
+    default: "NOT_APPLICABLE"
+  },
 
-    kycCompleted: {
-      type: Boolean,
-      default: false,
-    },
+  kycRequired: {
+    type: Boolean,
+    default: false,
+  },
 
-    // PROFILE REFERENCE 
+  kycCompleted: {
+    type: Boolean,
+    default: false,
+  },
 
-     userProfileId: {
-      type: Schema.Types.ObjectId,
-      ref: "UserProfile",
-    },
+  // PROFILE REFERENCE 
 
-    driverProfileId: {
-      type: Schema.Types.ObjectId,
-      ref: "DriverProfile",
-    },
+  userProfileId: {
+    type: Schema.Types.ObjectId,
+    ref: "UserProfile",
+  },
 
-    adminProfileId:{
-        type: Schema.Types.ObjectId,
-        ref: "AdminProfile"
-    },
+  driverProfileId: {
+    type: Schema.Types.ObjectId,
+    ref: "DriverProfile",
+  },
 
-    //    SECURITY & SESSION CONTROL
+  adminProfileId: {
+    type: Schema.Types.ObjectId,
+    ref: "AdminProfile"
+  },
 
-    lastLoginAt: {
-      type: Date,
-    },
+  //    SECURITY & SESSION CONTROL
 
-    lastLogoutAt: {
-      type: Date,
-    },
+  lastLoginAt: {
+    type: Date,
+  },
 
-    loginCount: {
-      type: Number,
-      default: 0,
-    },
+  lastLogoutAt: {
+    type: Date,
+  },
+
+  loginCount: {
+    type: Number,
+    default: 0,
+  },
 
   refreshTokenVersion: {
-  type: Number,
-  default: 0
-},
+    type: Number,
+    default: 0
+  },
 
-    //    OTP ABUSE PREVENTION
-   
-    otpAttempts: {
-      type: Number,
-      default: 0,
-    },
+  //    OTP ABUSE PREVENTION
 
-    otpBlockedUntil: {
-      type: Date,
-    },
+  otpAttempts: {
+    type: Number,
+    default: 0,
+  },
 
-    lastOtpRequestedAt: {
-      type: Date,
-    },
+  otpBlockedUntil: {
+    type: Date,
+  },
 
-    //    DEVICE & AUDIT
+  lastOtpRequestedAt: {
+    type: Date,
+  },
 
-    lastLoginIp: {
-      type: String,
-    },
+  //    DEVICE & AUDIT
 
-    lastLoginDevice: {
-      type: String,
-    },
+  lastLoginIp: {
+    type: String,
+  },
 
-    createdFrom: {
-      type: String,
-      enum: ["ANDROID", "IOS", "WEB"],
-      default: "ANDROID",
-    },
+  lastLoginDevice: {
+    type: String,
+  },
 
-    createdBy: {
-      type: String,
-      enum: ["SELF", "ADMIN"],
-      default: "SELF",
-    },
+  createdFrom: {
+    type: String,
+    enum: ["ANDROID", "IOS", "WEB"],
+    default: "ANDROID",
+  },
+
+  createdBy: {
+    type: String,
+    enum: ["SELF", "ADMIN"],
+    default: "SELF",
+  },
+
+  // forget password reset password
+
+  passwordResetToken: {
+    type: String,
+  },
+
+  passwordResetExpires: {
+    type: Date,
+  },
 
 
-    //    SOFT DELETE
-   
-    isDeleted: {
-      type: Boolean,
-      default: false,
-    },
+  //    SOFT DELETE
 
-    deletedAt: {
-      type: Date,
-    },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
 
-    deletedBy: {
-      type: Schema.Types.ObjectId,
-      ref: "AuthUser",
-    },
+  deletedAt: {
+    type: Date,
+  },
 
-},{timestamps:true});
+  deletedBy: {
+    type: Schema.Types.ObjectId,
+    ref: "AuthUser",
+  },
+
+}, { timestamps: true });
 
 // PASSWORD HASH (ENCRYPTION)
-authUserSchema.pre("save", async function(){
+authUserSchema.pre("save", async function () {
   try {
 
-    if(!this.isModified("password")) return;
-  
+    if (!this.isModified("password")) return;
+
     this.password = await bcrypt.hash(this.password, 10);
 
   } catch (error) {
-    console.log("BCRYPT ERROR:- ",error?.message || "Failed to hash password!");
+    console.log("BCRYPT ERROR:- ", error?.message || "Failed to hash password!");
     next(error);
   }
 });
 
 // COMPARE PASSWORD (DE-ENCRYPTION)
-authUserSchema.methods.isPasswordCorrect = async function (password){
+authUserSchema.methods.isPasswordCorrect = async function (password) {
   try {
-    return await bcrypt.compare(password,this.password);
+    return await bcrypt.compare(password, this.password);
   } catch (error) {
-    console.log("BCRYPT ERROR:- ",error?.message || "Failed to compare password!");
-    
+    console.log("BCRYPT ERROR:- ", error?.message || "Failed to compare password!");
+
   }
 };
 
 // GENERATE ACCESS TOKEN
-authUserSchema.methods.generateAccessToken = function(){
+authUserSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
-      userId:this._id,
+      userId: this._id,
       role: this.role
     },
 
     process.env.ACCESS_TOKEN_KEY,
     {
-      expiresIn:process.env.ACCESS_TOKEN_EXPIRY
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY
     }
   );
 };
 
 // GENERATE REFRESH TOKEN 
-authUserSchema.methods.generateRefreshToken = function (){
+authUserSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
-      userId:this._id,
+      userId: this._id,
       tokenVersion: this.refreshTokenVersion
     },
 
     process.env.REFRESH_TOKEN_KEY,
     {
-      expiresIn:process.env.REFRESH_TOKEN_EXPIRY
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY
     }
   )
 }
-export const AuthUser = mongoose.model("AuthUser",authUserSchema)
+export const AuthUser = mongoose.model("AuthUser", authUserSchema)

@@ -1,5 +1,5 @@
 import { AsyncHandler } from "../../utils/AsyncHandler.js";
-import { registerService, loginService, logoutService, refreshAccessTokenService, changePasswordService, changeEmailService, changePhoneNumberService } from "./authUsers.service.js";
+import { registerService, loginService, logoutService, refreshAccessTokenService, changePasswordService, changeEmailService, changePhoneNumberService, forgotPasswordService, resetPasswordService } from "./authUsers.service.js";
 import { ApiResponse } from "../../utils/ApiResponse.js"
 // import { ApiError } from "../../utils/ApiError.js";
 
@@ -175,6 +175,22 @@ const changePasswordController = AsyncHandler(async (req,res)=>{
    );
  })
 
+ const forgotPasswordController = AsyncHandler(async (req, res) => {
+  await forgotPasswordService(req.body.email);
+
+  return res.status(200).json(
+    new ApiResponse(200, {}, "Reset link sent to email if account exists.")
+  );
+});
+
+const resetPasswordController = AsyncHandler(async (req, res) => {
+  await resetPasswordService(req.params.token, req.body.newPassword);
+
+  return res.status(200).json(
+    new ApiResponse(200, {}, "Password reset successfully!")
+  );
+});
+
 export { 
    registerController,
    loginController,
@@ -182,5 +198,7 @@ export {
    refreshAccessTokenController,
    changePasswordController,
    changeEmailController,
-   changePhoneNumberController
+   changePhoneNumberController,
+   forgotPasswordController,
+   resetPasswordController
 }
