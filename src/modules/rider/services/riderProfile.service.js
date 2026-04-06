@@ -145,12 +145,21 @@ const changeAvatarService = async ({userId,newAvatar})=>{
     return riderProfile;
 } 
 
+const getRiderProfileService = async ({ userId }) => {
 
+    const riderProfile = await RiderProfile.findOne({ authUserId: userId });
 
+    if (!riderProfile) {
+        throw new ApiError(404, "Rider profile not found");
+    }
+
+    return riderProfile;
+};
 
  export { 
     riderprofileService,
     changeFullnameService,
     changeGenderService,
-    changeAvatarService
+    changeAvatarService,
+    getRiderProfileService
  }

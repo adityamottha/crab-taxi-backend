@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { changeAvatarController, driverProfileController } from "./controllers/driverProfile.controller.js";
+import { changeAvatarController, driverProfileController, getDriverProfileController } from "./controllers/driverProfile.controller.js";
 import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
 import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
 import { upload } from "../../middlewares/multer.middleware.js";
@@ -73,5 +73,11 @@ router.route("/change-avatar").patch(
   ]),
   changeAvatarController
 )
+
+router.route("/driver-profile").get(
+  verifyJWT,
+  authorizeRole("DRIVER"),
+  getDriverProfileController
+);
 
 export default router;

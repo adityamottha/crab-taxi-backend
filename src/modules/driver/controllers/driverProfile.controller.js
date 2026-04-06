@@ -54,7 +54,27 @@ const changeAvatarController = AsyncHandler(async (req,res)=>{
     );
 });
 
+const getDriverProfileController = AsyncHandler(async (req, res) => {
+
+  const userId = req.user._id;
+
+  const driverProfile = await DriverProfile.findOne({ authUserId: userId });
+
+  if (!driverProfile) {
+    throw new ApiError(404, "Driver profile not found");
+  }
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      driverProfile,
+      "Driver profile fetched successfully"
+    )
+  );
+});
+
 export { 
     driverProfileController,
     changeAvatarController,
+    getDriverProfileController
 }

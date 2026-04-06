@@ -100,9 +100,27 @@ const changeAvatarController = AsyncHandler(async (req,res)=>{
     );
 });
 
+import { getRiderProfileService } from "../services/riderProfile.service.js";
+
+const getRiderProfileController = AsyncHandler(async (req,res)=>{
+
+    const riderProfile = await getRiderProfileService({
+        userId: req.user._id
+    });
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            riderProfile,
+            "Rider profile fetched successfully"
+        )
+    );
+});
+
 export { 
     riderProfileController,
     changeFullnameController,
     changeGenderController,
-    changeAvatarController
+    changeAvatarController,
+    getRiderProfileController
 }
