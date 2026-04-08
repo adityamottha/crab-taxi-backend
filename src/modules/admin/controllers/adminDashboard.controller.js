@@ -1,6 +1,6 @@
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { AsyncHandler } from "../../../utils/AsyncHandler.js"
-import { getAllDriversService, notApprovedDriverService } from "../services/adminDashboard.service.js";
+import { getAllDriversService, getSingleDriverService, notApprovedDriverService } from "../services/adminDashboard.service.js";
 import { driverDocumentsApprovedService } from "../services/driverDocumentsApproved.service.js";
 import { driverProfileApprovedService, driverProfileRejectService } from "../services/driverProfileApproved.service.js"
 import { driverVehicleApprovedService, driverVehicleRejectService } from "../services/driverVehicleApproved.service.js";
@@ -26,6 +26,14 @@ const notApprovedDriverController = AsyncHandler(async (req,res)=>{
   );
 })
 
+// GET SINGLE DRIVER CONTROLLER-----------------
+const getSingleDriverController = AsyncHandler(async (req,res)=>{
+  const userId = req.body.userId;
+  const driver = await getSingleDriverService({userId});
+  return res.status(200).json(
+    new ApiResponse(200,driver,"Single driver fetched successfully!")
+  )
+})
 
 // UPDATE TO APPROVED DRIVER STATUS....
 const approvedDriverProfileStatusController = AsyncHandler(async (req,res)=>{
@@ -117,6 +125,7 @@ const driverVehicleRejectController = AsyncHandler(async (req,res)=>{
 
 export { 
   getAllDriversController,
+  getSingleDriverController,
   notApprovedDriverController,
   approvedDriverProfileStatusController,
   driverProfileRejectController,

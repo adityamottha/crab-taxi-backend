@@ -10,7 +10,8 @@ import
      driverDocumentsRejectController,
      driverDocumentsApprovedController, 
      driverVehicleApprovedController,
-     driverVehicleRejectController
+     driverVehicleRejectController,
+     getSingleDriverController
     } 
     from "./controllers/adminDashboard.controller.js";
 
@@ -22,6 +23,13 @@ router.route("/drivers").get(
     authorizeRole("ADMIN"),
     getAllDriversController
 );
+
+// SINFLE DRIVER PROFILE 
+router.route("/single-driver").get(
+    verifyJWT,
+    authorizeRole("ADMIN"),
+    getSingleDriverController
+)
 
 // NOT-APPROVED-DRIVERS ROUTE
 router.route("/not-approved-drivers").get(
