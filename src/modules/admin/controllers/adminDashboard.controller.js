@@ -28,12 +28,18 @@ const notApprovedDriverController = AsyncHandler(async (req,res)=>{
 
 // GET SINGLE DRIVER CONTROLLER-----------------
 const getSingleDriverController = AsyncHandler(async (req,res)=>{
+
+  // get userId from req.body  
   const userId = req.body.userId;
+
+  // call the service function 
   const driver = await getSingleDriverService({userId});
+
+  // send response 
   return res.status(200).json(
     new ApiResponse(200,driver,"Single driver fetched successfully!")
   )
-})
+});
 
 // UPDATE TO APPROVED DRIVER STATUS....
 const approvedDriverProfileStatusController = AsyncHandler(async (req,res)=>{
