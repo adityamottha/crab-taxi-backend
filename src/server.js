@@ -1,7 +1,7 @@
 import "./config/env.js";
 
 import http from "http";
-import { Server } from "socket.io";
+import  {Server}  from "socket.io";
 
 import { connectDB } from "./db/databaseConn.js";
 import { app } from "./app.js";

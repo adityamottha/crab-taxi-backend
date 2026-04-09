@@ -1,6 +1,9 @@
 import mongoose, { Schema } from "mongoose";
 
 const riderProfileSchema = new mongoose.Schema({
+    // Address fields
+    // dateOfBirth
+    // language 
     authUserId:{
         type:Schema.Types.ObjectId,
         ref:"AuthUser",
