@@ -53,10 +53,9 @@ router.route("/change-avatar").patch(
 )
 
 // GET RIDER PROFILE
-router.route("/rider-profile").get(
+router.route("/rider-profile/:riderId").get(
     verifyJWT,
-    authorizeRole("USER"),
-    isProfileCompleted(),
+    authorizeRole("USER","ADMIN"),
     getRiderProfileController
 );
 
