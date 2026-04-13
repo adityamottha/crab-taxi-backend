@@ -12,7 +12,8 @@ import
      driverVehicleApprovedController,
      driverVehicleRejectController,
      getSingleDriverController,
-     getDriverDocumentsController
+     getDriverDocumentsController,
+     getDriverVehiclesController
     } 
     from "./controllers/adminDashboard.controller.js";
 
@@ -86,6 +87,13 @@ router.route("/get-driver-documents/:userId").get(
     verifyJWT,
     authorizeRole("ADMIN"),
     getDriverDocumentsController
+);
+
+// GET-DRIVER-VEHICLE ROUTE.
+router.route("/get-driver-vehicle/:userId").get(
+    verifyJWT,
+    authorizeRole("ADMIN"),
+    getDriverVehiclesController
 );
 
 export default router;
