@@ -1,6 +1,6 @@
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
-import { changeAvatarService, driverProfileService } from "../services/driverProfile.service.js";
+import { changeAvatarService, driverProfileService, getDriverProfileService } from "../services/driverProfile.service.js";
 
 const driverProfileController = AsyncHandler(async (req,res)=>{
 
@@ -56,13 +56,9 @@ const changeAvatarController = AsyncHandler(async (req,res)=>{
 
 const getDriverProfileController = AsyncHandler(async (req, res) => {
 
-  const userId = req.user._id;
+  const driverId = req.params.driverId;
 
-  const driverProfile = await DriverProfile.findOne({ authUserId: userId });
-
-  if (!driverProfile) {
-    throw new ApiError(404, "Driver profile not found");
-  }
+  const driverProfile = await getDriverProfileService(driverId);
 
   return res.status(200).json(
     new ApiResponse(

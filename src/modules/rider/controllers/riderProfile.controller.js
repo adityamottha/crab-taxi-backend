@@ -1,6 +1,7 @@
 import { changeAvatarService, changeFullnameService, changeGenderService, riderprofileService } from "../services/riderProfile.service.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
+import { getRiderProfileService } from "../services/riderProfile.service.js";
 
 const riderProfileController = AsyncHandler(async (req,res)=>{
     // find avatar on local path
@@ -100,21 +101,19 @@ const changeAvatarController = AsyncHandler(async (req,res)=>{
     );
 });
 
-import { getRiderProfileService } from "../services/riderProfile.service.js";
-
 const getRiderProfileController = AsyncHandler(async (req,res)=>{
 
-    const riderProfile = await getRiderProfileService({
-        userId: req.user._id
-    });
+  const riderProfile = await getRiderProfileService(
+    req.params.riderId
+  );
 
-    return res.status(200).json(
-        new ApiResponse(
-            200,
-            riderProfile,
-            "Rider profile fetched successfully"
-        )
-    );
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      riderProfile,
+      "Rider profile fetched successfully"
+    )
+  );
 });
 
 export { 

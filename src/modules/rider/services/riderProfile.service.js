@@ -145,15 +145,17 @@ const changeAvatarService = async ({userId,newAvatar})=>{
     return riderProfile;
 } 
 
-const getRiderProfileService = async ({ userId }) => {
+const getRiderProfileService = async (riderId) => {
 
-    const riderProfile = await RiderProfile.findOne({ authUserId: userId });
+  const riderProfile = await RiderProfile.findOne({
+    authUserId: riderId
+  });
 
-    if (!riderProfile) {
-        throw new ApiError(404, "Rider profile not found");
-    }
+  if (!riderProfile) {
+    throw new ApiError(404, "Rider profile not found");
+  }
 
-    return riderProfile;
+  return riderProfile;
 };
 
  export { 
