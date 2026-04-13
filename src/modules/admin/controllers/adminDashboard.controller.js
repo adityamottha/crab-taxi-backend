@@ -1,6 +1,6 @@
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { AsyncHandler } from "../../../utils/AsyncHandler.js"
-import { getAllDriversService, getSingleDriverService, notApprovedDriverService } from "../services/adminDashboard.service.js";
+import { getAllDriversService, getDriverDocumentsService, getSingleDriverService, notApprovedDriverService } from "../services/adminDashboard.service.js";
 import { driverDocumentsApprovedService } from "../services/driverDocumentsApproved.service.js";
 import { driverProfileApprovedService, driverProfileRejectService } from "../services/driverProfileApproved.service.js"
 import { driverVehicleApprovedService, driverVehicleRejectService } from "../services/driverVehicleApproved.service.js";
@@ -129,6 +129,18 @@ const driverVehicleRejectController = AsyncHandler(async (req,res)=>{
   );
 });
 
+// GET DRIVER DOCUMENTS CONTROLLER---------------------------------
+
+const getDriverDocumentsController = AsyncHandler(async (req,res) =>{
+//  call the service function and pass params 
+const driver = await getDriverDocumentsService({userId:req.body.userId});
+
+// return response 
+return res.status(200).json(
+  new ApiResponse(200,driver,"Driver documents fetch successfully!")
+);
+});
+
 export { 
   getAllDriversController,
   getSingleDriverController,
@@ -138,5 +150,6 @@ export {
   driverDocumentsApprovedController,
   driverDocumentsRejectController,
   driverVehicleApprovedController,
-  driverVehicleRejectController
+  driverVehicleRejectController,
+  getDriverDocumentsController
  }

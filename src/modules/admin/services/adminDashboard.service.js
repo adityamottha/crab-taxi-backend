@@ -126,6 +126,7 @@ const notApprovedDriverService = async ()=>{
   return notApprovedDriver;
 };
 
+// GET DRIVER DOCUMENTS SERIVCE ---------------------------------
 const getDriverDocumentsService = async ({userId}) =>{
   // check userId is required
   if(!userId) throw new ApiError(404,"UserId is required!");
@@ -142,5 +143,6 @@ export {
   getAllDriversService,
   notApprovedDriverService,
   getSingleDriverService,
+  getDriverDocumentsService,
   getDriverDocumentsService
  }
