@@ -132,7 +132,7 @@ const getDriverDocumentsService = async ({userId}) =>{
   if(!userId) throw new ApiError(404,"UserId is required!");
 
   // find documents by userId 
-  const documents = await DriverDocuments.findById({_id:userId});
+  const documents = await DriverDocuments.findById(userId);
   if(!documents) throw new ApiError(408,"Documents not found by this Id");
 
   // return documents
@@ -144,5 +144,4 @@ export {
   notApprovedDriverService,
   getSingleDriverService,
   getDriverDocumentsService,
-  getDriverDocumentsService
  }

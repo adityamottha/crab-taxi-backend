@@ -82,7 +82,7 @@ router.route("/driver-vehicle-reject").patch(
 );
 
 // GET-DRIVER-DOCUMENTS ROUTE.
-router.route("/get-driver-documents").get(
+router.route("/get-driver-documents/:userId").get(
     verifyJWT,
     authorizeRole("ADMIN"),
     getDriverDocumentsController

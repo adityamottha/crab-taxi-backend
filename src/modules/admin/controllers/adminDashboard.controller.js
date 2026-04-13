@@ -1,5 +1,6 @@
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { AsyncHandler } from "../../../utils/AsyncHandler.js"
+import { ApiError } from "../../../utils/ApiError.js";
 import { getAllDriversService, getDriverDocumentsService, getSingleDriverService, notApprovedDriverService } from "../services/adminDashboard.service.js";
 import { driverDocumentsApprovedService } from "../services/driverDocumentsApproved.service.js";
 import { driverProfileApprovedService, driverProfileRejectService } from "../services/driverProfileApproved.service.js"
@@ -131,14 +132,19 @@ const driverVehicleRejectController = AsyncHandler(async (req,res)=>{
 
 // GET DRIVER DOCUMENTS CONTROLLER---------------------------------
 
-const getDriverDocumentsController = AsyncHandler(async (req,res) =>{
-//  call the service function and pass params 
-const driver = await getDriverDocumentsService({userId:req.body.userId});
+const getDriverDocumentsController = AsyncHandler(async (req, res) => {
 
-// return response 
-return res.status(200).json(
-  new ApiResponse(200,driver,"Driver documents fetch successfully!")
-);
+  const { userId } = req.params;
+
+  if (!userId) {
+    throw new ApiError(400, "UserId is required");
+  }
+
+  const driver = await getDriverDocumentsService({ userId });
+
+  return res.status(200).json(
+    new ApiResponse(200, driver, "Driver documents fetch successfully!")
+  );
 });
 
 export { 
