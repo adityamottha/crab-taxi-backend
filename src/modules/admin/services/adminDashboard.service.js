@@ -1,5 +1,6 @@
 import { DriverProfile } from "../../driver/models/driverProfile.model.js";
 import { ApiError } from "../../../utils/ApiError.js";
+import { DriverDocuments } from "../../driver/models/driverDocuments.model.js";
 
 
 const getAllDriversService = async () => {
@@ -125,8 +126,21 @@ const notApprovedDriverService = async ()=>{
   return notApprovedDriver;
 };
 
+const getDriverDocumentsService = async ({userId}) =>{
+  // check userId is required
+  if(!userId) throw new ApiError(404,"UserId is required!");
+
+  // find documents by userId 
+  const documents = await DriverDocuments.findById({_id:userId});
+  if(!documents) throw new ApiError(408,"Documents not found by this Id");
+
+  // return documents
+  return documents
+};
+
 export { 
   getAllDriversService,
   notApprovedDriverService,
-  getSingleDriverService
+  getSingleDriverService,
+  getDriverDocumentsService
  }
