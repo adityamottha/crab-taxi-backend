@@ -71,9 +71,11 @@ return driverProfile;
 
 }
 
-const getDriverProfileService = async (driverId) => {
+const getDriverProfileService = async (userId) => {
 
-  const driver = await DriverProfile.findById(driverId);
+  const driver = await DriverProfile.findOne({
+    authUserId: userId
+  });
 
   if (!driver) throw new ApiError(404, "Driver profile not found");
 
