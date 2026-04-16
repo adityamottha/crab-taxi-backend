@@ -1,6 +1,7 @@
 import { DriverProfile } from "../../driver/models/driverProfile.model.js";
 import { ApiError } from "../../../utils/ApiError.js";
-
+import { DriverDocuments } from "../../driver/models/driverDocuments.model.js";
+import { Vehicle } from "../../driver/models/vehicle.model.js";
 
 const getAllDriversService = async () => {
 
@@ -125,8 +126,36 @@ const notApprovedDriverService = async ()=>{
   return notApprovedDriver;
 };
 
+// GET DRIVER DOCUMENTS SERIVCE ---------------------------------
+const getDriverDocumentsService = async ({userId}) =>{
+  // check userId is required
+  if(!userId) throw new ApiError(404,"UserId is required!");
+
+  // find documents by userId 
+  const documents = await DriverDocuments.findById(userId);
+  if(!documents) throw new ApiError(408,"Documents not found by this Id");
+
+  // return documents
+  return documents
+};
+
+// GET DRIVER VEHICLES SERIVCE ---------------------------------
+const getDriverVehicleService = async ({userId}) =>{
+  // check userId is required
+  if(!userId) throw new ApiError(404,"UserId is required!");
+
+  // find Vehicle by userId 
+  const vehicle = await Vehicle.findOne({userId});
+  if(!vehicle) throw new ApiError(408,"Vehicle not found by this Id");
+
+  // return vehicle
+  return vehicle
+};
+
 export { 
   getAllDriversService,
   notApprovedDriverService,
-  getSingleDriverService
+  getSingleDriverService,
+  getDriverDocumentsService,
+  getDriverVehicleService
  }
