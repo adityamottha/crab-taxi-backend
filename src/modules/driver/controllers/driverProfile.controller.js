@@ -56,9 +56,9 @@ const changeAvatarController = AsyncHandler(async (req,res)=>{
 
 const getDriverProfileController = AsyncHandler(async (req, res) => {
 
-  const driverId = req.params.driverId;
+  const userId = req.user._id;
 
-  const driverProfile = await getDriverProfileService(driverId);
+  const driverProfile = await getDriverProfileService(userId);
 
   return res.status(200).json(
     new ApiResponse(

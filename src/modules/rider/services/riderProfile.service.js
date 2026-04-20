@@ -145,10 +145,10 @@ const changeAvatarService = async ({userId,newAvatar})=>{
     return riderProfile;
 } 
 
-const getRiderProfileService = async (riderId) => {
+const getRiderProfileService = async (userId) => {
 
   const riderProfile = await RiderProfile.findOne({
-    authUserId: riderId
+    authUserId: userId
   });
 
   if (!riderProfile) {

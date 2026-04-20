@@ -104,7 +104,7 @@ const changeAvatarController = AsyncHandler(async (req,res)=>{
 const getRiderProfileController = AsyncHandler(async (req,res)=>{
 
   const riderProfile = await getRiderProfileService(
-    req.params.riderId
+    req.user._id
   );
 
   return res.status(200).json(

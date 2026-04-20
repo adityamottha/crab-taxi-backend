@@ -53,7 +53,7 @@ router.route("/change-avatar").patch(
 )
 
 // GET RIDER PROFILE
-router.route("/rider-profile/:riderId").get(
+router.route("/rider-profile").get(
     verifyJWT,
     authorizeRole("USER","ADMIN"),
     getRiderProfileController

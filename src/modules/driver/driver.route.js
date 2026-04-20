@@ -74,7 +74,7 @@ router.route("/change-avatar").patch(
   changeAvatarController
 )
 
-router.route("/driver-profile/:driverId").get(
+router.route("/driver-profile").get(
   verifyJWT,
   authorizeRole("DRIVER","ADMIN"),
   getDriverProfileController
