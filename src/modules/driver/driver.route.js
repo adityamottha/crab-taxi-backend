@@ -5,7 +5,7 @@ import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
 import { upload } from "../../middlewares/multer.middleware.js";
 import { driverDocumentController } from "./controllers/driverDocuments.controller.js";
 import { isProfileCompleted } from "../../middlewares/profileComplete.middleware.js";
-import { vehicleController } from "./controllers/vehicle.controller.js";
+import { vehicleController, getDriverVehiclesController } from "./controllers/vehicle.controller.js";
 import { isDocumentSubmitted } from "../../middlewares/documentSubmitted.midddleware.js";
 
 const router = Router();
@@ -78,6 +78,13 @@ router.route("/driver-profile/:driverId").get(
   verifyJWT,
   authorizeRole("DRIVER","ADMIN"),
   getDriverProfileController
+);
+
+// GET-DRIVER-VEHICLE ROUTE.
+router.route("/get-driver-vehicle").get(
+    verifyJWT,
+    authorizeRole("DRIVER"),
+    getDriverVehiclesController
 );
 
 export default router;
