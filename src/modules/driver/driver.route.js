@@ -3,7 +3,7 @@ import { changeAvatarController, driverProfileController, getDriverProfileContro
 import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
 import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
 import { upload } from "../../middlewares/multer.middleware.js";
-import { driverDocumentController } from "./controllers/driverDocuments.controller.js";
+import { driverDocumentController,getDriverDocumentsController } from "./controllers/driverDocuments.controller.js";
 import { isProfileCompleted } from "../../middlewares/profileComplete.middleware.js";
 import { vehicleController, getDriverVehiclesController } from "./controllers/vehicle.controller.js";
 import { isDocumentSubmitted } from "../../middlewares/documentSubmitted.midddleware.js";
@@ -85,6 +85,13 @@ router.route("/get-driver-vehicle").get(
     verifyJWT,
     authorizeRole("DRIVER"),
     getDriverVehiclesController
+);
+
+// GET-DRIVER-DOCUMENTS ROUTE.
+router.route("/get-driver-documents").get(
+    verifyJWT,
+    authorizeRole("DRIVER"),
+    getDriverDocumentsController
 );
 
 export default router;

@@ -72,7 +72,8 @@ const getDriverVehicleService = async ({userId}) =>{
   return vehicle
 };
 
+
 export { 
     vehicleService,
-    getDriverVehicleService
+    getDriverVehicleService,
  }
