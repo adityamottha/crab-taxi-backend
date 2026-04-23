@@ -9,7 +9,7 @@ const driverDocumentController = AsyncHandler(async (req,res)=>{
     throw new ApiError(400, "No files uploaded");
   }
 
-   const driverLicenceFiles = req.files?.driverLicense;
+   const driverLicenseFiles = req.files?.driverLicense;
    const insuranceFiles = req.files?.insurance;
    const vehicleRCFiles = req.files?.vehicleRC;
 
@@ -27,7 +27,7 @@ const driverDocumentController = AsyncHandler(async (req,res)=>{
 
    const documents = await driverDocumentService({
     userId:req.user._id,
-    driverLicenceFiles,
+    driverLicenseFiles,
     insuranceFiles,
     vehicleRCFiles,
     driverLicenseCredentials,

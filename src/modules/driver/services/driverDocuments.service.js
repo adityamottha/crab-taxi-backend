@@ -6,7 +6,7 @@ import { AuthUser } from "../../auth/authUsers.models.js";
 
 const driverDocumentService = async ({
     userId,
-    driverLicenceFiles,
+    driverLicenseFiles,
     insuranceFiles,
     vehicleRCFiles,
     driverLicenseCredentials,
@@ -15,7 +15,7 @@ const driverDocumentService = async ({
 })=>{
 
     // check files fields are available 
-    if(!driverLicenceFiles?.length || !insuranceFiles?.length || !vehicleRCFiles?.length ){
+    if(!driverLicenseFiles?.length || !insuranceFiles?.length || !vehicleRCFiles?.length ){
         throw new ApiError(404,"All files fields are required!");
     };
 
@@ -36,7 +36,7 @@ const driverDocumentService = async ({
     if(existedDocs) throw new ApiError(409,"Documents already submitted!");
 
     // upload files
-    const driverLicence = await uploadMultipleFiles(driverLicenceFiles);
+    const driverLicense = await uploadMultipleFiles(driverLicenseFiles);
     const insurance = await uploadMultipleFiles(insuranceFiles);
     const vehicleRc = await uploadMultipleFiles(vehicleRCFiles);
 
@@ -46,7 +46,7 @@ const driverDocumentService = async ({
         driverProfileId: driverprofile._id,
 
         driverLicense:{
-            urls:driverLicence,
+            urls:driverLicense,
             credentials:driverLicenseCredentials
         },
 
