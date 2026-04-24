@@ -73,17 +73,22 @@ const driverDocumentService = async ({
 
 // GET DRIVER DOCUMENTS SERIVCE ---------------------------------
 const getDriverDocumentsService = async ({userId}) =>{
-  // check userId is required
-  if(!userId) throw new ApiError(404,"UserId is required!");
+  if (!userId) throw new ApiError(400, "UserId is required!");
+
+  // 1. Find driver profile using SAME FIELD as POST
+  const driverProfile = await DriverProfile.findOne({ authUserId: userId });
+
+  if (!driverProfile) {
+    throw new ApiError(404, "Driver profile not found");
+  }
 
   // find documents by userId 
-  const documents = await DriverDocuments.findById(userId);
-  if(!documents) throw new ApiError(408,"Documents not found by this Id");
+  const documents = await DriverDocuments.findOne({driverProfileId:driverProfile._id});
+  if(!documents) throw new ApiError(404,"Documents not found for this user");
 
   // return documents
   return documents
 };
-
 
 export { 
     driverDocumentService,

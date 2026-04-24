@@ -60,16 +60,26 @@ const vehicleService = async ({
 };
 
 // GET DRIVER VEHICLES SERIVCE ---------------------------------
-const getDriverVehicleService = async ({userId}) =>{
-  // check userId is required
-  if(!userId) throw new ApiError(404,"UserId is required!");
+const getDriverVehicleService = async ({ userId }) => {
+  if (!userId) throw new ApiError(400, "UserId is required!");
 
-  // find Vehicle by userId 
-  const vehicle = await Vehicle.findOne({userId});
-  if(!vehicle) throw new ApiError(408,"Vehicle not found by this Id");
+  // 1. Find driver profile using SAME FIELD as POST
+  const driverProfile = await DriverProfile.findOne({ authUserId: userId });
 
-  // return vehicle
-  return vehicle
+  if (!driverProfile) {
+    throw new ApiError(404, "Driver profile not found");
+  }
+
+  // 2. Find vehicle using driverProfileId
+  const vehicle = await Vehicle.findOne({
+    driverProfileId: driverProfile._id,
+  });
+
+  if (!vehicle) {
+    throw new ApiError(404, "Vehicle not found for this user");
+  }
+
+  return vehicle;
 };
 
 
