@@ -90,5 +90,6 @@ const goOnlineController = AsyncHandler(async (req,res)=>{
 export { 
     driverProfileController,
     changeAvatarController,
-    getDriverProfileController
+    getDriverProfileController,
+    goOnlineController
 }
