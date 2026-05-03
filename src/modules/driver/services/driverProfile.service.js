@@ -89,14 +89,19 @@ const goOnlineService = async (userId)=>{
    if(!userId) throw new ApiError(408,"userId required!")
 
   // find and update driverProfile authUserId to userId
-  const driver = await DriverProfile.findByIdAndUpdate(
-     { authUserId: userId },
-      {
-        driverStatus: "ONLINE",
-        lastSeen: new Date()
-      },
-      { new: true }
+  const driver = await DriverProfile.findOneAndUpdate(
+    { authUserId: userId },   
+    {
+      driverStatus: "ONLINE",
+      lastSeen: new Date()
+    },
+    { new: true }
   );
+
+  // check driver is available 
+  if (!driver) {
+  throw new ApiError(404, "Driver not found");
+}
 
   // return driver 
   return driver 
