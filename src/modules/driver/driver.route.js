@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { changeAvatarController, driverProfileController, getDriverProfileController, goOnlineController } from "./controllers/driverProfile.controller.js";
+import { changeAvatarController, driverProfileController, getDriverProfileController, goOnlineController, updateDriverLocationController } from "./controllers/driverProfile.controller.js";
 import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
 import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
 import { upload } from "../../middlewares/multer.middleware.js";
@@ -100,5 +100,13 @@ router.route("/go-online").post(
    verifyJWT,
   authorizeRole("DRIVER"),
   goOnlineController
-)
+);
+
+// UPDATE DRIVER LOCATION----------------------
+router.route("/update-location").post(
+  verifyJWT,
+  authorizeRole("DRIVER"),
+  updateDriverLocationController
+);
+
 export default router;
