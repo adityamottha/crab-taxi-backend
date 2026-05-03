@@ -82,8 +82,29 @@ const getDriverProfileService = async (userId) => {
   return driver;
 };
 
+// GO ONLINE DRIVER SERVICE --------------------------------
+
+const goOnlineService = async (userId)=>{
+  // check user id is available
+   if(!userId) throw new ApiError(408,"userId required!")
+
+  // find and update driverProfile authUserId to userId
+  const driver = await DriverProfile.findByIdAndUpdate(
+     { authUserId: userId },
+      {
+        driverStatus: "ONLINE",
+        lastSeen: new Date()
+      },
+      { new: true }
+  );
+
+  // return driver 
+  return driver 
+}
+
 export { 
     driverProfileService,
     changeAvatarService,
-    getDriverProfileService
+    getDriverProfileService,
+    goOnlineService
  }
