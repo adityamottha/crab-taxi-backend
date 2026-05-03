@@ -86,6 +86,25 @@ const driverProfileSchema = new mongoose.Schema({
         index:true
     },
 
+    // add inside driverProfileSchema
+
+    location: {
+        type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point"
+      },
+
+    coordinates: {
+        type: [Number], // [lng, lat]
+        default: [0, 0]
+      }
+    },
+
+    lastSeen: {
+      type: Date
+    },
+
     profileApprovedBy:{
         type:Schema.Types.ObjectId,
         ref:"AuthUser" // ADMIN
