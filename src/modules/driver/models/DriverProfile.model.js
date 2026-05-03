@@ -155,4 +155,6 @@ const driverProfileSchema = new mongoose.Schema({
     }
 },{timestamps:true});
 
+driverProfileSchema.index({ location: "2dsphere" });
+
 export const DriverProfile = mongoose.model("DriverProfile",driverProfileSchema);
