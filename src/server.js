@@ -5,15 +5,14 @@ import  {Server}  from "socket.io";
 
 import { connectDB } from "./db/databaseConn.js";
 import { app } from "./app.js";
-import { chatSocket } from "./modules/chatRoom/chat.socket.js";
-import { rideSocket } from "./modules/ride matching/ride.socket.js";
+import { chatSocket } from "./utils/sockets.io.js";
+import { rideSocket } from "./utils/sockets.io.js";
 
 const PORT = process.env.PORT || 8000;
 
 // Create HTTP server from express app
 const server = http.createServer(app);
 
-// Create socket server
 const io = new Server(server, {
   cors: {
     origin: process.env.CORS_ORIGIN,
@@ -23,14 +22,16 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("Socket Connected:", socket.id);
+
+  // chat feature
   chatSocket(io, socket);
+
+  // ride / driver location feature
+  rideSocket(io, socket);
 });
 
 global.io = io;
 
-io.on("connection", (socket) => {
-  rideSocket(io, socket);
-});
 
 // Connect DB then start
 connectDB()
