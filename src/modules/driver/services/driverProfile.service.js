@@ -143,10 +143,43 @@ const updateDriverLocationService = async (userId,lat,lng) =>{
 };
 
 
+// GO-OFFLINE SERVICE------------------------------------------------
+const goOfflineService = async(userId)=>{
+  // check userId is required
+  if(!userId){
+    throw new ApiError(404,"UserId is required!")
+  };
+
+  // Find and update driver
+   const driver = await DriverProfile.findOneAndUpdate(
+      { authUserId: userId },
+      {
+        driverStatus: "OFFLINE"
+      },
+      { new: true }
+    );
+
+    if (!driver) {
+      throw new ApiError(404,"Driver is not found!")
+    }
+
+    // notify users via socket 
+    if (global.io) {
+      global.io.emit("driverOffline", {
+        driverId: driver._id
+      });
+    };
+
+    // return 
+    return driver;
+
+}
+
 export { 
     driverProfileService,
     changeAvatarService,
     getDriverProfileService,
     goOnlineService,
-    updateDriverLocationService
+    updateDriverLocationService,
+    goOfflineService
  }
