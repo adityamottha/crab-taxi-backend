@@ -1,6 +1,6 @@
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
-import { changeAvatarService, driverProfileService, getDriverProfileService } from "../services/driverProfile.service.js";
+import { changeAvatarService, driverProfileService, getDriverProfileService, goOnlineService } from "../services/driverProfile.service.js";
 
 const driverProfileController = AsyncHandler(async (req,res)=>{
 
@@ -68,6 +68,24 @@ const getDriverProfileController = AsyncHandler(async (req, res) => {
     )
   );
 });
+
+// GO ONLINE DRIVER CONTROLLER ---------------------------------------------
+
+const goOnlineController = AsyncHandler(async (req,res)=>{
+    // find userId from query 
+    const userId = req.user._id
+
+    // call service functin and pass the userId
+    const online = await goOnlineService(userId);
+
+    // send response 
+    return res.status(200).json(
+        new ApiResponse(
+            200,{online},"Driver is online"
+        )
+    )
+});
+
 
 export { 
     driverProfileController,
