@@ -1,6 +1,7 @@
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
-import { changeAvatarService, driverProfileService, getDriverProfileService, goOnlineService, updateDriverLocationService } from "../services/driverProfile.service.js";
+import { changeAvatarService, driverProfileService, getDriverProfileService, goOfflineService, goOnlineService, updateDriverLocationService } from "../services/driverProfile.service.js";
+import { response } from "express";
 
 const driverProfileController = AsyncHandler(async (req,res)=>{
 
@@ -104,10 +105,26 @@ const goOnlineController = AsyncHandler(async (req,res)=>{
     
  });
 
+ // DRIVER GO-OFFLINE CONTROLLER-----------------------------------------
+ const goOfflineController = AsyncHandler(async (req,res) =>{
+
+    // find userId from req.user 
+    const userId = req.user._id
+
+    // call the service function 
+    const offline = await goOfflineService(userId);
+
+    // return response 
+    return res.status(200).json(
+        new ApiResponse(200,offline,"Driver is Offline")
+    );
+ });
+
 export { 
     driverProfileController,
     changeAvatarController,
     getDriverProfileController,
     goOnlineController,
-    updateDriverLocationController
+    updateDriverLocationController,
+    goOfflineController
 }
