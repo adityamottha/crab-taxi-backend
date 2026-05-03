@@ -7,6 +7,7 @@ import { connectDB } from "./db/databaseConn.js";
 import { app } from "./app.js";
 import { chatSocket } from "./utils/sockets.io.js";
 import { rideSocket } from "./utils/sockets.io.js";
+import { startDriverStatusJob } from "./utils/driverStatus.job.js";
 
 const PORT = process.env.PORT || 8000;
 
@@ -33,13 +34,20 @@ io.on("connection", (socket) => {
 global.io = io;
 
 
-// Connect DB then start
-connectDB()
-  .then(() => {
+// START SERVER ---------------------
+const startServer = async () => {
+  try {
+    await connectDB(); 
+
+    startDriverStatusJob(); 
+
     server.listen(PORT, () => {
       console.log("BACKEND RUNNING ON PORT", PORT);
     });
-  })
-  .catch((error) => {
+
+  } catch (error) {
     console.log("MONGO_DB CONNECTION ERROR:- ", error?.message);
-  });
+  }
+};
+
+startServer();
