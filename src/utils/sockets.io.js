@@ -20,7 +20,6 @@ const chatSocket = (io, socket) => {
 
 
 // RIDE SOCKET-----------------------------------------------------
-
 const rideSocket = (io, socket) => {
 
   socket.on("driverLocation", async (data) => {
@@ -29,6 +28,17 @@ const rideSocket = (io, socket) => {
 
       if (!userId || !lat || !lng) return;
 
+      // FIRST: get driver
+      const driver = await DriverProfile.findOne({
+        authUserId: userId
+      });
+
+      if (!driver) return;
+
+      // IMPORTANT CHECK HERE
+      if (driver.driverStatus === "OFFLINE") return;
+
+      // ONLY update if ONLINE
       await DriverProfile.findOneAndUpdate(
         { authUserId: userId },
         {
@@ -36,13 +46,12 @@ const rideSocket = (io, socket) => {
             type: "Point",
             coordinates: [lng, lat]
           },
-          lastSeen: new Date(),
-          driverStatus: "ONLINE"
+          lastSeen: new Date()
         }
       );
 
       socket.broadcast.emit("driverMoved", {
-        userId,
+        driverId: driver._id,
         lat,
         lng
       });
