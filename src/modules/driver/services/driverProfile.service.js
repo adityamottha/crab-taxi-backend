@@ -109,7 +109,7 @@ const goOnlineService = async (userId)=>{
 
 // UPDATE DRIVER LOCATION SERVICE
 
-const updateDriverLocationService = async (userId) =>{
+const updateDriverLocationService = async (userId,lat,lng) =>{
 
   // check userId is required
   if(!userId){

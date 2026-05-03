@@ -1,6 +1,6 @@
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
-import { changeAvatarService, driverProfileService, getDriverProfileService, goOnlineService } from "../services/driverProfile.service.js";
+import { changeAvatarService, driverProfileService, getDriverProfileService, goOnlineService, updateDriverLocationService } from "../services/driverProfile.service.js";
 
 const driverProfileController = AsyncHandler(async (req,res)=>{
 
@@ -86,10 +86,28 @@ const goOnlineController = AsyncHandler(async (req,res)=>{
     )
 });
 
+// UPDATE DRIVER LOCATION CONTROLLER ---------------------------------------
+ const updateDriverLocationController = AsyncHandler(async (req,res)=>{
+    // find userId from req.body
+    const userId = req.user._id;
+
+    // find lat long from req body
+    const { lat, lng } = req.body;
+
+    // call service function and pass params
+    const driverCurrentLocation = await updateDriverLocationService(userId,lat,lng);
+
+    // return 
+    return res.status(200).json(
+        new ApiResponse(200, driverCurrentLocation, "Driver Location Updated.")
+    );
+    
+ });
 
 export { 
     driverProfileController,
     changeAvatarController,
     getDriverProfileController,
-    goOnlineController
+    goOnlineController,
+    updateDriverLocationController
 }
