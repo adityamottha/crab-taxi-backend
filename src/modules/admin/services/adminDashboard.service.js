@@ -1,61 +1,92 @@
-import { DriverProfile } from "../../driver/models/driverProfile.model.js";
 import { ApiError } from "../../../utils/ApiError.js";
+import { DriverProfile } from "../../driver/models/driverProfile.model.js";
+import { AuthUser } from "../../auth/authUsers.models.js";
 
 const getAllDriversService = async () => {
+  const allDrivers = await AuthUser.aggregate([
 
-  const allDrivers = await DriverProfile.aggregate([
-    // Join Driver Documents
-    {
-      $lookup: {
-        from: "driverdocuments",
-        let: { driverId: "$_id" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $eq: ["$driverProfileId", "$$driverId"]
-              }
-            }
-          }
-        ],
-        as: "documents"
-      }
-    },
-
-    // Join Vehicle
-    {
-      $lookup: {
-        from: "vehicles",
-        let: { driverId: "$_id" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $eq: ["$driverProfileId", "$$driverId"]
-              }
-            }
-          }
-        ],
-        as: "vehicle"
-      }
-    },
-
-    // Convert arrays → object
-    {
-      $addFields: {
-        documents: { $arrayElemAt: ["$documents", 0] },
-        vehicle: { $arrayElemAt: ["$vehicle", 0] }
-      }
-    },
-
-    // Optional: sort latest drivers first
-    {
-      $sort: { createdAt: -1 }
+  // Join DriverProfile
+  {
+    $lookup: {
+      from: "driverprofiles",
+      localField: "_id",
+      foreignField: "authUserId",
+      as: "driverProfile"
     }
-  ]);
+  },
 
-  return allDrivers;
+  // convert array to object
+  {
+    $unwind: {
+      path: "$driverProfile",
+      preserveNullAndEmptyArrays: true
+    }
+  },
+
+  // Join Driver Documents
+  {
+    $lookup: {
+      from: "driverdocuments",
+      let: { driverProfileId: "$driverProfile._id" },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $eq: ["$driverProfileId", "$$driverProfileId"]
+            }
+          }
+        }
+      ],
+      as: "documents"
+    }
+  },
+
+  //Join Vehicle
+  {
+    $lookup: {
+      from: "vehicles",
+      let: { driverProfileId: "$driverProfile._id" },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $eq: ["$driverProfileId", "$$driverProfileId"]
+            }
+          }
+        }
+      ],
+      as: "vehicle"
+    }
+  },
+
+  // Convert arrays to single object
+  {
+    $addFields: {
+      documents: { $arrayElemAt: ["$documents", 0] },
+      vehicle: { $arrayElemAt: ["$vehicle", 0] }
+    }
+  },
+
+  //  clean response
+  {
+    $project: {
+      password: 0,
+      __v: 0
+    }
+  },
+
+  // Sort
+  {
+    $sort: { createdAt: -1 }
+  }
+
+]);
+
+// return 
+return allDrivers;
 };
+
+
 
 // GET SINGLE DRIVER -----------------
 const getSingleDriverService = async ({userId}) =>{
