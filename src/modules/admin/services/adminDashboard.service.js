@@ -2,6 +2,7 @@ import { ApiError } from "../../../utils/ApiError.js";
 import { DriverProfile } from "../../driver/models/driverProfile.model.js";
 import { AuthUser } from "../../auth/authUsers.models.js";
 
+// GET ALL DRIVERS-------------------------------------------------
 const getAllDriversService = async () => {
   const allDrivers = await AuthUser.aggregate([
 
@@ -156,10 +157,52 @@ const notApprovedDriverService = async ()=>{
 };
 
 
+// GET ALL USERS -----------------------------------
+const getAllUsers = async () =>{
 
+const allUsers = await AuthUser.aggregate([
+
+  // Join RiderProfile
+  {
+    $lookup: {
+      from: "riderprofiles",
+      localField: "_id",
+      foreignField: "authUserId",
+      as: "riderProfile"
+    }
+  },
+
+  // convert array to object
+  {
+    $unwind: {
+      path: "$riderprofiles",
+      preserveNullAndEmptyArrays: true
+    }
+  },
+
+
+  //  clean response
+  {
+    $project: {
+      password: 0,
+      __v: 0
+    }
+  },
+
+  // Sort
+  {
+    $sort: { createdAt: -1 }
+  }
+
+]);
+
+// return 
+return allUsers;
+}
 
 export { 
   getAllDriversService,
   notApprovedDriverService,
   getSingleDriverService,
+  getAllUsers
  }
