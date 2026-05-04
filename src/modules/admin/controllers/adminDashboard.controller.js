@@ -1,6 +1,6 @@
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { AsyncHandler } from "../../../utils/AsyncHandler.js"
-import { getAllDriversService, getSingleDriverService, notApprovedDriverService } from "../services/adminDashboard.service.js";
+import { getAllDriversService, getAllUsersService, getSingleDriverService, notApprovedDriverService } from "../services/adminDashboard.service.js";
 import { driverDocumentsApprovedService } from "../services/driverDocumentsApproved.service.js";
 import { driverProfileApprovedService, driverProfileRejectService } from "../services/driverProfileApproved.service.js"
 import { driverVehicleApprovedService, driverVehicleRejectService } from "../services/driverVehicleApproved.service.js";
@@ -129,8 +129,20 @@ const driverVehicleRejectController = AsyncHandler(async (req,res)=>{
   );
 });
 
-// GET DRIVER DOCUMENTS CONTROLLER---------------------------------
+// GET USERS DETAILS CONTROLLER---------------------------------
 
+const getAllUsersController = AsyncHandler(async (req, res) => {
+  const users = await getAllUsersService();
+
+  return res.status(200).json(
+    new ApiResponse(
+        200,
+         users, 
+         "All users fetched successfully"
+        )
+  );
+}
+);
 
 
 
@@ -143,5 +155,6 @@ export {
   driverDocumentsApprovedController,
   driverDocumentsRejectController,
   driverVehicleApprovedController,
-  driverVehicleRejectController
+  driverVehicleRejectController,
+  getAllUsersController
  }

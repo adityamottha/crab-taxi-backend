@@ -158,7 +158,7 @@ const notApprovedDriverService = async ()=>{
 
 
 // GET ALL USERS -----------------------------------
-const getAllUsers = async () =>{
+const getAllUsersService = async () =>{
 
 const allUsers = await AuthUser.aggregate([
 
@@ -204,5 +204,5 @@ export {
   getAllDriversService,
   notApprovedDriverService,
   getSingleDriverService,
-  getAllUsers
+  getAllUsersService
  }
