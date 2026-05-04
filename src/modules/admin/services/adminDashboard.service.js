@@ -162,14 +162,14 @@ const getAllUsersService = async () =>{
 
 const allUsers = await AuthUser.aggregate([
 
-  // 1️⃣ Only USER role
+  //Only USER role
   {
     $match: {
       role: "USER"
     }
   },
 
-  // 2️⃣ Join RiderProfile
+  // Join RiderProfile
   {
     $lookup: {
       from: "riderprofiles",
@@ -179,7 +179,7 @@ const allUsers = await AuthUser.aggregate([
     }
   },
 
-  // 3️⃣ convert array to object
+  // convert array to object
   {
     $unwind: {
       path: "$riderProfile",
