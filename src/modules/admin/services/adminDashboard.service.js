@@ -162,7 +162,14 @@ const getAllUsersService = async () =>{
 
 const allUsers = await AuthUser.aggregate([
 
-  // Join RiderProfile
+  // 1️⃣ Only USER role
+  {
+    $match: {
+      role: "USER"
+    }
+  },
+
+  // 2️⃣ Join RiderProfile
   {
     $lookup: {
       from: "riderprofiles",
@@ -172,14 +179,13 @@ const allUsers = await AuthUser.aggregate([
     }
   },
 
-  // convert array to object
+  // 3️⃣ convert array to object
   {
     $unwind: {
-      path: "$riderprofiles",
+      path: "$riderProfile",
       preserveNullAndEmptyArrays: true
     }
   },
-
 
   //  clean response
   {
@@ -196,10 +202,10 @@ const allUsers = await AuthUser.aggregate([
 
 ]);
 
-// return 
+// Return 
 return allUsers;
-}
 
+}
 export { 
   getAllDriversService,
   notApprovedDriverService,

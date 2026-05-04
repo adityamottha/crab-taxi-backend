@@ -12,6 +12,7 @@ import
      driverVehicleApprovedController,
      driverVehicleRejectController,
      getSingleDriverController,
+     getAllUsersController,
     } 
     from "./controllers/adminDashboard.controller.js";
 
@@ -82,5 +83,11 @@ router.route("/driver-vehicle-reject").patch(
 
 
 
+// ALL USERS ROUTE
+router.route("/riders").get(
+    verifyJWT,
+    authorizeRole("ADMIN"),
+    getAllUsersController
+);
 
 export default router;
