@@ -10,7 +10,7 @@ const driverDocumentsApprovedService = async ({userId})=>{
     if(!driverDocuments) throw new ApiError(400,"documents are not submitted!");
 
     // check if documents status already approved
-    if(driverDocuments.documentsApprovalStatus = "APPROVED"){
+    if(driverDocuments.documentsApprovalStatus === "APPROVED"){
         throw new ApiError(401,"documents already approved by admin!");
     }
 
