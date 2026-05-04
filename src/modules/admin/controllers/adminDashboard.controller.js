@@ -1,7 +1,7 @@
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { AsyncHandler } from "../../../utils/AsyncHandler.js"
 import { getAllDriversService, getAllUsersService, getSingleDriverService, notApprovedDriverService } from "../services/adminDashboard.service.js";
-import { driverDocumentsApprovedService } from "../services/driverDocumentsApproved.service.js";
+import { driverDocumentsApprovedService, driverDocumentsRejectedService } from "../services/driverDocumentsApproved.service.js";
 import { driverProfileApprovedService, driverProfileRejectService } from "../services/driverProfileApproved.service.js"
 import { driverVehicleApprovedService, driverVehicleRejectService } from "../services/driverVehicleApproved.service.js";
 
@@ -83,7 +83,7 @@ const driverDocumentsApprovedController = AsyncHandler(async (req,res)=>{
 // DRIVER-DOCUMENTS-REJECTED------------------------
 const driverDocumentsRejectController = AsyncHandler(async (req,res)=>{
   // call the service and pass the parameter from req.body
-  const rejected = await driverDocumentsRejectController({
+  const rejected = await driverDocumentsRejectedService({
     userId:req.body.userId,
     reason:req.body.rejection_reason
   });
