@@ -4,7 +4,15 @@ import { AuthUser } from "../../auth/authUsers.models.js";
 
 // GET ALL DRIVERS-------------------------------------------------
 const getAllDriversService = async () => {
-  const allDrivers = await AuthUser.aggregate([
+  
+ const allDrivers = await AuthUser.aggregate([
+
+  // Only get users with role DRIVER
+  {
+    $match: {
+      role: "DRIVER"
+    }
+  },
 
   // Join DriverProfile
   {
@@ -16,7 +24,6 @@ const getAllDriversService = async () => {
     }
   },
 
-  // convert array to object
   {
     $unwind: {
       path: "$driverProfile",
@@ -42,7 +49,7 @@ const getAllDriversService = async () => {
     }
   },
 
-  //Join Vehicle
+  // Join Vehicle
   {
     $lookup: {
       from: "vehicles",
@@ -60,7 +67,6 @@ const getAllDriversService = async () => {
     }
   },
 
-  // Convert arrays to single object
   {
     $addFields: {
       documents: { $arrayElemAt: ["$documents", 0] },
@@ -68,7 +74,6 @@ const getAllDriversService = async () => {
     }
   },
 
-  //  clean response
   {
     $project: {
       password: 0,
@@ -76,13 +81,11 @@ const getAllDriversService = async () => {
     }
   },
 
-  // Sort
   {
     $sort: { createdAt: -1 }
   }
 
 ]);
-
 // return 
 return allDrivers;
 };
