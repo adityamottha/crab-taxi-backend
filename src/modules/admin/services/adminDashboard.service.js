@@ -109,54 +109,57 @@ const getSingleDriverService = async ({userId}) =>{
 // GET ALL DRIVERS WHO'RE NOT APPROVED!--------------------------------
 
 const notApprovedDriverService = async ()=>{
-  const notApprovedDriver = await DriverProfile.aggregate([
+const notApprovedDriver = await DriverProfile.aggregate([
 
-    {
-      $lookup:{
-        from:"driverdocuments",
-        let:{driverId:"$_id"},
-        pipeline:[
-          {
-            $match:{
-              status:"PENDING",
-              $expr:{
-                $eq:["$driverProfileId" , "$$driverId"]
-              }
-            }
-          }
-        ],
-        as:"documents"
-      }
-    },
-    {
-      $lookup:{
-        from: "vehicles",
-        let:{driverId:"$_id"},
-        pipeline:[
-          {
-            $match:{
-              $expr:{
-                $eq:["$driverProfileId","$$driverId"]
-              }
-            }
-          }
-        ],
-        as:"vehicle"
-      }
-    },
-    {
-      $addFields:{
-        documents:{  $ifNull: [{ $arrayElemAt: ["$documents", 0] }, null] },
-        vehicle:{  $ifNull: [{$arrayElemAt: ["$vehicle", 0]}, null] }
-      }
-    },
-
-    {
-      $sort: { createdAt: -1 }
+  {
+    $match: {
+      profileApprovalStatus: "PENDING"
     }
+  },
 
-  ])
-  return notApprovedDriver;
+  // Join documents (NO filter)
+  {
+    $lookup: {
+      from: "driverdocuments",
+      localField: "_id",
+      foreignField: "driverProfileId",
+      as: "documents"
+    }
+  },
+
+  // Join vehicle (NO filter)
+  {
+    $lookup: {
+      from: "vehicles",
+      localField: "_id",
+      foreignField: "driverProfileId",
+      as: "vehicle"
+    }
+  },
+
+  {
+    $addFields: {
+      documents: { $arrayElemAt: ["$documents", 0] },
+      vehicle: { $arrayElemAt: ["$vehicle", 0] }
+    }
+  },
+
+  // 🔥 NOW filter (safe)
+  {
+    $match: {
+      $or: [
+        { "documents.documentsApprovalStatus": "PENDING" },
+        { "vehicle.vehicleApproved": "PENDING" }
+      ]
+    }
+  },
+
+  {
+    $sort: { createdAt: -1 }
+  }
+
+]);
+return notApprovedDriver
 };
 
 
