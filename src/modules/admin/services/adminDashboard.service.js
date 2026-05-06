@@ -117,7 +117,7 @@ const notApprovedDriver = await DriverProfile.aggregate([
     }
   },
 
-  // Join documents (NO filter)
+  // Join documents 
   {
     $lookup: {
       from: "driverdocuments",
@@ -144,7 +144,7 @@ const notApprovedDriver = await DriverProfile.aggregate([
     }
   },
 
-  // 🔥 NOW filter (safe)
+  // filter 
   {
     $match: {
       $or: [
