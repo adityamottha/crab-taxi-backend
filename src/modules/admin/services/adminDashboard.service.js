@@ -169,6 +169,71 @@ const notApprovedDriver = await DriverProfile.aggregate([
 return notApprovedDriver;
 };
 
+// REJECTED DRIVER UTILS
+const getAllRejectedService = async () =>{
+
+  const allRejectedDrivers = await DriverProfile.aggregate([
+
+  // Join documents
+  {
+    $lookup: {
+      from: "driverdocuments",
+      localField: "_id",
+      foreignField: "driverProfileId",
+      as: "documents"
+    }
+  },
+
+  // Join vehicle
+  {
+    $lookup: {
+      from: "vehicles",
+      localField: "_id",
+      foreignField: "driverProfileId",
+      as: "vehicle"
+    }
+  },
+
+  // convert arrays → object
+  {
+    $addFields: {
+      documents: { $arrayElemAt: ["$documents", 0] },
+      vehicle: { $arrayElemAt: ["$vehicle", 0] }
+    }
+  },
+
+  // Filter the status
+  {
+    $match: {
+      $or: [
+
+        // profile pending
+        { profileApprovalStatus: "REJECTED" },
+
+        // documents pending
+        { "documents.documentsApprovalStatus": "REJECTED" },
+
+        // vehicle pending
+        { "vehicle.vehicleApproved": "REJECTED" }
+
+      ]
+    }
+  },
+
+  // sort latest first
+  {
+    $sort: {
+      createdAt: -1
+    }
+  }
+
+]);
+
+return allRejectedDrivers;
+
+  
+}
+
 
 // GET ALL USERS -----------------------------------
 const getAllUsersService = async () =>{
@@ -223,5 +288,6 @@ export {
   getAllDriversService,
   notApprovedDriverService,
   getSingleDriverService,
-  getAllUsersService
+  getAllUsersService,
+  getAllRejectedService
  }
