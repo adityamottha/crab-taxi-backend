@@ -1,6 +1,6 @@
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { AsyncHandler } from "../../../utils/AsyncHandler.js"
-import { getAllDriversService, getAllUsersService, getSingleDriverService, notApprovedDriverService } from "../services/adminDashboard.service.js";
+import { getAllDriversService, getAllRejectedService, getAllUsersService, getSingleDriverService, notApprovedDriverService } from "../services/adminDashboard.service.js";
 import { driverDocumentsApprovedService, driverDocumentsRejectedService } from "../services/driverDocumentsApproved.service.js";
 import { driverProfileApprovedService, driverProfileRejectService } from "../services/driverProfileApproved.service.js"
 import { driverVehicleApprovedService, driverVehicleRejectService } from "../services/driverVehicleApproved.service.js";
@@ -23,6 +23,16 @@ const notApprovedDriverController = AsyncHandler(async (req,res)=>{
 
   return res.status(200).json(
     new ApiResponse(200,notApproved,"Fetch all not-approved driver")
+  );
+})
+
+// GET ALL REJECTED DRIVER CONTROLLER
+
+const allRejectedDriversController = AsyncHandler(async (req,res)=>{
+  const  rejected = await getAllRejectedService();
+
+  return res.status(200).json(
+    new ApiResponse(200,rejected,"Fetch all rejected drivers")
   );
 })
 
@@ -156,5 +166,6 @@ export {
   driverDocumentsRejectController,
   driverVehicleApprovedController,
   driverVehicleRejectController,
-  getAllUsersController
+  getAllUsersController,
+  allRejectedDriversController
  }
