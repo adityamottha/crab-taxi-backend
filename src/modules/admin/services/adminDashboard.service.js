@@ -111,13 +111,7 @@ const getSingleDriverService = async ({userId}) =>{
 const notApprovedDriverService = async ()=>{
 const notApprovedDriver = await DriverProfile.aggregate([
 
-  {
-    $match: {
-      profileApprovalStatus: "PENDING"
-    }
-  },
-
-  // Join documents 
+  // Join documents
   {
     $lookup: {
       from: "driverdocuments",
@@ -127,7 +121,7 @@ const notApprovedDriver = await DriverProfile.aggregate([
     }
   },
 
-  // Join vehicle (NO filter)
+  // Join vehicle
   {
     $lookup: {
       from: "vehicles",
@@ -137,6 +131,7 @@ const notApprovedDriver = await DriverProfile.aggregate([
     }
   },
 
+  // convert arrays → object
   {
     $addFields: {
       documents: { $arrayElemAt: ["$documents", 0] },
@@ -144,22 +139,34 @@ const notApprovedDriver = await DriverProfile.aggregate([
     }
   },
 
-  // filter 
+  // Filter the status
   {
     $match: {
       $or: [
+
+        // profile pending
+        { profileApprovalStatus: "PENDING" },
+
+        // documents pending
         { "documents.documentsApprovalStatus": "PENDING" },
+
+        // vehicle pending
         { "vehicle.vehicleApproved": "PENDING" }
+
       ]
     }
   },
 
+  // sort latest first
   {
-    $sort: { createdAt: -1 }
+    $sort: {
+      createdAt: -1
+    }
   }
 
 ]);
-return notApprovedDriver
+
+return notApprovedDriver;
 };
 
 
