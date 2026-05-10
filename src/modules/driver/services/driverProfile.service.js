@@ -98,6 +98,11 @@ const goOnlineService = async (userId)=>{
     { new: true }
   );
 
+  // check driver profile is Approved if not throw errror 
+  if(driver.profileApprovalStatus === "PENDING"){
+    throw new ApiError(408, "Pending approval status!")
+  }
+
   // check driver is available 
   if (!driver) {
   throw new ApiError(404, "Driver not found");
