@@ -4,6 +4,7 @@ import { upload } from "../../middlewares/multer.middleware.js";
 import { isProfileCompleted } from "../../middlewares/profileComplete.middleware.js";
 import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
 import { changeAvatarController, changeFullnameController, changeGenderController, riderProfileController, getRiderProfileController } from "./controllers/riderProfile.controller.js";
+import { getNearbyDrivers } from "./controllers/riderDashboard.controller.js";
 
 
 const router = Router();
@@ -57,6 +58,13 @@ router.route("/rider-profile").get(
     verifyJWT,
     authorizeRole("USER","ADMIN"),
     getRiderProfileController
+);
+
+// GET NEAR BY DRIVER 
+router.route("/nearby-drivers").get(
+    verifyJWT,
+    authorizeRole("USER","ADMIN"),
+    getNearbyDrivers
 );
 
 export default router; 
