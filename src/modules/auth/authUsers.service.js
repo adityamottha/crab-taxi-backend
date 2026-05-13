@@ -23,7 +23,11 @@ const registerService = async ({ phoneNumber, email, password, role }) => {
     throw new ApiError(400, "All fields are required!");
   }
 
-  // // Email validation
+  // check ADMIN is not to allow for registration
+  if(role === "ADMIN"){
+    throw new ApiError(408,"You cannot able to register as ADMIN!")
+  };
+  // // Email validation 
   // if (!checkValidEmail(email)) {
   //   throw new ApiError(400, "Invalid email!");
   // }
