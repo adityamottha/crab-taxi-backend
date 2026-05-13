@@ -72,12 +72,46 @@ return driverProfile;
 }
 
 const getDriverProfileService = async (userId) => {
+  const driver = await AuthUser.aggregate([
+    {
+      $match:{
+        _id:userId
+      }
+    },
 
-  const driver = await DriverProfile.findOne({
-    authUserId: userId
-  });
+    // join rider profile 
+    {
+     $lookup: {
+      from: "driverprofiles",
+      localField: "_id",
+      foreignField: "authUserId",
+      as: "driverProfile"
+    }
+    },
 
-  if (!driver) throw new ApiError(404, "Driver profile not found");
+     // convert array to object
+  {
+    $unwind: {
+      path: "$driverProfile",
+      preserveNullAndEmptyArrays: true
+    }
+  },
+
+
+  //  clean response
+  {
+    $project: {
+      password: 0,
+      __v: 0
+    }
+  },
+
+  // Sort
+  {
+    $sort: { createdAt: -1 }
+  }
+
+  ]);
 
   return driver;
 };
