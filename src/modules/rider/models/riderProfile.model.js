@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 const riderProfileSchema = new mongoose.Schema({
-    // Address fields
+    
     // dateOfBirth
     // language 
     authUserId:{
@@ -54,7 +54,23 @@ const riderProfileSchema = new mongoose.Schema({
         default:5,
         min:0,
         max:5
+    },
+
+    address:{
+        type:String,
+        trim:true
+    },
+
+    dateOfBirth:{
+       type:Date
+    },
+
+    language:{
+        type:String,
+        enum:["HINDI","PUNJABI","ENGLISH"],
+        default:"ENGLISH"
     }
+    
 },{timestamps:true});
 
 export const RiderProfile = mongoose.model("RiderProfile",riderProfileSchema)
