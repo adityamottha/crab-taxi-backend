@@ -14,7 +14,7 @@ import { DriverProfile } from "../modules/driver/models/driverProfile.model.js";
         { driverStatus: "OFFLINE" }
       );
 
-      console.log("Checked inactive drivers");
+      // console.log("Checked inactive drivers");
 
     } catch (err) {
       console.log("Driver status job error:", err.message);

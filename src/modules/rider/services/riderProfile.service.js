@@ -3,6 +3,7 @@ import { RiderProfile } from "../models/riderProfile.model.js";
 import { uploadOnCloudinary } from "../../../utils/cloudinary.js";
 import { ONE_DAY } from "../../../constants.js";
 import { setDriver } from "mongoose";
+import { AuthUser } from "../../auth/authUsers.models.js"
 
  const riderprofileService = async ({fullname,gender,avatarLocalPath,user})=>{
 
@@ -48,6 +49,54 @@ import { setDriver } from "mongoose";
     return rider;
  };
 
+
+ //GET RIDER PROFILE 
+ const getRiderProfileService = async (userId) => {
+  const rider = await AuthUser.aggregate([
+    {
+      $match:{
+        _id:userId
+      }
+    },
+
+    // join rider profile 
+    {
+     $lookup: {
+      from: "riderprofiles",
+      localField: "_id",
+      foreignField: "authUserId",
+      as: "riderProfile"
+    }
+    },
+
+     // convert array to object
+  {
+    $unwind: {
+      path: "$riderProfile",
+      preserveNullAndEmptyArrays: true
+    }
+  },
+
+
+  //  clean response
+  {
+    $project: {
+      password: 0,
+      __v: 0
+    }
+  },
+
+  // Sort
+  {
+    $sort: { createdAt: -1 }
+  }
+
+  ]);
+
+  return rider;
+};
+
+// CHANGE FULLNAME 
  const changeFullnameService = async ({userId,newFullname}) =>{
 
     // console.log("USER-ID:- ",userId);
@@ -144,19 +193,6 @@ const changeAvatarService = async ({userId,newAvatar})=>{
     //return
     return riderProfile;
 } 
-
-const getRiderProfileService = async (userId) => {
-
-  const riderProfile = await RiderProfile.findOne({
-    authUserId: userId
-  });
-
-  if (!riderProfile) {
-    throw new ApiError(404, "Rider profile not found");
-  }
-
-  return riderProfile;
-};
 
  export { 
     riderprofileService,
