@@ -1,3 +1,7 @@
+// // Force Node.js to use reliable, public DNS servers
+// import dns from 'node:dns/promises';
+// dns.setServers(['8.8.8.8', '1.1.1.1']);
+
 import "./config/env.js";
 
 import http from "http";
