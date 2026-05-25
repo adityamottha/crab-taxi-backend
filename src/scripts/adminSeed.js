@@ -27,7 +27,8 @@ const seedAdmin = async ()=>{
             password:process.env.ADMIN_PASSWORD,
             role:"ADMIN",
             phoneNumber:process.env.ADMIN_PHONE_NUMBER,
-            refreshTokenVersion:0
+            refreshTokenVersion:0,
+            accountStatus:"ACTIVE"
         });
 
         if(admin){
