@@ -1,10 +1,10 @@
 import { DriverProfile } from "../../driver/models/driverProfile.model.js";
 import { ApiError } from "../../../utils/ApiError.js";
 
-const getNearbyDriversService = async ({ lat, lng }) => {
+const getNearbyDriversService = async ({ lng, lat }) => {
 
   // validation
-  if (!lat || !lng) {
+  if (!lng || !lat) {
     throw new ApiError(400, "lat and lng are required");
   }
 

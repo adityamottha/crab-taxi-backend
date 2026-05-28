@@ -5,11 +5,11 @@ import { getNearbyDriversService } from "../services/riderDashboard.service.js";
 
 const getNearbyDrivers = AsyncHandler(async (req, res) => {
 
-  const { lat, lng } = req.query;
+  const { lng, lat } = req.query;
 
   const drivers = await getNearbyDriversService({
-    lat,
-    lng
+    lng,
+    lat
   });
 
   return res.status(200).json(
