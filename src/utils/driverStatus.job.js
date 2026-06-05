@@ -4,7 +4,7 @@ import { DriverProfile } from "../modules/driver/models/driverProfile.model.js";
 
   setInterval(async () => {
     try {
-      const cutoff = new Date(Date.now() - 120000); 
+      const cutoff = new Date(Date.now() - 1200000); 
 
       await DriverProfile.updateMany(
         { 
