@@ -1,25 +1,50 @@
-// import { Ride } from "../models/ride.model.js";
-// import { matchDriversService } from "./rideMatching.service.js";
-// import { ApiError } from "../../../utils/ApiError.js";
+import { Ride } from "../models/ride.model.js";
+import { FareCalculator } from "../../../utils/fare.calculation.js";
+import { ApiError } from "../../../utils/ApiError.js";
 
-// const PRICE_PER_KM = 9;
+const createRideService = async ({
+  passengerId,
+  pickup,
+  dropoff
+}) => {
 
-// export const createRideService = async ({ user, pickup, drop, distance, io }) => {
-//   if (!pickup || !drop || !distance) {
-//     throw new ApiError(400, "Pickup, drop & distance required");
-//   }
+  if (!pickup || !dropoff) {
+    throw new ApiError(
+      400,
+      "Pickup and dropoff are required"
+    );
+  }
 
-//   const price = distance * PRICE_PER_KM;
+  const fareDetails =
+    FareCalculator.calculateFare(
+      pickup,
+      dropoff
+    );
 
-//   const ride = await Ride.create({
-//     userId: user._id,
-//     pickup,
-//     drop,
-//     distance,
-//     price,
-//   });
+  const otp =
+    FareCalculator.generateOTP();
 
-//   await matchDriversService(ride, io);
+  const ride = await Ride.create({
+    passengerId,
 
-//   return ride;
-// };
+    pickup,
+
+    dropoff,
+
+    fare: {
+      amount: fareDetails.amount,
+      distance: fareDetails.distance,
+      duration: fareDetails.duration
+    },
+
+    otp,
+
+    status: "requested"
+  });
+
+  return ride;
+};
+
+export {
+  createRideService
+};
