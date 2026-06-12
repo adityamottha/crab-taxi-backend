@@ -10,7 +10,6 @@ export const matchDriversService = async (ride, io) => {
 
   const nearbyDrivers = drivers.filter((driver) => {
     if (!driver.location) return false;
-
     const distance = getDistanceInKm(
       ride.pickup.lat,
       ride.pickup.lng,

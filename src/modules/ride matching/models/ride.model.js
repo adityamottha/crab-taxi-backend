@@ -1,45 +1,44 @@
 import mongoose from "mongoose";
+import { AuthUser } from "../../auth/authUsers.models.js";
 
-const rideSchema = new mongoose.Schema(
-  {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "AuthUser",
-      required: true,
-    },
-
-    driverId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "AuthUser",
-      default: null,
-    },
-
-    pickup: {
-      lat: Number,
-      lng: Number,
-      address: String,
-    },
-
-    drop: {
-      lat: Number,
-      lng: Number,
-      address: String,
-    },
-
-    distance: {
-      type: Number,
-      required: true,
-    },
-
-    price: Number,
-
-    status: {
-      type: String,
-      enum: ["SEARCHING", "ACCEPTED", "COMPLETED", "CANCELLED"],
-      default: "SEARCHING",
-    },
+const rideSchema = new mongoose.Schema({
+  passengerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
-  { timestamps: true }
-);
+  driverId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  pickup: {
+    lat: Number,
+    lng: Number,
+    address: String
+  },
+  dropoff: {
+    lat: Number,
+    lng: Number,
+    address: String
+  },
+  fare: {
+    amount: Number,
+    currency: { type: String, default: 'USD' },
+    distance: Number,
+    duration: Number
+  },
+  status: {
+    type: String,
+    enum: ['requested', 'accepted', 'started', 'completed', 'cancelled'],
+    default: 'requested'
+  },
+  otp: {
+    type: String,
+    required: true
+  },
+  startedAt: Date,
+  completedAt: Date,
+  cancellationReason: String
+}, { timestamps: true });
 
-export const Ride = mongoose.model("Ride", rideSchema);
+module.exports = mongoose.model('Ride', rideSchema);
