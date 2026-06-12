@@ -1,15 +1,15 @@
 import mongoose from "mongoose";
-import { AuthUser } from "../../auth/authUsers.models.js";
 
 const rideSchema = new mongoose.Schema({
   passengerId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'AuthUser',
     required: true
   },
   driverId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'AuthUser',
+    default:null
   },
   pickup: {
     lat: Number,
@@ -23,9 +23,10 @@ const rideSchema = new mongoose.Schema({
   },
   fare: {
     amount: Number,
-    currency: { type: String, default: 'USD' },
+    currency: { type: String, default: 'INR' },
     distance: Number,
-    duration: Number
+    duration: Number,
+    required:true
   },
   status: {
     type: String,
@@ -41,4 +42,4 @@ const rideSchema = new mongoose.Schema({
   cancellationReason: String
 }, { timestamps: true });
 
-module.exports = mongoose.model('Ride', rideSchema);
+export const Ride = mongoose.model('Ride', rideSchema);
