@@ -22,8 +22,8 @@ class FareCalculator {
     );
     
     // Fare calculation: $2 base + $1.5 per km
-    const baseFare = 2.00;
-    const perKmRate = 1.50;
+   const baseFare = 50;
+   const perKmRate = 12;
     const totalFare = baseFare + (distance * perKmRate);
     const duration = Math.round(distance * 2); // 2 minutes per km
     
