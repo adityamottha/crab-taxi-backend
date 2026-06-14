@@ -1,6 +1,7 @@
 import { Ride } from "../models/ride.model.js";
 import { FareCalculator } from "../../../utils/fare.calculation.js";
 import { ApiError } from "../../../utils/ApiError.js";
+import { getNearbyDriversService } from "../../rider/services/riderDashboard.service.js";
 
 const createRideService = async ({
   passengerId,
@@ -26,23 +27,28 @@ const createRideService = async ({
 
   const ride = await Ride.create({
     passengerId,
-
     pickup,
-
     dropoff,
-
     fare: {
       amount: fareDetails.amount,
       distance: fareDetails.distance,
       duration: fareDetails.duration
     },
-
     otp,
-
     status: "requested"
   });
 
-  return ride;
+  // Find nearby drivers
+  const nearbyDrivers =
+    await getNearbyDriversService({
+      lat: pickup.lat,
+      lng: pickup.lng
+    });
+
+  return {
+    ride,
+    nearbyDrivers
+  };
 };
 
 export {
