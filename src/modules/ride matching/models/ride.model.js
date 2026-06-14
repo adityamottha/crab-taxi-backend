@@ -22,11 +22,26 @@ const rideSchema = new mongoose.Schema({
     address: String
   },
   fare: {
-    amount: Number,
-    currency: { type: String, default: 'INR' },
-    distance: Number,
-    duration: Number,
-    required:true
+    amount: {
+      type:Number,
+      required:true
+    },
+    
+    currency: { 
+      type: String,
+       default: 'INR',
+       required:true
+     },
+
+    distance:{
+      type:Number,
+      required:true
+    },
+
+    duration:{
+      type:Number,
+      required:true
+    },
   },
   status: {
     type: String,
