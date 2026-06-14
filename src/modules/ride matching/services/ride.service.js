@@ -71,6 +71,37 @@ const createRideService = async ({
   };
 };
 
+
+// ACCEPT RIDE SERVICE 
+const acceptRideService = async ({rideId,driverId})=>{
+
+  // find ride and update requested to accept 
+   const ride = await Ride.findOneAndUpdate(
+    {
+      _id: rideId,
+      status: "requested"
+    },
+    {
+      driverId,
+      status: "accepted"
+    },
+    {
+      new: true
+    }
+  );
+
+  // through error if already accepted
+  if (!ride) {
+    throw new ApiError(
+      400,
+      "Ride already accepted or not found"
+    );
+  }
+
+  return ride;
+}
+
 export {
-  createRideService
+  createRideService,
+  acceptRideService
 };
