@@ -45,6 +45,26 @@ const createRideService = async ({
       lng: pickup.lng
     });
 
+
+    // Get all online drivers 
+  for (const driver of nearbyDrivers) {
+
+  const socketId = onlineDrivers.get(
+    driver.authUserId.toString()
+  );
+
+  if (!socketId) continue;
+
+  io.to(socketId).emit(
+    "new-ride",
+    {
+      rideId: ride._id,
+      pickup: ride.pickup,
+      dropoff: ride.dropoff,
+      fare: ride.fare
+    }
+  );
+}
   return {
     ride,
     nearbyDrivers
