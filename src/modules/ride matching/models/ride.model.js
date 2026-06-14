@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const rideSchema = new mongoose.Schema({
   passengerId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId, 
     ref: 'AuthUser',
     required: true
   },

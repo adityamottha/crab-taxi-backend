@@ -2,6 +2,7 @@ import { Ride } from "../models/ride.model.js";
 import { FareCalculator } from "../../../utils/fare.calculation.js";
 import { ApiError } from "../../../utils/ApiError.js";
 import { getNearbyDriversService } from "../../rider/services/riderDashboard.service.js";
+import { onlineDrivers } from "../../../utils/onlineDrivers.js"
 
 const createRideService = async ({
   passengerId,
