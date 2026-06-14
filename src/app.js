@@ -37,11 +37,11 @@ app.use("/api/v1/driver",driver);
 import chatRoutes from "./modules/chatRoom/chat.routes.js";
 app.use("/api/v1/chat", chatRoutes);
 
+import ride from "./modules/ride matching/ride.route.js";
+app.use("/api/v1/ride", ride);
+
 // ERROR MIDDLEWARE
 import errorMiddleware from "./middlewares/error.middleware.js";
 app.use(errorMiddleware);
-
-import ride from "./modules/ride matching/ride.route.js";
-app.use("/api/v1/ride", ride);
 
 export { app }
