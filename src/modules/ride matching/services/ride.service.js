@@ -76,6 +76,12 @@ const createRideService = async ({
 // ACCEPT RIDE SERVICE 
 const acceptRideService = async ({rideId,driverId})=>{
 
+  console.log("rideId:", rideId);
+  console.log("driverId:", driverId);
+
+  const existingRide = await Ride.findById(rideId);
+  console.log("Existing Ride:", existingRide);
+
   // find ride and update requested to accept 
    const ride = await Ride.findOneAndUpdate(
     {

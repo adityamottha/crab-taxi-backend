@@ -15,6 +15,6 @@ router.post("/create", verifyJWT,authorizeRole("USER"),createRideController);
 
 
 // accept ride
-router.post("/accept", verifyJWT,authorizeRole("DRIVER"), acceptRideController);
+router.post("/accept-ride/:rideId", verifyJWT,authorizeRole("DRIVER"), acceptRideController);
 
 export default router;
