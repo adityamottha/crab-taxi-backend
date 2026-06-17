@@ -2,14 +2,13 @@ import { Ride } from "../models/ride.model.js";
 import { FareCalculator } from "../../../utils/fare.calculation.js";
 import { ApiError } from "../../../utils/ApiError.js";
 import { getNearbyDriversService } from "../../rider/services/riderDashboard.service.js";
-import { onlineDrivers } from "../../../utils/onlineDrivers.js"
+import { onlineDrivers } from "../../../utils/onlineDrivers.js";
 
 const createRideService = async ({
   passengerId,
   pickup,
-  dropoff
+  dropoff,
 }) => {
-
   if (!pickup || !dropoff) {
     throw new ApiError(
       400,
@@ -23,9 +22,6 @@ const createRideService = async ({
       dropoff
     );
 
-  const otp =
-    FareCalculator.generateOTP();
-
   const ride = await Ride.create({
     passengerId,
     pickup,
@@ -33,65 +29,70 @@ const createRideService = async ({
     fare: {
       amount: fareDetails.amount,
       distance: fareDetails.distance,
-      duration: fareDetails.duration
+      duration: fareDetails.duration,
     },
-    otp,
-    status: "requested"
+    status: "requested",
   });
 
-  // Find nearby drivers
   const nearbyDrivers =
     await getNearbyDriversService({
       lat: pickup.lat,
-      lng: pickup.lng
+      lng: pickup.lng,
     });
 
-
-    // Get all online drivers 
   for (const driver of nearbyDrivers) {
+    const socketId = onlineDrivers.get(
+      driver.authUserId.toString()
+    );
 
-  const socketId = onlineDrivers.get(
-    driver.authUserId.toString()
-  );
+    if (!socketId) continue;
 
-  if (!socketId) continue;
-
-  io.to(socketId).emit(
-    "new-ride",
-    {
+    io.to(socketId).emit("new-ride", {
       rideId: ride._id,
       pickup: ride.pickup,
       dropoff: ride.dropoff,
-      fare: ride.fare
-    }
-  );
-}
+      fare: ride.fare,
+    });
+  }
+
   return {
     ride,
-    nearbyDrivers
+    nearbyDrivers,
   };
 };
 
+// ACCEPT RIDE SERVICE
+const acceptRideService = async ({
+  rideId,
+  driverId,
+}) => {
 
-// ACCEPT RIDE SERVICE 
-const acceptRideService = async ({rideId,driverId})=>{
+  if (!rideId) {
+    throw new ApiError(
+      400,
+      "Ride ID is required"
+    );
+  }
 
-  // find ride and update requested to accept 
-   const ride = await Ride.findOneAndUpdate(
-    {
-      _id: rideId,
-      status: "requested"
-    },
-    {
-      driverId,
-      status: "accepted"
-    },
-    {
-      new: true
-    }
-  );
+  const otp =
+    FareCalculator.generateOTP();
 
-  // through error if already accepted
+  const ride =
+    await Ride.findOneAndUpdate(
+      {
+        _id: rideId,
+        status: "requested",
+      },
+      {
+        driverId,
+        status: "accepted",
+        otp,
+      },
+      {
+        new: true,
+      }
+    );
+
   if (!ride) {
     throw new ApiError(
       400,
@@ -100,9 +101,9 @@ const acceptRideService = async ({rideId,driverId})=>{
   }
 
   return ride;
-}
+};
 
 export {
   createRideService,
-  acceptRideService
+  acceptRideService,
 };
