@@ -41,19 +41,24 @@ const createRideService = async ({
     });
 
   for (const driver of nearbyDrivers) {
-    const socketId = onlineDrivers.get(
-      driver.authUserId.toString()
-    );
+    const socketId =
+      onlineDrivers.get(
+        driver.authUserId.toString()
+      );
 
     if (!socketId) continue;
 
-    io.to(socketId).emit("new-ride", {
-      rideId: ride._id,
-      pickup: ride.pickup,
-      dropoff: ride.dropoff,
-      fare: ride.fare,
-    });
+    global.io
+      .to(socketId)
+      .emit("new-ride", {
+        rideId: ride._id,
+        pickup: ride.pickup,
+        dropoff: ride.dropoff,
+        fare: ride.fare,
+      });
   }
+
+  console.log("Nearby Drivers:", nearbyDrivers.length);
 
   return {
     ride,
@@ -62,11 +67,11 @@ const createRideService = async ({
 };
 
 // ACCEPT RIDE SERVICE
+
 const acceptRideService = async ({
   rideId,
   driverId,
 }) => {
-
   if (!rideId) {
     throw new ApiError(
       400,
@@ -74,7 +79,6 @@ const acceptRideService = async ({
     );
   }
 
-<<<<<<< HEAD
   const otp =
     FareCalculator.generateOTP();
 
@@ -93,28 +97,6 @@ const acceptRideService = async ({
         new: true,
       }
     );
-=======
-  console.log("rideId:", rideId);
-  console.log("driverId:", driverId);
-
-  const existingRide = await Ride.findById(rideId);
-  console.log("Existing Ride:", existingRide);
-
-  // find ride and update requested to accept 
-   const ride = await Ride.findOneAndUpdate(
-    {
-      _id: rideId,
-      status: "requested"
-    },
-    {
-      driverId,
-      status: "accepted"
-    },
-    {
-      new: true
-    }
-  );
->>>>>>> 4f89f67557f7481e832b6f25168b59ec4570f246
 
   if (!ride) {
     throw new ApiError(
