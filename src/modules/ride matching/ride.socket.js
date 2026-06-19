@@ -5,35 +5,35 @@ import { onlineDrivers } from "./onlineDrivers.js";
 export const rideSocket = (io, socket) => {
 
   // DRIVER REGISTER
-socket.on(
-  "registerDriver",
-  ({ driverId }) => {
+  socket.on(
+    "registerDriver",
+    ({ driverId }) => {
 
-    console.log(
-      "REGISTER DRIVER EVENT RECEIVED"
-    );
+      console.log(
+        "REGISTER DRIVER EVENT RECEIVED"
+      );
 
-    console.log(
-      "Driver ID:",
-      driverId
-    );
+      console.log(
+        "Driver ID:",
+        driverId
+      );
 
-    console.log(
-      "Socket ID:",
-      socket.id
-    );
+      console.log(
+        "Socket ID:",
+        socket.id
+      );
 
-    onlineDrivers.set(
-      driverId,
-      socket.id
-    );
+      onlineDrivers.set(
+        driverId,
+        socket.id
+      );
 
-    console.log(
-      "Map Size:",
-      onlineDrivers.size
-    );
-  }
-);
+      console.log(
+        "Map Size:",
+        onlineDrivers.size
+      );
+    }
+  );
 
   // USER REGISTER
   socket.on("registerUser", ({ userId }) => {
@@ -52,6 +52,10 @@ socket.on(
   socket.on(
     "acceptRide",
     async ({ rideId, driverId }) => {
+
+      console.log("ACCEPT RIDE EVENT RECEIVED");
+      console.log("Ride ID:", rideId);
+      console.log("Driver ID:", driverId);
 
       try {
 
@@ -73,6 +77,8 @@ socket.on(
               new: true
             }
           );
+
+          console.log("UPDATED RIDE:", ride);
 
         if (!ride) {
           return socket.emit(

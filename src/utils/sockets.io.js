@@ -1,6 +1,8 @@
 import { sendMessage } from "../modules/chatRoom/services/chat.service.js";
 import { DriverProfile } from "../modules/driver/models/driverProfile.model.js"
 import { onlineDrivers } from "./onlineDrivers.js";
+import { Ride } from "../modules/ride/models/ride.model.js";
+import { FareCalculator } from "./fare.calculation.js";
 
 // CHAT SOCKET ---------------------------------------------
 const chatSocket = (io, socket) => {
@@ -18,85 +20,205 @@ const chatSocket = (io, socket) => {
   });
 };
 
-
-
-// RIDE SOCKET-----------------------------------------------------
-// const rideSocket = (io, socket) => {
-
-//   socket.on("driverLocation", async (data) => {
-//     try {
-//       const { userId, lat, lng } = data;
-
-//       if (!userId || !lat || !lng) return;
-
-//       // FIRST: get driver
-//       const driver = await DriverProfile.findOne({
-//         authUserId: userId
-//       });
-
-//       if (!driver) return;
-
-//       // IMPORTANT CHECK HERE
-//       if (driver.driverStatus === "OFFLINE") return;
-
-//       // ONLY update if ONLINE
-//       await DriverProfile.findOneAndUpdate(
-//         { authUserId: userId },
-//         {
-//           location: {
-//             type: "Point",
-//             coordinates: [lng, lat]
-//           },
-//           lastSeen: new Date()
-//         }
-//       );
-
-//       socket.broadcast.emit("driverMoved", {
-//         driverId: driver._id,
-//         lat,
-//         lng
-//       });
-
-//     } catch (err) {
-//       console.log("Socket error:", err.message);
-//     }
-//   });
-
-// };
-
-
 const rideSocket = (io, socket) => {
 
-  socket.on("driver-online", (userId) => {
+  // DRIVER ONLINE
+  socket.on(
+    "driver-online",
+    (userId) => {
 
-    onlineDrivers.set(
-      userId,
-      socket.id
-    );
+      onlineDrivers.set(
+        userId,
+        socket.id
+      );
 
-    console.log(
-      "Driver online:",
-      userId
-    );
+      console.log(
+        "Driver online:",
+        userId
+      );
 
-  });
+      console.log(
+        "Socket ID:",
+        socket.id
+      );
+    }
+  );
 
-  socket.on("driverLocation", async (data) => {
-    // your existing code
-  });
+  // USER ONLINE
+  socket.on(
+    "user-online",
+    (userId) => {
 
-  socket.on("disconnect", () => {
+      socket.join(
+        `user-${userId}`
+      );
 
-    for (const [userId, socketId] of onlineDrivers.entries()) {
+      console.log(
+        "User online:",
+        userId
+      );
+    }
+  );
 
-      if (socketId === socket.id) {
-        onlineDrivers.delete(userId);
-        break;
+  // ACCEPT RIDE
+  socket.on(
+    "acceptRide",
+    async ({
+      rideId,
+      driverId
+    }) => {
+
+      console.log(
+        "ACCEPT RIDE RECEIVED"
+      );
+
+      console.log(
+        "Ride ID:",
+        rideId
+      );
+
+      console.log(
+        "Driver ID:",
+        driverId
+      );
+
+      try {
+
+        const otp =
+          FareCalculator.generateOTP();
+
+        const ride =
+          await Ride.findOneAndUpdate(
+            {
+              _id: rideId,
+              status: "requested"
+            },
+            {
+              driverId,
+              status: "accepted",
+              otp
+            },
+            {
+              new: true
+            }
+          );
+
+        console.log(
+          "UPDATED RIDE:",
+          ride
+        );
+
+        if (!ride) {
+
+          return socket.emit(
+            "rideError",
+            {
+              message:
+                "Ride already accepted or not found"
+            }
+          );
+
+        }
+
+        // SEND TO DRIVER
+        socket.emit(
+          "rideAssigned",
+          {
+            rideId: ride._id,
+            pickup: ride.pickup,
+            dropoff: ride.dropoff,
+            fare: ride.fare,
+            status: ride.status
+          }
+        );
+
+        // SEND OTP TO USER
+        io.to(
+          `user-${ride.passengerId}`
+        ).emit(
+          "rideAccepted",
+          {
+            rideId: ride._id,
+            driverId:
+              ride.driverId,
+            otp: ride.otp,
+            pickup:
+              ride.pickup,
+            dropoff:
+              ride.dropoff,
+            fare:
+              ride.fare,
+            status:
+              ride.status
+          }
+        );
+
+        console.log(
+          "Ride Accepted:",
+          ride._id
+        );
+
+      } catch (error) {
+
+        console.log(
+          "ACCEPT ERROR:",
+          error
+        );
+
+        socket.emit(
+          "rideError",
+          {
+            message:
+              error.message
+          }
+        );
+
       }
 
     }
+  );
 
-  });
+  // DRIVER LOCATION
+  socket.on(
+    "driverLocation",
+    async (data) => {
+      // keep your existing code
+    }
+  );
+
+  // DISCONNECT
+  socket.on(
+    "disconnect",
+    () => {
+
+      for (
+        const [
+          userId,
+          socketId
+        ]
+        of onlineDrivers.entries()
+      ) {
+
+        if (
+          socketId === socket.id
+        ) {
+
+          onlineDrivers.delete(
+            userId
+          );
+
+          console.log(
+            "Driver Offline:",
+            userId
+          );
+
+          break;
+        }
+
+      }
+
+    }
+  );
 
 };
 
