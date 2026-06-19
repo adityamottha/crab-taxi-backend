@@ -1,7 +1,7 @@
 import { sendMessage } from "../modules/chatRoom/services/chat.service.js";
 import { DriverProfile } from "../modules/driver/models/driverProfile.model.js"
 import { onlineDrivers } from "./onlineDrivers.js";
-import { Ride } from "../modules/ride/models/ride.model.js";
+import { Ride } from "../modules/ride matching/models/ride.model.js";
 import { FareCalculator } from "./fare.calculation.js";
 
 // CHAT SOCKET ---------------------------------------------
