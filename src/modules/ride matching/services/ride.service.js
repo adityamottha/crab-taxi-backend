@@ -41,38 +41,13 @@ const createRideService = async ({
       lng: pickup.lng,
     });
 
-  console.log(
-    "Nearby Drivers:",
-    nearbyDrivers.length
-  );
-
   for (const driver of nearbyDrivers) {
-
-    console.log(
-      "FULL DRIVER OBJECT:",
-      driver
-    );
 
     const driverId =
       driver.authUserId.toString();
 
-    console.log(
-      "Current Online Drivers:",
-      [...onlineDrivers.entries()]
-    );
-
     const socketId =
       onlineDrivers.get(driverId);
-
-    console.log(
-      "DRIVER ID:",
-      driverId
-    );
-
-    console.log(
-      "SOCKET ID:",
-      socketId
-    );
 
     if (!socketId) {
 
