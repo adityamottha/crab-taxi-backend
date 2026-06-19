@@ -9,6 +9,7 @@ const createRideService = async ({
   pickup,
   dropoff,
 }) => {
+
   if (!pickup || !dropoff) {
     throw new ApiError(
       400,
@@ -40,25 +41,64 @@ const createRideService = async ({
       lng: pickup.lng,
     });
 
+  console.log(
+    "Nearby Drivers:",
+    nearbyDrivers.length
+  );
+
   for (const driver of nearbyDrivers) {
+
+    console.log(
+      "FULL DRIVER OBJECT:",
+      driver
+    );
+
+    const driverId =
+      driver.authUserId.toString();
+
+    console.log(
+      "Current Online Drivers:",
+      [...onlineDrivers.entries()]
+    );
+
     const socketId =
-      onlineDrivers.get(
-        driver.authUserId.toString()
+      onlineDrivers.get(driverId);
+
+    console.log(
+      "DRIVER ID:",
+      driverId
+    );
+
+    console.log(
+      "SOCKET ID:",
+      socketId
+    );
+
+    if (!socketId) {
+
+      console.log(
+        "NO SOCKET FOUND FOR DRIVER"
       );
 
-    if (!socketId) continue;
+      continue;
+    }
 
     global.io
       .to(socketId)
-      .emit("new-ride", {
-        rideId: ride._id,
-        pickup: ride.pickup,
-        dropoff: ride.dropoff,
-        fare: ride.fare,
-      });
-  }
+      .emit(
+        "new-ride",
+        {
+          rideId: ride._id,
+          pickup: ride.pickup,
+          dropoff: ride.dropoff,
+          fare: ride.fare,
+        }
+      );
 
-  console.log("Nearby Drivers:", nearbyDrivers.length);
+    console.log(
+      "NEW RIDE EMITTED"
+    );
+  }
 
   return {
     ride,

@@ -1,38 +1,54 @@
 import { Ride } from "../modules/ride/models/ride.model.js";
 import { FareCalculator } from "./fare.calculation.js";
+import { onlineDrivers } from "./onlineDrivers.js";
 
 export const rideSocket = (io, socket) => {
 
-  // DRIVER REGISTRATION
-  socket.on("registerDriver", ({ driverId }) => {
-    socket.join(`driver-${driverId}`);
+  // DRIVER REGISTER
+socket.on(
+  "registerDriver",
+  ({ driverId }) => {
 
     console.log(
-      `Driver Registered: ${driverId}`
+      "REGISTER DRIVER EVENT RECEIVED"
     );
-  });
 
-  // USER REGISTRATION
+    console.log(
+      "Driver ID:",
+      driverId
+    );
+
+    console.log(
+      "Socket ID:",
+      socket.id
+    );
+
+    onlineDrivers.set(
+      driverId,
+      socket.id
+    );
+
+    console.log(
+      "Map Size:",
+      onlineDrivers.size
+    );
+  }
+);
+
+  // USER REGISTER
   socket.on("registerUser", ({ userId }) => {
-    socket.join(`user-${userId}`);
+
+    socket.join(
+      `user-${userId}`
+    );
 
     console.log(
-      `User Registered: ${userId}`
+      "User Registered:",
+      userId
     );
   });
 
-  // DRIVER LOCATION UPDATE
-  socket.on(
-    "driverLocation",
-    async ({ driverId, lat, lng }) => {
-
-      console.log(
-        `Driver ${driverId} location updated`
-      );
-    }
-  );
-
-  // ACCEPT RIDE
+  // DRIVER ACCEPTS RIDE
   socket.on(
     "acceptRide",
     async ({ rideId, driverId }) => {
@@ -68,10 +84,8 @@ export const rideSocket = (io, socket) => {
           );
         }
 
-        // NOTIFY DRIVER
-        io.to(
-          `driver-${driverId}`
-        ).emit(
+        // DRIVER NOTIFICATION
+        socket.emit(
           "rideAssigned",
           {
             rideId: ride._id,
@@ -82,7 +96,7 @@ export const rideSocket = (io, socket) => {
           }
         );
 
-        // NOTIFY USER WITH OTP
+        // USER NOTIFICATION
         io.to(
           `user-${ride.passengerId}`
         ).emit(
@@ -98,6 +112,11 @@ export const rideSocket = (io, socket) => {
           }
         );
 
+        console.log(
+          "Ride Accepted:",
+          ride._id
+        );
+
       } catch (error) {
 
         socket.emit(
@@ -111,15 +130,32 @@ export const rideSocket = (io, socket) => {
     }
   );
 
-  // REJECT RIDE
+  // DRIVER DISCONNECT
   socket.on(
-    "rejectRide",
-    async ({ rideId }) => {
+    "disconnect",
+    () => {
 
-      console.log(
-        `Ride Rejected: ${rideId}`
-      );
+      for (
+        const [driverId, socketId]
+        of onlineDrivers.entries()
+      ) {
 
+        if (
+          socketId === socket.id
+        ) {
+
+          onlineDrivers.delete(
+            driverId
+          );
+
+          console.log(
+            "Driver Offline:",
+            driverId
+          );
+
+          break;
+        }
+      }
     }
   );
 };
