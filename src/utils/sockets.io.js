@@ -33,10 +33,14 @@ const rideSocket = (io, socket) => {
       socket.id
     );
 
+    console.log("\n========== DRIVER ONLINE ==========");
+    console.log("Driver ID:", userId);
+    console.log("Socket ID:", socket.id);
     console.log(
-      "Driver online:",
-      userId
+      "Current Online Drivers:",
+      [...onlineDrivers.entries()]
     );
+    console.log("===================================\n");
 
   });
 
@@ -47,10 +51,10 @@ const rideSocket = (io, socket) => {
       `user-${userId}`
     );
 
-    console.log(
-      "User online:",
-      userId
-    );
+    console.log("\n========== USER ONLINE ==========");
+    console.log("User ID:", userId);
+    console.log("Socket ID:", socket.id);
+    console.log("=================================\n");
 
   });
 
@@ -63,6 +67,10 @@ const rideSocket = (io, socket) => {
     }) => {
 
       try {
+
+        console.log(
+          "ACCEPT RIDE EVENT RECEIVED"
+        );
 
         const ride =
           await acceptRideService({
@@ -107,6 +115,14 @@ const rideSocket = (io, socket) => {
 
       }
 
+      console.log(
+        "rideAssigned emitted to driver"
+      );
+
+      console.log(
+        "rideAccepted emitted to user"
+      );
+
     }
   );
 
@@ -119,7 +135,9 @@ const rideSocket = (io, socket) => {
     }) => {
 
       try {
-
+        console.log(
+          "START RIDE EVENT RECEIVED"
+        );
         const ride =
           await startRideService({
             rideId,
@@ -154,7 +172,9 @@ const rideSocket = (io, socket) => {
         );
 
       }
-
+      console.log(
+        "rideStarted emitted"
+      );
     }
   );
 
@@ -167,7 +187,9 @@ const rideSocket = (io, socket) => {
     }) => {
 
       try {
-
+        console.log(
+          "COMPLETE RIDE EVENT RECEIVED"
+        );
         const ride =
           await completeRideService({
             rideId,
@@ -202,7 +224,9 @@ const rideSocket = (io, socket) => {
         );
 
       }
-
+      console.log(
+        "rideCompleted emitted"
+      );
     }
   );
 

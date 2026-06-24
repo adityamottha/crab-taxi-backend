@@ -35,11 +35,20 @@ const createRideService = async ({
     status: "requested",
   });
 
+  console.log("Ride ID:", ride._id);
+  console.log("Passenger ID:", passengerId);
+  console.log("Status:", ride.status);
+
   const nearbyDrivers =
     await getNearbyDriversService({
       lat: pickup.lat,
       lng: pickup.lng,
     });
+
+  console.log(
+    "Nearby Drivers Found:",
+    nearbyDrivers.length
+  );
 
   for (const driver of nearbyDrivers) {
 
@@ -87,6 +96,10 @@ const acceptRideService = async ({
   rideId,
   driverId,
 }) => {
+
+  console.log("Ride ID:", rideId);
+  console.log("Driver ID:", driverId);
+
   if (!rideId) {
     throw new ApiError(
       400,
@@ -120,13 +133,32 @@ const acceptRideService = async ({
     );
   }
 
+  console.log(
+    "Ride Accepted Successfully"
+  );
+
+  console.log(
+    "Generated OTP:",
+    ride.otp
+  );
+
+  console.log(
+    "Status:",
+    ride.status
+  );
+
   return ride;
 };
+
+// START RIDE SERVICE ...........
 
 const startRideService = async ({
   rideId,
   otp
 }) => {
+
+  console.log("Ride ID:", rideId);
+  console.log("OTP:", otp);
 
   const ride =
     await Ride.findOne({
@@ -153,13 +185,32 @@ const startRideService = async ({
 
   await ride.save();
 
+  console.log(
+    "Ride Started Successfully"
+  );
+
+  console.log(
+    "Status:",
+    ride.status
+  );
+
+  console.log(
+    "Started At:",
+    ride.startedAt
+  );
+
   return ride;
 };
+
+// COMPLETE RIDE SERVICE ...........
 
 const completeRideService = async ({
   rideId,
   driverId
 }) => {
+
+  console.log("Ride ID:", rideId);
+  console.log("Driver ID:", driverId);
 
   const ride =
     await Ride.findOne({
@@ -182,6 +233,20 @@ const completeRideService = async ({
     new Date();
 
   await ride.save();
+
+  console.log(
+    "Ride Completed Successfully"
+  );
+
+  console.log(
+    "Completed At:",
+    ride.completedAt
+  );
+
+  console.log(
+    "Status:",
+    ride.status
+  );
 
   return ride;
 };
