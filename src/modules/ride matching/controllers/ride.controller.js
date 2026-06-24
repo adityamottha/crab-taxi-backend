@@ -1,11 +1,10 @@
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
-import {
-  createRideService,
-} from "../services/ride.service.js";
+import { createRideService } from "../services/ride.service.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 
 const createRideController =
   AsyncHandler(async (req, res) => {
+
     const { pickup, dropoff } =
       req.body;
 
@@ -23,9 +22,9 @@ const createRideController =
         "Ride created successfully"
       )
     );
+
   });
 
-
 export {
-  createRideController,
+  createRideController
 };

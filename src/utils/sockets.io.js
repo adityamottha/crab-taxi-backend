@@ -1,8 +1,11 @@
 import { sendMessage } from "../modules/chatRoom/services/chat.service.js";
 import { DriverProfile } from "../modules/driver/models/driverProfile.model.js"
 import { onlineDrivers } from "./onlineDrivers.js";
-import { Ride } from "../modules/ride matching/models/ride.model.js";
-import { FareCalculator } from "./fare.calculation.js";
+import {
+  acceptRideService,
+  startRideService,
+  completeRideService
+} from "../modules/ride matching/services/ride.service.js";
 
 // CHAT SOCKET ---------------------------------------------
 const chatSocket = (io, socket) => {
@@ -23,42 +26,33 @@ const chatSocket = (io, socket) => {
 const rideSocket = (io, socket) => {
 
   // DRIVER ONLINE
-  socket.on(
-    "driver-online",
-    (userId) => {
+  socket.on("driver-online", (userId) => {
 
-      onlineDrivers.set(
-        userId,
-        socket.id
-      );
+    onlineDrivers.set(
+      userId,
+      socket.id
+    );
 
-      console.log(
-        "Driver online:",
-        userId
-      );
+    console.log(
+      "Driver online:",
+      userId
+    );
 
-      console.log(
-        "Socket ID:",
-        socket.id
-      );
-    }
-  );
+  });
 
   // USER ONLINE
-  socket.on(
-    "user-online",
-    (userId) => {
+  socket.on("user-online", (userId) => {
 
-      socket.join(
-        `user-${userId}`
-      );
+    socket.join(
+      `user-${userId}`
+    );
 
-      console.log(
-        "User online:",
-        userId
-      );
-    }
-  );
+    console.log(
+      "User online:",
+      userId
+    );
+
+  });
 
   // ACCEPT RIDE
   socket.on(
@@ -68,59 +62,14 @@ const rideSocket = (io, socket) => {
       driverId
     }) => {
 
-      console.log(
-        "ACCEPT RIDE RECEIVED"
-      );
-
-      console.log(
-        "Ride ID:",
-        rideId
-      );
-
-      console.log(
-        "Driver ID:",
-        driverId
-      );
-
       try {
 
-        const otp =
-          FareCalculator.generateOTP();
-
         const ride =
-          await Ride.findOneAndUpdate(
-            {
-              _id: rideId,
-              status: "requested"
-            },
-            {
-              driverId,
-              status: "accepted",
-              otp
-            },
-            {
-              new: true
-            }
-          );
+          await acceptRideService({
+            rideId,
+            driverId
+          });
 
-        console.log(
-          "UPDATED RIDE:",
-          ride
-        );
-
-        if (!ride) {
-
-          return socket.emit(
-            "rideError",
-            {
-              message:
-                "Ride already accepted or not found"
-            }
-          );
-
-        }
-
-        // SEND TO DRIVER
         socket.emit(
           "rideAssigned",
           {
@@ -132,44 +81,123 @@ const rideSocket = (io, socket) => {
           }
         );
 
-        // SEND OTP TO USER
         io.to(
           `user-${ride.passengerId}`
         ).emit(
           "rideAccepted",
           {
             rideId: ride._id,
-            driverId:
-              ride.driverId,
+            driverId: ride.driverId,
             otp: ride.otp,
-            pickup:
-              ride.pickup,
-            dropoff:
-              ride.dropoff,
-            fare:
-              ride.fare,
-            status:
-              ride.status
+            pickup: ride.pickup,
+            dropoff: ride.dropoff,
+            fare: ride.fare,
+            status: ride.status
           }
-        );
-
-        console.log(
-          "Ride Accepted:",
-          ride._id
         );
 
       } catch (error) {
 
-        console.log(
-          "ACCEPT ERROR:",
-          error
+        socket.emit(
+          "rideError",
+          {
+            message: error.message
+          }
         );
+
+      }
+
+    }
+  );
+
+  // START RIDE
+  socket.on(
+    "startRide",
+    async ({
+      rideId,
+      otp
+    }) => {
+
+      try {
+
+        const ride =
+          await startRideService({
+            rideId,
+            otp
+          });
+
+        socket.emit(
+          "rideStarted",
+          {
+            rideId: ride._id,
+            status: ride.status
+          }
+        );
+
+        io.to(
+          `user-${ride.passengerId}`
+        ).emit(
+          "rideStarted",
+          {
+            rideId: ride._id,
+            status: ride.status
+          }
+        );
+
+      } catch (error) {
 
         socket.emit(
           "rideError",
           {
-            message:
-              error.message
+            message: error.message
+          }
+        );
+
+      }
+
+    }
+  );
+
+  // COMPLETE RIDE
+  socket.on(
+    "completeRide",
+    async ({
+      rideId,
+      driverId
+    }) => {
+
+      try {
+
+        const ride =
+          await completeRideService({
+            rideId,
+            driverId
+          });
+
+        socket.emit(
+          "rideCompleted",
+          {
+            rideId: ride._id,
+            status: ride.status
+          }
+        );
+
+        io.to(
+          `user-${ride.passengerId}`
+        ).emit(
+          "rideCompleted",
+          {
+            rideId: ride._id,
+            status: ride.status
+          }
+        );
+
+      } catch (error) {
+
+        socket.emit(
+          "rideError",
+          {
+            message: error.message
           }
         );
 
@@ -182,7 +210,7 @@ const rideSocket = (io, socket) => {
   socket.on(
     "driverLocation",
     async (data) => {
-      // keep your existing code
+      // keep your existing location code
     }
   );
 
@@ -192,10 +220,7 @@ const rideSocket = (io, socket) => {
     () => {
 
       for (
-        const [
-          userId,
-          socketId
-        ]
+        const [userId, socketId]
         of onlineDrivers.entries()
       ) {
 
@@ -222,7 +247,7 @@ const rideSocket = (io, socket) => {
 
 };
 
-export { 
+export {
   chatSocket,
   rideSocket
 }

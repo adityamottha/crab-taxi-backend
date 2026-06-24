@@ -7,14 +7,19 @@ import { createRideController } from "./controllers/ride.controller.js";
 const router = Router();
 
 // fare calculator
-router.post("/calculate-fare",verifyJWT,authorizeRole("USER"),calculateFareController);
-
+router.post(
+    "/calculate-fare",
+    verifyJWT,
+    authorizeRole("USER"),
+    calculateFareController
+);
 
 // create ride
-router.post("/create", verifyJWT,authorizeRole("USER"),createRideController);
-
-
-// // accept ride
-// router.post("/accept-ride/:rideId", verifyJWT,authorizeRole("DRIVER"), acceptRideController);
+router.post(
+    "/create",
+    verifyJWT,
+    authorizeRole("USER"),
+    createRideController
+);
 
 export default router;

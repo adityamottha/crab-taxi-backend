@@ -123,7 +123,72 @@ const acceptRideService = async ({
   return ride;
 };
 
+const startRideService = async ({
+  rideId,
+  otp
+}) => {
+
+  const ride =
+    await Ride.findOne({
+      _id: rideId,
+      status: "accepted"
+    });
+
+  if (!ride) {
+    throw new ApiError(
+      400,
+      "Ride not accepted"
+    );
+  }
+
+  if (ride.otp !== otp) {
+    throw new ApiError(
+      400,
+      "Invalid OTP"
+    );
+  }
+
+  ride.status = "started";
+  ride.startedAt = new Date();
+
+  await ride.save();
+
+  return ride;
+};
+
+const completeRideService = async ({
+  rideId,
+  driverId
+}) => {
+
+  const ride =
+    await Ride.findOne({
+      _id: rideId,
+      driverId,
+      status: "started"
+    });
+
+  if (!ride) {
+    throw new ApiError(
+      400,
+      "Ride not started"
+    );
+  }
+
+  ride.status =
+    "completed";
+
+  ride.completedAt =
+    new Date();
+
+  await ride.save();
+
+  return ride;
+};
+
 export {
   createRideService,
   acceptRideService,
+  startRideService,
+  completeRideService
 };
