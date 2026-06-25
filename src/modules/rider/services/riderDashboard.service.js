@@ -32,6 +32,21 @@ const getNearbyDriversService = async ({ lng, lat }) => {
   return drivers;
 };
 
+// get driver profile 
+const getDriverProfileForUserService =(driverId)=>{
+   // check userId is not empty 
+  if(!userId.trim()) throw new ApiError(400,"userId is required!");
+  
+  // find driver by userId 
+  const driver = await DriverProfile.findById(driverId)
+  if(!driver) throw new ApiError(409,"Driver is not availbale from this UserId!");
+
+  // return driver 
+  return driver
+  
+}
+
 export {
-  getNearbyDriversService
+  getNearbyDriversService,
+  getDriverProfileForUserService
 };
