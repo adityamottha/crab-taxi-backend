@@ -33,7 +33,7 @@ const getNearbyDriversService = async ({ lng, lat }) => {
 };
 
 // get driver profile 
-const getDriverProfileForUserService =(driverId)=>{
+const getDriverProfileForUserService = async (driverId)=>{
    // check userId is not empty 
   if(!driverId.trim()) throw new ApiError(400,"userId is required!");
   
