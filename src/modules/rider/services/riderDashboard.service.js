@@ -1,5 +1,7 @@
 import { DriverProfile } from "../../driver/models/driverProfile.model.js";
 import { ApiError } from "../../../utils/ApiError.js";
+import { AuthUser } from "../../auth/authUsers.models.js";
+import { mongoose } from "mongoose";
 
 const getNearbyDriversService = async ({ lng, lat }) => {
 
@@ -33,18 +35,46 @@ const getNearbyDriversService = async ({ lng, lat }) => {
 };
 
 // get driver profile 
-const getDriverProfileForUserService = async (driverId)=>{
-   // check userId is not empty 
-  if(!driverId.trim()) throw new ApiError(400,"userId is required!");
-  
-  // find driver by userId 
-  const driver = await DriverProfile.findById(driverId)
-  if(!driver) throw new ApiError(409,"Driver is not availbale from this UserId!");
+const getDriverProfileForUserService = async (driverId) => {
+// console.log("driverId:", driverId);
 
-  // return driver 
-  return driver
-  
-}
+  const driverProfile = await AuthUser.aggregate([
+
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(driverId)
+      }
+    },
+
+    {
+      $lookup: {
+        from: "driverprofiles",
+        localField: "_id",
+        foreignField: "authUserId",
+        as: "driverProfile"
+      }
+    },
+
+    {
+      $unwind: {
+        path: "$driverProfile",
+        preserveNullAndEmptyArrays: true
+      }
+    },
+
+    {
+      $project: {
+        password: 0,
+        __v: 0
+      }
+    }
+
+  ]);
+
+  // console.log("result:", driverProfile);
+
+  return driverProfile[0] || null;
+};
 
 export {
   getNearbyDriversService,
