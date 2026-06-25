@@ -1,7 +1,7 @@
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 
-import { getNearbyDriversService } from "../services/riderDashboard.service.js";
+import { getDriverProfileForUserService, getNearbyDriversService } from "../services/riderDashboard.service.js";
 
 const getNearbyDrivers = AsyncHandler(async (req, res) => {
 
@@ -25,6 +25,22 @@ const getNearbyDrivers = AsyncHandler(async (req, res) => {
 
 });
 
+// Get driver profile for user
+const getDriverProfileForUserController = AsyncHandler(async (req,res)=>{
+
+  // get userId from req.body  
+  const driverId = req.body.driverId;
+
+  // call the service function 
+  const driver = await getDriverProfileForUserService(driverId);
+
+  // send response 
+  return res.status(200).json(
+    new ApiResponse(200,driver,"Single driver fetched successfully!")
+  )
+});
+
 export {
-  getNearbyDrivers
+  getNearbyDrivers,
+  getDriverProfileForUserController
 };

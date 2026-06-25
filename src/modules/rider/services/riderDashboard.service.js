@@ -35,7 +35,7 @@ const getNearbyDriversService = async ({ lng, lat }) => {
 // get driver profile 
 const getDriverProfileForUserService =(driverId)=>{
    // check userId is not empty 
-  if(!userId.trim()) throw new ApiError(400,"userId is required!");
+  if(!driverId.trim()) throw new ApiError(400,"userId is required!");
   
   // find driver by userId 
   const driver = await DriverProfile.findById(driverId)
