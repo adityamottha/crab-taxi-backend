@@ -61,7 +61,8 @@ const createRideService = async ({
   };
 };
 
-// ACCEPT RIDE SERVICE
+
+// ================================= ACCEPT RIDE SERVICE ========================
 const acceptRideService = async ({
   rideId,
   driverId,
@@ -73,10 +74,7 @@ const acceptRideService = async ({
       "Ride ID is required"
     );
   }
-
-<<<<<<< HEAD
-  const otp =
-    FareCalculator.generateOTP();
+  const otp = FareCalculator.generateOTP();
 
   const ride =
     await Ride.findOneAndUpdate(
@@ -93,9 +91,6 @@ const acceptRideService = async ({
         new: true,
       }
     );
-=======
-  console.log("rideId:", rideId);
-  console.log("driverId:", driverId);
 
   const existingRide = await Ride.findById(rideId);
   console.log("Existing Ride:", existingRide);
@@ -114,7 +109,6 @@ const acceptRideService = async ({
       new: true
     }
   );
->>>>>>> 4f89f67557f7481e832b6f25168b59ec4570f246
 
   if (!ride) {
     throw new ApiError(
