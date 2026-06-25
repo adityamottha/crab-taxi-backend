@@ -90,13 +90,8 @@ const createRideService = async ({
   };
 };
 
-<<<<<<< HEAD
-
-// ================================= ACCEPT RIDE SERVICE ========================
-=======
 // ACCEPT RIDE SERVICE
 
->>>>>>> 9f32cab15e32abec2b2c3fb8bd48d7e818976cd0
 const acceptRideService = async ({
   rideId,
   driverId,
@@ -111,13 +106,9 @@ const acceptRideService = async ({
       "Ride ID is required"
     );
   }
-<<<<<<< HEAD
-  const otp = FareCalculator.generateOTP();
-=======
 
   const otp =
     FareCalculator.generateOTP();
->>>>>>> 9f32cab15e32abec2b2c3fb8bd48d7e818976cd0
 
   const ride =
     await Ride.findOneAndUpdate(
@@ -134,27 +125,6 @@ const acceptRideService = async ({
         new: true,
       }
     );
-<<<<<<< HEAD
-
-  const existingRide = await Ride.findById(rideId);
-  console.log("Existing Ride:", existingRide);
-
-  // find ride and update requested to accept 
-   const ride = await Ride.findOneAndUpdate(
-    {
-      _id: rideId,
-      status: "requested"
-    },
-    {
-      driverId,
-      status: "accepted"
-    },
-    {
-      new: true
-    }
-  );
-=======
->>>>>>> 9f32cab15e32abec2b2c3fb8bd48d7e818976cd0
 
   if (!ride) {
     throw new ApiError(
