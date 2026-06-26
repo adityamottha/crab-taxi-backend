@@ -231,12 +231,47 @@ const rideSocket = (io, socket) => {
   );
 
   // DRIVER LOCATION
-  socket.on(
-    "driverLocation",
-    async (data) => {
-      // keep your existing location code
+const rideSocket = (io, socket) => {
+
+  socket.on("driverLocation", async (data) => {
+  console.log("✅ Socket Connected:", socket.id);
+
+    try {
+
+      const { userId, lat, lng } = data;
+
+      const driver = await updateDriverLocationService(
+        userId,
+        lat,
+        lng
+      );
+
+      console.log({
+      driverId: driver.authUserId,
+      lat,
+      lng,
+      updatedAt: driver.lastSeen
+    });
+
+      io.emit("driverMoved", {
+        driverId: driver.authUserId,
+        lat,
+        lng
+      });
+
+    } catch (err) {
+
+      console.log("Driver Location Error:", err.message);
+
+      socket.emit("error", {
+        message: err.message
+      });
+
     }
-  );
+
+  });
+
+};
 
   // DISCONNECT
   socket.on(
