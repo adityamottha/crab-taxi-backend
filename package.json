@@ -27,7 +27,8 @@
     "nodemailer": "^8.0.7",
     "socket.io": "^4.8.3",
     "socket.oi": "^0.0.1-security.8",
-    "validator": "^13.15.35"
+    "validator": "^13.15.35",
+    "winston": "^3.19.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
