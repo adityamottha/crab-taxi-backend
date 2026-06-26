@@ -29,7 +29,7 @@ const getNearbyDrivers = AsyncHandler(async (req, res) => {
 const getDriverProfileForUserController = AsyncHandler(async (req,res)=>{
 
   // get userId from req.body  
-  const driverId = req.body.driverId;
+  const {driverId }= req.query;
 
   // call the service function 
   const driver = await getDriverProfileForUserService(driverId);
