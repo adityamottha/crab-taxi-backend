@@ -148,39 +148,33 @@ const goOnlineService = async (userId)=>{
 
 // UPDATE DRIVER LOCATION SERVICE--------------------------------------
 
-const updateDriverLocationService = async (userId,lat,lng) =>{
+const updateDriverLocationService = async (userId, lat, lng) => {
 
-  // check userId is required
-  if(!userId){
-    throw new ApiError(408, "UserId is required!")
-  };
+  if (!userId) {
+    throw new ApiError(400, "UserId is required");
+  }
 
-  // find driver by userId
   const driver = await DriverProfile.findOneAndUpdate(
-
-     { authUserId: userId },
-      {
-        location: {
-          type: "Point",
-          coordinates: [lng, lat]
-        },
-        lastSeen: new Date(),
-        driverStatus: "ONLINE"
+    { authUserId: userId },
+    {
+      location: {
+        type: "Point",
+        coordinates: [Number(lng), Number(lat)]
       },
-      { new: true }
-
+      lastSeen: new Date(),
+      driverStatus: "ONLINE"
+    },
+    {
+      returnDocument: "after"
+    }
   );
 
-  // check driver is available
-  if(!driver){
-    throw new ApiError(404,"Driver is not available")
-  };
+  if (!driver) {
+    throw new ApiError(404, "Driver not found");
+  }
 
-  // return driver
   return driver;
-
 };
-
 
 // GO-OFFLINE SERVICE------------------------------------------------
 const goOfflineService = async(userId)=>{
