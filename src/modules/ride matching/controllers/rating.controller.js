@@ -32,3 +32,4 @@ export const addRatingController = AsyncHandler(async (req,res)=>{
 
 });
 
+// ============= GET DRIVER RATING ====================

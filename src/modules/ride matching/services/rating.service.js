@@ -84,3 +84,23 @@ export const addRatingService = async ({
     return newRating;
 
 }
+
+// =============== GET DRIVER RATING ================= 
+ export const getDriverRatingsService = async (driverId) => {
+
+    // check driverIfd is required
+    if(driverId){
+        throw new ApiError(400,"DriverId is required");
+    };
+
+    // find rating by driverId populate and select fullname and avatar sort decending
+  const ratings = await Rating.find({driverId}).populate({
+    path: "passengerId",
+    select: "fullname avatar"
+  })
+  .sort({createdAt: -1 });
+
+  // return
+  return ratings;
+};
+
