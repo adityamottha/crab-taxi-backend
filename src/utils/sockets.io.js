@@ -246,7 +246,7 @@ const rideSocket = (io, socket) => {
         userId,
         lat,
         lng
-      );
+      ); 
 
       console.log({
       driverId: driver.authUserId,
