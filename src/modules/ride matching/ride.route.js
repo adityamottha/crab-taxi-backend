@@ -3,6 +3,7 @@ import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
 import { calculateFareController } from "./controllers/calculateFare.controller.js";
 import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
 import { createRideController } from "./controllers/ride.controller.js";
+import { addRatingController } from "./controllers/rating.controller.js";
 
 const router = Router();
 
@@ -22,4 +23,11 @@ router.post(
     createRideController
 );
 
+// rating
+router.post(
+    "/:rideId/rating",
+    verifyJWT,
+    authorizeRole("USER"),
+    addRatingController
+);
 export default router;
