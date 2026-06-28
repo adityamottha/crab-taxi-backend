@@ -1,6 +1,7 @@
 import { Ride } from "../modules/ride/models/ride.model.js";
 import { FareCalculator } from "./fare.calculation.js";
 import { onlineDrivers } from "./onlineDrivers.js";
+import { getNearbyDriversService } from "../modules/rider/services/riderDashboard.service.js";
 
 export const rideSocket = (io, socket) => {
 
@@ -78,7 +79,7 @@ export const rideSocket = (io, socket) => {
             }
           );
 
-          console.log("UPDATED RIDE:", ride);
+        console.log("UPDATED RIDE:", ride);
 
         if (!ride) {
           return socket.emit(
@@ -88,6 +89,36 @@ export const rideSocket = (io, socket) => {
                 "Ride already accepted or not found"
             }
           );
+        }
+
+        const nearbyDrivers =
+          await getNearbyDriversService({
+            lat: ride.pickup.lat,
+            lng: ride.pickup.lng
+          });
+
+        for (const driver of nearbyDrivers) {
+
+          const otherDriverId =
+            driver.authUserId.toString();
+
+          if (
+            otherDriverId ===
+            driverId.toString()
+          ) continue;
+
+          const socketId =
+            onlineDrivers.get(otherDriverId);
+
+          if (!socketId) continue;
+
+          io.to(socketId).emit(
+            "rideUnavailable",
+            {
+              rideId: ride._id
+            }
+          );
+
         }
 
         // DRIVER NOTIFICATION
