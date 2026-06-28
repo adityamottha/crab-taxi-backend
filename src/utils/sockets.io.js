@@ -28,7 +28,7 @@ const chatSocket = (io, socket) => {
 // =================RIDE SOCKET ===========================================
 const rideSocket = (io, socket) => {
 
-  // DRIVER ONLINE
+  // DRIVER ONLINE +++++++++++++++++++++++++++++++++++++
   socket.on("driver-online", (userId) => {
 
     onlineDrivers.set(
@@ -47,7 +47,7 @@ const rideSocket = (io, socket) => {
 
   });
 
-  // USER ONLINE
+  // USER ONLINE +++++++++++++++++++++++++++++++++++++++++++++++++++++
   socket.on("user-online", (userId) => {
 
     socket.join(
@@ -61,7 +61,7 @@ const rideSocket = (io, socket) => {
 
   });
 
-  // ACCEPT RIDE
+  // ACCEPT RIDE +++++++++++++++++++++++++++++++++++++++++++++
   socket.on(
     "acceptRide",
     async ({
@@ -129,7 +129,7 @@ const rideSocket = (io, socket) => {
     }
   );
 
-  // START RIDE
+  // START RIDE +++++++++++++++++++++++++++++++++++++++++++
   socket.on(
     "startRide",
     async ({
@@ -181,7 +181,7 @@ const rideSocket = (io, socket) => {
     }
   );
 
-  // COMPLETE RIDE
+  // COMPLETE RIDE +++++++++++++++++++++++++++++++++++++++++++++++++++
   socket.on(
     "completeRide",
     async ({
@@ -233,7 +233,7 @@ const rideSocket = (io, socket) => {
     }
   );
 
-  // DRIVER LOCATION
+  // DRIVER LOCATION +++++++++++++++++++++++++++++++++++++++++++++++++++++
   socket.on("driverLocation", async (data) => {
    console.log("driverLocation received");
     console.log(data); 
