@@ -89,7 +89,7 @@ export const addRatingService = async ({
  export const getDriverRatingsService = async (driverId) => {
 
     // check driverIfd is required
-    if(driverId){
+    if(!driverId){
         throw new ApiError(400,"DriverId is required");
     };
 

@@ -1,6 +1,7 @@
 import { addRatingService } from "../services/rating.service.js";
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js"
+import { getDriverRatingsService } from "../services/rating.service.js";
 
 export const addRatingController = AsyncHandler(async (req,res)=>{
 
