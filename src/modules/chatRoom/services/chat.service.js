@@ -164,7 +164,7 @@ export const createRoomService = async ({ roomType, rideId = null, user }) => {
       throw new ApiError(404, "Ride not found");
 
     participants = [
-      { role: "USER", userId: ride.userId },
+      { role: "USER", userId: ride.passengerId },
       { role: "DRIVER", userId: ride.driverId }
     ];
   }
