@@ -145,6 +145,11 @@ const driverProfileSchema = new mongoose.Schema({
         default:0
     },
 
+    ratingSum:{
+        type:Number,
+        default:0
+    },
+
     // SUSPENSION
     isSuspended: {
         type:Boolean,
