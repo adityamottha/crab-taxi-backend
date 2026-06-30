@@ -20,8 +20,13 @@ export const addRatingService = async ({
     if(!rating){
         throw new ApiError(400,"rating is required")
     }
-    if(!review.trim()){
-        throw new ApiError(400,"review is required")
+
+    // check user rating must be between 1 to 5 
+    if(rating < 1 || rating > 5){
+        throw new ApiError(
+            400,
+        "Rating must be between 1 and 5"
+        )
     }
     
     // find ride  by ride id
@@ -39,6 +44,14 @@ export const addRatingService = async ({
             "Ride is not completed"
         );
     }
+
+    // check user who rating who the same user who completed ride?
+    if (ride.passengerId.toString() !== passengerId.toString()) {
+        throw new ApiError(
+        403,
+        "You are not allowed to rate this ride"
+    );
+};
 
     // check is already Rated the ride by user
     const alreadyRated = await Rating.findOne({ rideId });
@@ -66,22 +79,40 @@ export const addRatingService = async ({
     });
 
     // find and update driverProfile rating
-    await DriverProfile.findOneAndUpdate(
+    const driver = await DriverProfile.findOneAndUpdate(
 
-        {
-            authUserId: ride.driverId
-        },
-
-        {
+        { authUserId: ride.driverId },
+        { 
             $inc:{
-                ratingAccount:1
+                ratingAccount:1,
+                ratingSum: rating
             }
+        },
+        {
+            returnDocument:"after"
         }
-
     );
 
+    // check driver is exist
+    if(!driver){
+        throw new ApiError(
+            404,
+            "Driver profile not found",
+        );
+    };
+
+    // calculate driver average rating
+    driver.rating =  Number((driver.ratingSum / driver.ratingAccount).toFixed(1)); 
+
+    // save data
+    await driver.save();
+
     // return 
-    return newRating;
+    return {
+    rating: newRating,
+    averageRating: driver.rating,
+    totalRatings: driver.ratingAccount
+};
 
 }
 
