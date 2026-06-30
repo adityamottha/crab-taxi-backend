@@ -108,11 +108,7 @@ export const addRatingService = async ({
     await driver.save();
 
     // return 
-    return {
-    rating: newRating,
-    averageRating: driver.rating,
-    totalRatings: driver.ratingAccount
-};
+   return newRating;
 
 }
 
