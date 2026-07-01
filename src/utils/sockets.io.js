@@ -1,12 +1,13 @@
 import { sendMessage } from "../modules/chatRoom/services/chat.service.js";
-import { DriverProfile } from "../modules/driver/models/driverProfile.model.js"
 import { onlineDrivers } from "./onlineDrivers.js";
 import { updateDriverLocationService } from "../modules/driver/services/driverProfile.service.js";
 import {
   acceptRideService,
+  rejectRideService,
   startRideService,
   completeRideService
 } from "../modules/ride matching/services/ride.service.js";
+import { getNearbyDriversService } from "../modules/rider/services/riderDashboard.service.js";
 
 // CHAT SOCKET ---------------------------------------------
 const chatSocket = (io, socket) => {
@@ -64,23 +65,71 @@ const rideSocket = (io, socket) => {
   // ACCEPT RIDE +++++++++++++++++++++++++++++++++++++++++++++
   socket.on(
     "acceptRide",
-    async ({
-      rideId,
-      driverId
-    }) => {
+    async ({ rideId, driverId }) => {
+
+      console.log("ACCEPT RIDE EVENT RECEIVED");
+      console.log("Ride ID:", rideId);
+      console.log("Driver ID:", driverId);
 
       try {
+        const ride = await acceptRideService({
+          rideId,
+          driverId
+        });
 
-        console.log(
-          "ACCEPT RIDE EVENT RECEIVED"
-        );
-
-        const ride =
-          await acceptRideService({
-            rideId,
-            driverId
+        // Find nearby drivers
+        const nearbyDrivers =
+          await getNearbyDriversService({
+            lat: ride.pickup.lat,
+            lng: ride.pickup.lng
           });
 
+        // Notify all pending drivers that ride is already accepted
+        for (const driver of nearbyDrivers) {
+
+          const otherDriverId =
+            driver.authUserId.toString();
+
+          // Skip driver who accepted
+          if (
+            otherDriverId ===
+            driverId.toString()
+          ) {
+            continue;
+          }
+
+          // Skip drivers who already rejected
+          const alreadyRejected =
+            (ride.rejectedDrivers || []).some(
+              id =>
+                id.toString() ===
+                otherDriverId
+            );
+
+          if (alreadyRejected) {
+            continue;
+          }
+
+          const socketId =
+            onlineDrivers.get(
+              otherDriverId
+            );
+
+          if (!socketId) {
+            continue;
+          }
+
+          io.to(socketId).emit(
+            "rideUnavailable",
+            {
+              rideId: ride._id,
+              message:
+                "Ride has already been accepted by another driver."
+            }
+          );
+        }
+
+        // Notify accepted driver
         socket.emit(
           "rideAssigned",
           {
@@ -92,6 +141,7 @@ const rideSocket = (io, socket) => {
           }
         );
 
+        // Notify passenger
         io.to(
           `user-${ride.passengerId}`
         ).emit(
@@ -107,7 +157,12 @@ const rideSocket = (io, socket) => {
           }
         );
 
+        console.log("Ride Accepted:", ride._id);
+        console.log("Nearby drivers notified.");
+
       } catch (error) {
+
+        console.log(error);
 
         socket.emit(
           "rideError",
@@ -118,13 +173,47 @@ const rideSocket = (io, socket) => {
 
       }
 
-      console.log(
-        "rideAssigned emitted to driver"
-      );
+    }
+  );
 
-      console.log(
-        "rideAccepted emitted to user"
-      );
+  // REJECT RIDE +++++++++++++++++++++++++++++++++++++++++++++
+  socket.on(
+    "rejectRide",
+    async ({
+      rideId,
+      driverId
+    }) => {
+
+      try {
+
+        await rejectRideService({
+          rideId,
+          driverId
+        });
+
+        socket.emit(
+          "rideRejected",
+          {
+            rideId
+          }
+        );
+
+        console.log(
+          "Ride rejected by",
+          driverId
+        );
+
+      } catch (error) {
+
+        socket.emit(
+          "rideError",
+          {
+            message:
+              error.message
+          }
+        );
+
+      }
 
     }
   );
@@ -235,8 +324,8 @@ const rideSocket = (io, socket) => {
 
   // DRIVER LOCATION +++++++++++++++++++++++++++++++++++++++++++++++++++++
   socket.on("driverLocation", async (data) => {
-   console.log("driverLocation received");
-    console.log(data); 
+    console.log("driverLocation received");
+    console.log(data);
 
     try {
 
@@ -246,14 +335,14 @@ const rideSocket = (io, socket) => {
         userId,
         lat,
         lng
-      ); 
+      );
 
       console.log({
-      driverId: driver.authUserId,
-      lat,
-      lng,
-      updatedAt: driver.lastSeen
-    });
+        driverId: driver.authUserId,
+        lat,
+        lng,
+        updatedAt: driver.lastSeen
+      });
 
       io.emit("driverMoved", {
         driverId: driver.authUserId,
@@ -306,7 +395,7 @@ const rideSocket = (io, socket) => {
 
 };
 
-  
+
 
 
 

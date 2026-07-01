@@ -52,6 +52,14 @@ const rideSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+
+  rejectedDrivers: [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "AuthUser"
+  }
+],
+
   startedAt: Date,
   completedAt: Date,
   cancellationReason: String

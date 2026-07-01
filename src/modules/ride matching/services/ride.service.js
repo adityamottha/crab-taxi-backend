@@ -150,6 +150,35 @@ const acceptRideService = async ({
   return ride;
 };
 
+// REJECT RIDE SERVICE ...........
+const rejectRideService = async ({
+    rideId,
+    driverId
+}) => {
+
+    const ride =
+        await Ride.findByIdAndUpdate(
+            rideId,
+            {
+                $addToSet: {
+                    rejectedDrivers: driverId
+                }
+            },
+            {
+                new: true
+            }
+        );
+
+    if (!ride) {
+        throw new ApiError(
+            404,
+            "Ride not found"
+        );
+    }
+
+    return ride;
+};
+
 // START RIDE SERVICE ...........
 
 const startRideService = async ({
@@ -254,6 +283,7 @@ const completeRideService = async ({
 export {
   createRideService,
   acceptRideService,
+  rejectRideService,
   startRideService,
   completeRideService
 };
