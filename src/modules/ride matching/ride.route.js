@@ -3,7 +3,7 @@ import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
 import { calculateFareController } from "./controllers/calculateFare.controller.js";
 import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
 import { createRideController } from "./controllers/ride.controller.js";
-import { addRatingController } from "./controllers/rating.controller.js";
+import { addRatingController, getDriverRatingsController } from "./controllers/rating.controller.js";
 
 const router = Router();
 
@@ -29,5 +29,13 @@ router.post(
     verifyJWT,
     authorizeRole("USER"),
     addRatingController
+);
+
+// get rating
+router.get(
+    "/rating",
+    verifyJWT,
+    authorizeRole("DRIVER"),
+    getDriverRatingsController
 );
 export default router;

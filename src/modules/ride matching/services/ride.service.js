@@ -3,6 +3,7 @@ import { FareCalculator } from "../../../utils/fare.calculation.js";
 import { ApiError } from "../../../utils/ApiError.js";
 import { getNearbyDriversService } from "../../rider/services/riderDashboard.service.js";
 import { onlineDrivers } from "../../../utils/onlineDrivers.js";
+import { DriverProfile } from "../../driver/models/driverProfile.model.js";
 
 const createRideService = async ({
   passengerId,
@@ -233,21 +234,35 @@ const startRideService = async ({
 
 // COMPLETE RIDE SERVICE ...........
 
-const completeRideService = async ({
-  rideId,
-  driverId
-}) => {
+const completeRideService = async ({ rideId,driverId} ) => {
 
   console.log("Ride ID:", rideId);
   console.log("Driver ID:", driverId);
 
-  const ride =
-    await Ride.findOne({
-      _id: rideId,
-      driverId,
-      status: "started"
-    });
+  // Check rideId is avaialable
+  if(!rideId){
+    throw new ApiError(
+      400,
+      "rideId is required!"
+    )
+  }
 
+    // Check driverId is avaialable
+  if(!driverId){
+    throw new ApiError(
+      400,
+      "driverId is required!"
+    )
+  }
+
+  // find ride by Ride schema fields will be => (rideId, driverId, status->"started")
+  const ride = await Ride.findOne({
+    _id: rideId,
+    driverId,
+    status: "started"
+  });
+
+  // check ride available
   if (!ride) {
     throw new ApiError(
       400,
@@ -255,28 +270,33 @@ const completeRideService = async ({
     );
   }
 
-  ride.status =
-    "completed";
+  // marks status to completed and date to current date
+  ride.status = "completed";
+  ride.completedAt = new Date();
 
-  ride.completedAt =
-    new Date();
-
+  // save the ride
   await ride.save();
 
-  console.log(
-    "Ride Completed Successfully"
+  // Increase drivers total trips
+  await DriverProfile.findOneAndUpdate(
+    {
+      authUserId: ride.driverId
+    },
+    {
+      $inc: {
+        totalTrips: 1
+      }
+    },
+    {
+      returnDocument: "after"
+    }
   );
 
-  console.log(
-    "Completed At:",
-    ride.completedAt
-  );
+  console.log("Ride Completed Successfully");
+  console.log("Completed At:", ride.completedAt);
+  console.log("Status:", ride.status);
 
-  console.log(
-    "Status:",
-    ride.status
-  );
-
+  // return ride
   return ride;
 };
 

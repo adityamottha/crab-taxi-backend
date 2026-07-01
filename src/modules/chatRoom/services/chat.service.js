@@ -2,6 +2,7 @@ import { ChatRoom } from "../models/chatRoom.model.js";
 import { Message } from "../models/message.model.js";
 import { ApiError } from "../../../utils/ApiError.js";
 import { AuthUser} from "../../auth/authUsers.models.js";
+import { Ride } from "../../ride matching/models/ride.model.js";
 
 const ROLES = {
   USER: "USER",
@@ -163,7 +164,7 @@ export const createRoomService = async ({ roomType, rideId = null, user }) => {
       throw new ApiError(404, "Ride not found");
 
     participants = [
-      { role: "USER", userId: ride.userId },
+      { role: "USER", userId: ride.passengerId },
       { role: "DRIVER", userId: ride.driverId }
     ];
   }
