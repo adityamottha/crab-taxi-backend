@@ -1,17 +1,27 @@
 class FareCalculator {
   static calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Earth's radius in km
+    // earth radius in km
+    const earth_radius = 6371; 
+
+    // convert lat long to radians
     const dLat = this.deg2rad(lat2 - lat1);
     const dLon = this.deg2rad(lon2 - lon1);
+
+    // haversine formula
     const a = 
       Math.sin(dLat/2) * Math.sin(dLat/2) +
       Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * 
       Math.sin(dLon/2) * Math.sin(dLon/2);
+
+      //  angular distance between the two points
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
+
+    // return distance in km (earthRadius x c)
+    return earth_radius * c;
   }
 
   static deg2rad(deg) {
+    // cnvert degrees to radians
     return deg * (Math.PI/180);
   }
 
