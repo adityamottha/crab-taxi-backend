@@ -325,57 +325,68 @@ const rideSocket = (io, socket) => {
 
   // RIDE CANCELLED ===============================================
 socket.on(
-    "cancelledRide",
-    async ({
-      rideId,
-      driverId,
-      cancellationReason
-    }) => {
+  "cancelRide",
+  async ({
+    rideId,
+    driverId,
+    cancellationReason
+  }) => {
 
-      try {
-        console.log(
-          "COMPLETE RIDE EVENT RECEIVED"
-        );
-        const ride =
-          await canceleRideService({
-            rideId,
-            driverId,
-            cancellationReason
-          });
+    try {
 
-        socket.emit(
-          "rideCancelled",
-          {
-            rideId: ride._id,
-            status: ride.status
-          }
-        );
+      console.log("CANCEL RIDE EVENT RECEIVED");
 
-        io.to(
-          `user-${ride.passengerId}`
-        ).emit(
-          "rideCancelled",
-          {
-            rideId: ride._id,
-            status: ride.status
-          }
-        );
+      const ride = await cancelRideService({
+        rideId,
+        driverId,
+        cancellationReason
+      });
 
-      } catch (error) {
-
-        socket.emit(
-          "rideError",
-          {
-            message: error.message
-          }
-        );
-
-      }
-      console.log(
-        "rideCancelled emitted"
+      // Notify driver
+      socket.emit(
+        "rideCancelled",
+        {
+          rideId: ride._id,
+          status: ride.status,
+          cancellationReason: ride.cancellationReason,
+          cancelledAt: ride.cancelledAt
+        }
       );
+
+      // Notify passenger
+      io.to(
+        `user-${ride.passengerId}`
+      ).emit(
+        "rideCancelled",
+        {
+          rideId: ride._id,
+          driverId: ride.driverId,
+          status: ride.status,
+          cancellationReason: ride.cancellationReason,
+          cancelledAt: ride.cancelledAt
+        }
+      );
+
+      console.log(
+        "Ride cancelled successfully"
+      );
+
+    } catch (error) {
+
+      console.log(error.message);
+
+      socket.emit(
+        "rideError",
+        {
+          message: error.message
+        }
+      );
+
     }
-  );
+
+  }
+);
+
   // DRIVER LOCATION +++++++++++++++++++++++++++++++++++++++++++++++++++++
   socket.on("driverLocation", async (data) => {
     console.log("driverLocation received");
