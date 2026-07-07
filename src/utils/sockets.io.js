@@ -5,7 +5,8 @@ import {
   acceptRideService,
   rejectRideService,
   startRideService,
-  completeRideService
+  completeRideService,
+  canceleRideService
 } from "../modules/ride matching/services/ride.service.js";
 import { getNearbyDriversService } from "../modules/rider/services/riderDashboard.service.js";
 
@@ -322,6 +323,59 @@ const rideSocket = (io, socket) => {
     }
   );
 
+  // RIDE CANCELLED ===============================================
+socket.on(
+    "cancelledRide",
+    async ({
+      rideId,
+      driverId,
+      cancellationReason
+    }) => {
+
+      try {
+        console.log(
+          "COMPLETE RIDE EVENT RECEIVED"
+        );
+        const ride =
+          await canceleRideService({
+            rideId,
+            driverId,
+            cancellationReason
+          });
+
+        socket.emit(
+          "rideCancelled",
+          {
+            rideId: ride._id,
+            status: ride.status
+          }
+        );
+
+        io.to(
+          `user-${ride.passengerId}`
+        ).emit(
+          "rideCancelled",
+          {
+            rideId: ride._id,
+            status: ride.status
+          }
+        );
+
+      } catch (error) {
+
+        socket.emit(
+          "rideError",
+          {
+            message: error.message
+          }
+        );
+
+      }
+      console.log(
+        "rideCancelled emitted"
+      );
+    }
+  );
   // DRIVER LOCATION +++++++++++++++++++++++++++++++++++++++++++++++++++++
   socket.on("driverLocation", async (data) => {
     console.log("driverLocation received");

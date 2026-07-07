@@ -300,10 +300,86 @@ const completeRideService = async ({ rideId,driverId} ) => {
   return ride;
 };
 
+
+// ============================ CANCEL RIDE ===============
+
+import { Ride } from "../models/ride.model.js";
+import { DriverProfile } from "../../driver/models/driverProfile.model.js";
+import { ApiError } from "../../../utils/ApiError.js";
+
+const cancelRideService = async ({
+  rideId,
+  driverId,
+  cancellationReason
+}) => {
+
+  if (!rideId) {
+    throw new ApiError(
+      400,
+      "RideId is required"
+    );
+  }
+
+  if (!driverId) {
+    throw new ApiError(
+      400,
+      "DriverId is required"
+    );
+  }
+
+  if (!cancellationReason || !cancellationReason.trim()) {
+    throw new ApiError(
+      400,
+      "Cancellation reason is required"
+    );
+  }
+
+  // Find ride
+  const ride = await Ride.findOne({
+    _id: rideId,
+    driverId,
+    $or: [
+      { status: "accepted" },
+      { status: "started" }
+    ]
+  });
+
+  if (!ride) {
+    throw new ApiError(
+      404,
+      "Ride not found or cannot be cancelled"
+    );
+  }
+
+  // Update ride
+  ride.status = "cancelled";
+  ride.cancellationReason = cancellationReason;
+  ride.cancelledAt = new Date();
+
+  await ride.save();
+
+  // Driver becomes online again
+  await DriverProfile.findOneAndUpdate(
+    {
+      authUserId: driverId
+    },
+    {
+      driverStatus: "ONLINE"
+    },
+    {
+      returnDocument: "after"
+    }
+  );
+
+  return ride;
+};
+
+
 export {
   createRideService,
   acceptRideService,
   rejectRideService,
   startRideService,
-  completeRideService
+  completeRideService,
+  canceleRideService
 };

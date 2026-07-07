@@ -62,6 +62,7 @@ const rideSchema = new mongoose.Schema({
 
   startedAt: Date,
   completedAt: Date,
+  cancelledAt:Date,
   cancellationReason: String
 }, { timestamps: true });
 
