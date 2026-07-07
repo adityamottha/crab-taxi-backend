@@ -60,10 +60,22 @@ const rideSchema = new mongoose.Schema({
   }
 ],
 
-  startedAt: Date,
-  completedAt: Date,
-  cancelledAt:Date,
-  cancellationReason: String
+ startedAt: {
+  type:Date
+},
+
+  completedAt: {
+    type:Date
+  },
+
+  cancelledAt: {
+    type:Date
+  },
+
+  cancellationReason: {
+    type:String
+  },
+  
 }, { timestamps: true });
 
 export const Ride = mongoose.model('Ride', rideSchema);
