@@ -303,10 +303,6 @@ const completeRideService = async ({ rideId,driverId} ) => {
 
 // ============================ CANCEL RIDE ===============
 
-import { Ride } from "../models/ride.model.js";
-import { DriverProfile } from "../../driver/models/driverProfile.model.js";
-import { ApiError } from "../../../utils/ApiError.js";
-
 const cancelRideService = async ({
   rideId,
   driverId,
