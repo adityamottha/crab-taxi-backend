@@ -377,5 +377,5 @@ export {
   rejectRideService,
   startRideService,
   completeRideService,
-  canceleRideService
+  cancelRideService
 };
