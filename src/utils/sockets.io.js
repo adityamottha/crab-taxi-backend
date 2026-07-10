@@ -9,6 +9,7 @@ import {
   cancelRideService
 } from "../modules/ride matching/services/ride.service.js";
 import { getNearbyDriversService } from "../modules/rider/services/riderDashboard.service.js";
+import { AuthUser } from "../modules/auth/authUsers.models.js";
 
 // CHAT SOCKET ---------------------------------------------
 const chatSocket = (io, socket) => {
