@@ -305,46 +305,67 @@ const completeRideService = async ({ rideId,driverId} ) => {
 
 const cancelRideService = async ({
   rideId,
-  driverId,
+  userId,
+  userRole, // "driver" or "passenger"
   cancellationReason
 }) => {
 
   if (!rideId) {
-    throw new ApiError(
-      400,
-      "RideId is required"
-    );
+    throw new ApiError(400, "RideId is required");
   }
 
-  if (!driverId) {
-    throw new ApiError(
-      400,
-      "DriverId is required"
-    );
+  if (!userId) {
+    throw new ApiError(400, "UserId is required");
+  }
+
+  if (!userRole || !["driver", "passenger"].includes(userRole)) {
+    throw new ApiError(400, "Valid user role is required (driver or passenger)");
   }
 
   if (!cancellationReason || !cancellationReason.trim()) {
-    throw new ApiError(
-      400,
-      "Cancellation reason is required"
-    );
+    throw new ApiError(400, "Cancellation reason is required");
+  }
+
+  // Verify user exists and has the correct role
+  const user = await AuthUser.findOne({
+    _id: userId,
+    isDeleted: false,
+    accountStatus: "ACTIVE"
+  });
+
+  if (!user) {
+    throw new ApiError(404, "User not found or inactive");
+  }
+
+  // Validate user role matches the requested role
+  const expectedRole = userRole === "driver" ? "DRIVER" : "USER";
+  if (user.role !== expectedRole) {
+    throw new ApiError(403, `User is not a ${userRole}`);
+  }
+
+  // Build query based on user role
+  let query = { _id: rideId };
+  
+  if (userRole === "driver") {
+    query.driverId = userId;
+    // Driver can only cancel if ride is accepted or started
+    query.status = { $in: ["accepted", "started"] };
+  } else if (userRole === "passenger") {
+    query.passengerId = userId;
+    // Passenger can cancel in multiple statuses
+    query.status = { $in: ["requested", "accepted", "started"] };
   }
 
   // Find ride
-  const ride = await Ride.findOne({
-    _id: rideId,
-    driverId,
-    $or: [
-      { status: "accepted" },
-      { status: "started" }
-    ]
-  });
+  const ride = await Ride.findOne(query);
 
   if (!ride) {
-    throw new ApiError(
-      404,
-      "Ride not found or cannot be cancelled"
-    );
+    throw new ApiError(404, "Ride not found or cannot be cancelled");
+  }
+
+  // Check if ride is already completed or cancelled
+  if (["completed", "cancelled"].includes(ride.status)) {
+    throw new ApiError(400, "Ride is already completed or cancelled");
   }
 
   // Update ride
@@ -354,23 +375,31 @@ const cancelRideService = async ({
 
   await ride.save();
 
-  // Driver becomes online again
-  await DriverProfile.findOneAndUpdate(
-    {
-      authUserId: driverId
-    },
-    {
-      driverStatus: "ONLINE"
-    },
-    {
-      returnDocument: "after"
+  // If driver cancels, make them online again
+  if (userRole === "driver") {
+    await DriverProfile.findOneAndUpdate(
+      { authUserId: userId },
+      { driverStatus: "ONLINE" },
+      { returnDocument: "after" }
+    );
+  }
+
+  // Populate the ride with user details
+  const populatedRide = await Ride.findById(ride._id)
+    .populate('passengerId', 'phoneNumber email role userProfileId')
+    .populate('driverId', 'phoneNumber email role driverProfileId');
+
+  return {
+    ride: populatedRide,
+    cancelledBy: userRole,
+    cancelledByUser: {
+      id: user._id,
+      phoneNumber: user.phoneNumber,
+      email: user.email,
+      role: user.role
     }
-  );
-
-  return ride;
+  };
 };
-
-
 export {
   createRideService,
   acceptRideService,
