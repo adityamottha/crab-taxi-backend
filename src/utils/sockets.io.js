@@ -325,68 +325,139 @@ const rideSocket = (io, socket) => {
 
   // RIDE CANCELLED ===============================================
 socket.on(
-  "cancelRide",
-  async ({
-    rideId,
-    driverId,
-    cancellationReason
-  }) => {
-
+  "cancelRideByDriver",
+  async ({ rideId, driverId, cancellationReason }) => {
     try {
+      console.log("DRIVER CANCEL RIDE EVENT RECEIVED");
 
-      console.log("CANCEL RIDE EVENT RECEIVED");
+      // Validate driver exists and is active
+      const driver = await AuthUser.findOne({
+        _id: driverId,
+        role: "DRIVER",
+        isDeleted: false,
+        accountStatus: "ACTIVE"
+      });
 
-      const ride = await cancelRideService({
+      if (!driver) {
+        socket.emit("rideError", {
+          message: "Driver not found or inactive"
+        });
+        return;
+      }
+
+      const result = await cancelRideService({
         rideId,
-        driverId,
+        userId: driverId,
+        userRole: "driver",
         cancellationReason
       });
 
+      const { ride, cancelledBy, cancelledByUser } = result;
+
       // Notify driver
-      socket.emit(
-        "rideCancelled",
-        {
-          rideId: ride._id,
-          status: ride.status,
-          cancellationReason: ride.cancellationReason,
-          cancelledAt: ride.cancelledAt
-        }
-      );
+      socket.emit("rideCancelled", {
+        rideId: ride._id,
+        status: ride.status,
+        cancellationReason: ride.cancellationReason,
+        cancelledAt: ride.cancelledAt,
+        cancelledBy: "driver",
+        message: "Ride cancelled successfully"
+      });
 
       // Notify passenger
-      io.to(
-        `user-${ride.passengerId}`
-      ).emit(
-        "rideCancelled",
-        {
-          rideId: ride._id,
-          driverId: ride.driverId,
-          status: ride.status,
-          cancellationReason: ride.cancellationReason,
-          cancelledAt: ride.cancelledAt
+      const passengerId = ride.passengerId._id || ride.passengerId;
+      io.to(`user-${passengerId}`).emit("rideCancelled", {
+        rideId: ride._id,
+        status: ride.status,
+        cancellationReason: ride.cancellationReason,
+        cancelledAt: ride.cancelledAt,
+        cancelledBy: "driver",
+        message: "Your ride has been cancelled by the driver",
+        driverInfo: {
+          phoneNumber: cancelledByUser.phoneNumber
         }
-      );
+      });
 
-      console.log(
-        "Ride cancelled successfully"
-      );
+      console.log(`Ride ${ride._id} cancelled by driver: ${driver.phoneNumber}`);
 
     } catch (error) {
-
-      console.log(error.message);
-
-      socket.emit(
-        "rideError",
-        {
-          message: error.message
-        }
-      );
-
+      console.error("Driver cancel error:", error.message);
+      socket.emit("rideError", { 
+        message: error.message,
+        code: error.statusCode || 500
+      });
     }
-
   }
 );
 
+// Passenger cancels ride
+socket.on(
+  "cancelRideByPassenger",
+  async ({ rideId, passengerId, cancellationReason }) => {
+    try {
+      console.log("PASSENGER CANCEL RIDE EVENT RECEIVED");
+
+      // Validate passenger exists and is active
+      const passenger = await AuthUser.findOne({
+        _id: passengerId,
+        role: "USER",
+        isDeleted: false,
+        accountStatus: "ACTIVE"
+      });
+
+      if (!passenger) {
+        socket.emit("rideError", {
+          message: "Passenger not found or inactive"
+        });
+        return;
+      }
+
+      const result = await cancelRideService({
+        rideId,
+        userId: passengerId,
+        userRole: "passenger",
+        cancellationReason
+      });
+
+      const { ride, cancelledBy, cancelledByUser } = result;
+
+      // Notify passenger
+      socket.emit("rideCancelled", {
+        rideId: ride._id,
+        status: ride.status,
+        cancellationReason: ride.cancellationReason,
+        cancelledAt: ride.cancelledAt,
+        cancelledBy: "passenger",
+        message: "Ride cancelled successfully"
+      });
+
+      // Notify driver if exists
+      if (ride.driverId) {
+        const driverId = ride.driverId._id || ride.driverId;
+        io.to(`driver-${driverId}`).emit("rideCancelled", {
+          rideId: ride._id,
+          status: ride.status,
+          cancellationReason: ride.cancellationReason,
+          cancelledAt: ride.cancelledAt,
+          cancelledBy: "passenger",
+          message: "Ride has been cancelled by the passenger",
+          passengerInfo: {
+            phoneNumber: cancelledByUser.phoneNumber
+          }
+        });
+      }
+
+      console.log(`Ride ${ride._id} cancelled by passenger: ${passenger.phoneNumber}`);
+
+    } catch (error) {
+      console.error("Passenger cancel error:", error.message);
+      socket.emit("rideError", { 
+        message: error.message,
+        code: error.statusCode || 500
+      });
+    }
+  }
+);
   // DRIVER LOCATION +++++++++++++++++++++++++++++++++++++++++++++++++++++
   socket.on("driverLocation", async (data) => {
     console.log("driverLocation received");
