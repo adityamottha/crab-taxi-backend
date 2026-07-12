@@ -4,6 +4,7 @@ import { ApiError } from "../../../utils/ApiError.js";
 import { getNearbyDriversService } from "../../rider/services/riderDashboard.service.js";
 import { onlineDrivers } from "../../../utils/onlineDrivers.js";
 import { DriverProfile } from "../../driver/models/driverProfile.model.js";
+import { AuthUser } from "../../auth/authUsers.models.js";
 
 const createRideService = async ({
   passengerId,
