@@ -34,6 +34,8 @@ const rideSocket = (io, socket) => {
   // DRIVER ONLINE +++++++++++++++++++++++++++++++++++++
   socket.on("driver-online", (userId) => {
 
+    socket.join(`driver-${userId}`);
+    
     onlineDrivers.set(
       userId,
       socket.id
