@@ -1,19 +1,21 @@
 import { ApiError } from "../utils/ApiError.js";
 
-const authorizeRole = (role) => {
-    return (req, _, next) => {
-        if (!req.userRole) {
-            return next(new ApiError(401, "Unauthorized request!"));
-        }
+const authorizeRole = (...roles) => {
+  return (req, res, next) => {
 
-        if (req.userRole !== role) {
-            return next(
-                new ApiError(403, `${req.userRole} is not allowed to access this API!`)
-            );
-        }
+    if (!req.user?.role) {
+      throw new ApiError(401, "Unauthorized request!");
+    }
 
-        next();
-    };
+    if (!roles.includes(req.user.role)) {
+      throw new ApiError(
+        403,
+        `${req.user.role} is not allowed to access this API!`
+      );
+    }
+
+    next();
+  };
 };
 
 export { authorizeRole };
