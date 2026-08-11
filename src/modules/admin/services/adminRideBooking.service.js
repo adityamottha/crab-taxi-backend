@@ -1,0 +1,1 @@
+import { Ride } from "../../ride matching/models/ride.model";

@@ -11,7 +11,7 @@ const router = Router();
 router.post(
     "/calculate-fare",
     verifyJWT,
-    authorizeRole("USER"),
+    authorizeRole("USER","ADMIN"),
     calculateFareController
 );
 
@@ -19,7 +19,7 @@ router.post(
 router.post(
     "/create",
     verifyJWT,
-    authorizeRole("USER"),
+    authorizeRole("USER","ADMIN"),
     createRideController
 );
 
@@ -27,7 +27,7 @@ router.post(
 router.post(
     "/:rideId/rating",
     verifyJWT,
-    authorizeRole("USER"),
+    authorizeRole("USER","ADMIN"),
     addRatingController
 );
 
@@ -35,7 +35,7 @@ router.post(
 router.get(
     "/rating",
     verifyJWT,
-    authorizeRole("DRIVER"),
+    authorizeRole("DRIVER",),
     getDriverRatingsController
 );
 export default router;

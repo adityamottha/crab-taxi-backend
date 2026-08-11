@@ -2,18 +2,18 @@ import { sendMessage } from "../modules/chatRoom/services/chat.service.js";
 import { onlineDrivers } from "./onlineDrivers.js";
 import { updateDriverLocationService } from "../modules/driver/services/driverProfile.service.js";
 import {
-  acceptRideService,
-  rejectRideService,
-  startRideService,
-  completeRideService,
-  cancelRideService
+      acceptRideService,
+      rejectRideService,
+      startRideService,
+      completeRideService,
+      cancelRideService
 } from "../modules/ride matching/services/ride.service.js";
 import { getNearbyDriversService } from "../modules/rider/services/riderDashboard.service.js";
 import { AuthUser } from "../modules/auth/authUsers.models.js";
 
 // CHAT SOCKET ---------------------------------------------
 const chatSocket = (io, socket) => {
-  socket.on("joinRoom", ({ roomId }) => {
+  socket.on("joinRoom", ({ roomId }) => {``
     socket.join(roomId);
   });
 
