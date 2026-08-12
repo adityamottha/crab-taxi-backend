@@ -1,5 +1,5 @@
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
-import { createRideByAdminService } from "../services/adminRideBooking.service.js";
+import { createRideByAdminService, getRequestedRidesByAdminService } from "../services/adminRideBooking.service.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 
 const createRideByAdminController =
@@ -29,4 +29,27 @@ const createRideByAdminController =
 
 export {
   createRideByAdminController
+};
+
+
+// get requested rides by user to admin dashboard
+//===========================================================
+
+const getRequestedRidesByAdminController =
+  AsyncHandler(async (req, res) => {
+
+    const rides =
+      await getRequestedRidesByAdminService();
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        rides,
+        "Requested rides fetched successfully"
+      )
+    );
+  });
+
+export {
+  getRequestedRidesByAdminController,
 };
