@@ -16,6 +16,7 @@ import
      allRejectedDriversController,
     } 
     from "./controllers/adminDashboard.controller.js";
+import { createRideByAdminController } from "./controllers/adminRideBooking.controller.js";
 
 const router = Router();
 
@@ -96,6 +97,13 @@ router.route("/riders").get(
     verifyJWT,
     authorizeRole("ADMIN"),
     getAllUsersController
+);
+
+// create ride 
+router.route("/create").post(
+  verifyJWT,
+  authorizeRoles("ADMIN"),
+  createRideByAdminController
 );
 
 export default router;

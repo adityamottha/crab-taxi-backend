@@ -5,16 +5,34 @@ import { ApiError } from "../../../utils/ApiError.js";
 import { getNearbyDriversService } from "../../rider/services/riderDashboard.service.js";
 import { onlineDrivers } from "../../../utils/onlineDrivers.js";
 
-const createRideService = async ({
+export const createRideByAdminService = async ({
   passengerId,
   pickup,
   dropoff,
 }) => {
 
+  if (!passengerId) {
+    throw new ApiError(
+      400,
+      "Passenger ID is required"
+    );
+  }
+
   if (!pickup || !dropoff) {
     throw new ApiError(
       400,
       "Pickup and dropoff are required"
+    );
+  }
+
+  // Optional but recommended:
+  // Check that passenger actually exists
+  const passenger = await AuthUser.findById(passengerId);
+
+  if (!passenger) {
+    throw new ApiError(
+      404,
+      "Passenger not found"
     );
   }
 
@@ -28,11 +46,13 @@ const createRideService = async ({
     passengerId,
     pickup,
     dropoff,
+
     fare: {
       amount: fareDetails.amount,
       distance: fareDetails.distance,
       duration: fareDetails.duration,
     },
+
     status: "requested",
   });
 
@@ -60,7 +80,6 @@ const createRideService = async ({
       onlineDrivers.get(driverId);
 
     if (!socketId) {
-
       console.log(
         "NO SOCKET FOUND FOR DRIVER"
       );
