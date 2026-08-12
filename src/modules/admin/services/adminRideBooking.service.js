@@ -4,6 +4,7 @@ import { FareCalculator } from "../../../utils/fare.calculation.js";
 import { ApiError } from "../../../utils/ApiError.js";
 import { getNearbyDriversService } from "../../rider/services/riderDashboard.service.js";
 import { onlineDrivers } from "../../../utils/onlineDrivers.js";
+import { RiderProfile } from "../../rider/models/riderProfile.model.js";
 
 export const createRideByAdminService = async ({
   passengerId,
@@ -108,4 +109,83 @@ export const createRideByAdminService = async ({
     ride,
     nearbyDrivers,
   };
+};
+
+// get requested rides by user to admin dashboard
+//===========================================================
+
+export const getRequestedRidesByAdminService = async () => {
+
+  // Get only requested rides
+  const rides = await Ride.find({
+    status: "requested",
+  })
+    .populate({
+      path: "passengerId",
+      model: AuthUser,
+      select: "-password -verifyCode",
+    })
+    .sort({
+      createdAt: -1,
+    });
+
+  if (!rides || rides.length === 0) {
+    return [];
+  }
+
+  // Get all passenger IDs
+  const passengerIds = rides
+    .map((ride) => ride.passengerId?._id)
+    .filter(Boolean);
+
+  // Get user profiles
+  const profiles = await RiderProfile.find({
+    authUserId: {
+      $in: passengerIds,
+    },
+  });
+
+  // Create quick lookup
+  const profileMap = new Map();
+
+  profiles.forEach((profile) => {
+    profileMap.set(
+      profile.authUserId.toString(),
+      profile
+    );
+  });
+
+  // Combine ride + AuthUser + profile
+  const result = rides.map((ride) => {
+
+    const passenger =
+      ride.passengerId;
+
+    const profile =
+      passenger
+        ? profileMap.get(
+            passenger._id.toString()
+          )
+        : null;
+
+    return {
+      ride: {
+        _id: ride._id,
+        pickup: ride.pickup,
+        dropoff: ride.dropoff,
+        fare: ride.fare,
+        status: ride.status,
+        otp: ride.otp,
+        createdAt: ride.createdAt,
+        updatedAt: ride.updatedAt,
+      },
+
+      passenger: {
+        authUser: passenger,
+        profile: profile || null,
+      },
+    };
+  });
+
+  return result;
 };
