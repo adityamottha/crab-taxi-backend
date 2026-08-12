@@ -1,4 +1,4 @@
-import { Ride } from "../../ride matching/models/ride.model";
+import { Ride } from "../../ride matching/models/ride.model.js";
 import { AuthUser } from "../../auth/authUsers.models.js";
 import { FareCalculator } from "../../../utils/fare.calculation.js";
 import { ApiError } from "../../../utils/ApiError.js";

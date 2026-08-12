@@ -100,9 +100,9 @@ router.route("/riders").get(
 );
 
 // create ride 
-router.route("/create").post(
+router.route("/create-ride").post(
   verifyJWT,
-  authorizeRoles("ADMIN"),
+  authorizeRole("ADMIN"),
   createRideByAdminController
 );
 
