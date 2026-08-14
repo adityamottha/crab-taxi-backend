@@ -7,6 +7,7 @@ import { driverDocumentController,getDriverDocumentsController } from "./control
 import { isProfileCompleted } from "../../middlewares/profileComplete.middleware.js";
 import { vehicleController, getDriverVehiclesController } from "./controllers/vehicle.controller.js";
 import { isDocumentSubmitted } from "../../middlewares/documentSubmitted.midddleware.js";
+import { getDriverRideHistoryController } from "../ride matching/controllers/ride.controller.js";
 
 const router = Router();
 
@@ -115,4 +116,13 @@ router.route("/go-offline").post(
   authorizeRole("DRIVER"),
   goOfflineController
 );
+
+// DRIVER HISTORY /-> the service controller written in ridematching part 
+router.route("/history").get(
+  verifyJWT,
+  authorizeRole("DRIVER","ADMIN"),
+  getDriverRideHistoryController
+);
+
+
 export default router;

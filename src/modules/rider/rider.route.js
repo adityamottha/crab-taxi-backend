@@ -77,8 +77,7 @@ router.route("/driver-profile").get(
 
 
 // User's ride history /-> IMPORTED FROM RIDE MATCHING RIDE
-router.get(
-  "/user/history",
+router.route("/history").get(
   verifyJWT,
   authorizeRole("USER", "ADMIN"),
   getUserRideHistoryController
