@@ -409,3 +409,98 @@ export {
   completeRideService,
   cancelRideService
 };
+
+
+
+// ==================== USER / PASSENGER RIDE HISTORY ====================
+
+export const getUserRideHistoryService = async ({
+  userId,
+  page = 1,
+  limit = 10,
+  status,
+}) => {
+
+  if (!userId) {
+    throw new ApiError(400, "User ID is required");
+  }
+
+  const skip = (page - 1) * limit;
+
+  const filter = {
+    passengerId: userId,
+  };
+
+  // Optional status filter
+  if (status) {
+    filter.status = status;
+  }
+
+  const [rides, totalRides] = await Promise.all([
+    Ride.find(filter)
+      .populate("driverId", "fullname phoneNumber")
+      .populate("passengerId", "fullname phoneNumber")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+
+    Ride.countDocuments(filter),
+  ]);
+
+  return {
+    rides,
+    pagination: {
+      currentPage: page,
+      totalPages: Math.ceil(totalRides / limit),
+      totalRides,
+      limit,
+    },
+  };
+};
+
+
+// ==================== DRIVER RIDE HISTORY ====================
+
+export const getDriverRideHistoryService = async ({
+  driverId,
+  page = 1,
+  limit = 10,
+  status,
+}) => {
+
+  if (!driverId) {
+    throw new ApiError(400, "Driver ID is required");
+  }
+
+  const skip = (page - 1) * limit;
+
+  const filter = {
+    driverId,
+  };
+
+  // Optional status filter
+  if (status) {
+    filter.status = status;
+  }
+
+  const [rides, totalRides] = await Promise.all([
+    Ride.find(filter)
+      .populate("driverId", "fullname phoneNumber")
+      .populate("passengerId", "fullname phoneNumber")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+
+    Ride.countDocuments(filter),
+  ]);
+
+  return {
+    rides,
+    pagination: {
+      currentPage: page,
+      totalPages: Math.ceil(totalRides / limit),
+      totalRides,
+      limit,
+    },
+  };
+};

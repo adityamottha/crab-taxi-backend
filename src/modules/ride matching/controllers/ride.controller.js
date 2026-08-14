@@ -1,5 +1,5 @@
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
-import { createRideService } from "../services/ride.service.js";
+import { createRideService, getDriverRideHistoryService, getUserRideHistoryService } from "../services/ride.service.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 
 const createRideController =
@@ -25,6 +25,4 @@ const createRideController =
 
   });
 
-export {
-  createRideController
-};
+
