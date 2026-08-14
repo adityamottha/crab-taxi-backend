@@ -80,7 +80,7 @@ router.route("/driver-profile").get(
 router.get(
   "/user/history",
   verifyJWT,
-  authorizeRole("USER"),
+  authorizeRole("USER", "ADMIN"),
   getUserRideHistoryController
 );
 export default router; 
