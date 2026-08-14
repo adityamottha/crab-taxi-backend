@@ -5,6 +5,7 @@ import { isProfileCompleted } from "../../middlewares/profileComplete.middleware
 import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
 import { changeAvatarController, changeFullnameController, changeGenderController, riderProfileController, getRiderProfileController } from "./controllers/riderProfile.controller.js";
 import { getDriverProfileForUserController, getNearbyDrivers } from "./controllers/riderDashboard.controller.js";
+import { getUserRideHistoryController } from "../ride matching/controllers/ride.controller.js";
 
 
 const router = Router();
@@ -74,4 +75,12 @@ router.route("/driver-profile").get(
     getDriverProfileForUserController
 )
 
+
+// User's ride history /-> IMPORTED FROM RIDE MATCHING RIDE
+router.get(
+  "/user/history",
+  verifyJWT,
+  authorizeRole("USER"),
+  getUserRideHistoryController
+);
 export default router; 
