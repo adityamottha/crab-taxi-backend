@@ -1,6 +1,6 @@
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
-import { changeAvatarService, driverProfileService, getDriverProfileService, goOfflineService, goOnlineService, updateDriverLocationService } from "../services/driverProfile.service.js";
+import { changeAvatarService, driverProfileService, getDriverEarningsService, getDriverProfileService, goOfflineService, goOnlineService, updateDriverLocationService } from "../services/driverProfile.service.js";
 import { response } from "express";
 
 const driverProfileController = AsyncHandler(async (req,res)=>{
@@ -120,11 +120,29 @@ const goOnlineController = AsyncHandler(async (req,res)=>{
     );
  });
 
+ // ================= GET-DRIVER-WEEK-DAY-TODAY's EARNINGS ==============
+const getDriverEarningsController = AsyncHandler( async (req, res) => {
+
+    const driverId = req.user._id;
+
+    const earnings = await getDriverEarningsService(driverId);
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        earnings,
+        "Driver earnings fetched successfully"
+      )
+    );
+  }
+);
+
 export { 
     driverProfileController,
     changeAvatarController,
     getDriverProfileController,
     goOnlineController,
     updateDriverLocationController,
-    goOfflineController
+    goOfflineController,
+    getDriverEarningsController
 }

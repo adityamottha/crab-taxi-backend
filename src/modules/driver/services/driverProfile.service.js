@@ -211,23 +211,24 @@ const goOfflineService = async(userId)=>{
 
 // ======================= GET DRIVER EARNINGS ============================
 
-const getDriverEarnings = async (driverId) => {
+export const getDriverEarningsService = async (driverId) => {
   const now = new Date();
 
-  // Start of today
+  // ================= START OF TODAY =================
   const startOfDay = new Date(now);
   startOfDay.setHours(0, 0, 0, 0);
 
-  // Start of week (Monday)
+  // ================= START OF WEEK =================
+  // Monday = first day of week
   const startOfWeek = new Date(now);
-  const day = startOfWeek.getDay();
 
+  const day = startOfWeek.getDay();
   const diff = day === 0 ? 6 : day - 1;
 
   startOfWeek.setDate(startOfWeek.getDate() - diff);
   startOfWeek.setHours(0, 0, 0, 0);
 
-  // Today's earnings
+  // ================= TODAY'S EARNINGS =================
   const todayResult = await Ride.aggregate([
     {
       $match: {
@@ -249,7 +250,7 @@ const getDriverEarnings = async (driverId) => {
     },
   ]);
 
-  // Weekly earnings
+  // ================= WEEKLY EARNINGS =================
   const weeklyResult = await Ride.aggregate([
     {
       $match: {
@@ -283,5 +284,5 @@ export {
     goOnlineService,
     updateDriverLocationService,
     goOfflineService,
-    getDriverEarnings
+    getDriverEarningsService
  }
