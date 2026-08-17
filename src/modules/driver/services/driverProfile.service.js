@@ -2,6 +2,7 @@ import { DriverProfile } from "../models/driverProfile.model.js";
 import { ApiError } from "../../../utils/ApiError.js"
 import { uploadOnCloudinary } from "../../../utils/cloudinary.js";
 import { AuthUser } from "../../auth/authUsers.models.js";
+import { Ride } from "../../ride matching/models/ride.model.js";
 
 const driverProfileService =async ({fullname,dateOfBirth,driverAvatar,address,user})=>{
     
@@ -208,11 +209,79 @@ const goOfflineService = async(userId)=>{
 
 }
 
+// ======================= GET DRIVER EARNINGS ============================
+
+const getDriverEarnings = async (driverId) => {
+  const now = new Date();
+
+  // Start of today
+  const startOfDay = new Date(now);
+  startOfDay.setHours(0, 0, 0, 0);
+
+  // Start of week (Monday)
+  const startOfWeek = new Date(now);
+  const day = startOfWeek.getDay();
+
+  const diff = day === 0 ? 6 : day - 1;
+
+  startOfWeek.setDate(startOfWeek.getDate() - diff);
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  // Today's earnings
+  const todayResult = await Ride.aggregate([
+    {
+      $match: {
+        driverId,
+        status: "completed",
+        completedAt: {
+          $gte: startOfDay,
+          $lte: now,
+        },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        total: {
+          $sum: "$fare.amount",
+        },
+      },
+    },
+  ]);
+
+  // Weekly earnings
+  const weeklyResult = await Ride.aggregate([
+    {
+      $match: {
+        driverId,
+        status: "completed",
+        completedAt: {
+          $gte: startOfWeek,
+          $lte: now,
+        },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        total: {
+          $sum: "$fare.amount",
+        },
+      },
+    },
+  ]);
+
+  return {
+    todayEarnings: todayResult[0]?.total || 0,
+    weeklyEarnings: weeklyResult[0]?.total || 0,
+  };
+};
 export { 
     driverProfileService,
     changeAvatarService,
     getDriverProfileService,
     goOnlineService,
     updateDriverLocationService,
-    goOfflineService
+    goOfflineService,
+    getDriverEarnings
  }
