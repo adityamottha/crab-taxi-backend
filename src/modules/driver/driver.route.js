@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { changeAvatarController, driverProfileController, getDriverProfileController, goOfflineController, goOnlineController, updateDriverLocationController } from "./controllers/driverProfile.controller.js";
+import { changeAvatarController, driverProfileController, getDriverEarningsController, getDriverProfileController, goOfflineController, goOnlineController, updateDriverLocationController } from "./controllers/driverProfile.controller.js";
 import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
 import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
 import { upload } from "../../middlewares/multer.middleware.js";
@@ -124,5 +124,10 @@ router.route("/history").get(
   getDriverRideHistoryController
 );
 
-
+// DRIVER EARNINGS
+router.route("/earnings").get(
+  verifyJWT,
+  authorizeRole("DRIVER","ADMIN"),
+  getDriverEarningsController
+)
 export default router;
