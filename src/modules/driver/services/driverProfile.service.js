@@ -211,7 +211,7 @@ const goOfflineService = async(userId)=>{
 
 // ======================= GET DRIVER EARNINGS ============================
 
-export const getDriverEarningsService = async (driverId) => {
+const getDriverEarningsService = async (driverId) => {
   const now = new Date();
 
   // ================= START OF TODAY =================
