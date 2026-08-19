@@ -118,7 +118,7 @@ const getAdminUserRideHistoryController = AsyncHandler(
     const limit = Number(req.query.limit) || 10;
     const status = req.query.status;
 
-    const history = await getUserRideHistoryController({
+    const history = await getUserRideHistoryService({
       userId,
       page,
       limit,

@@ -5,6 +5,7 @@ import { getNearbyDriversService } from "../../rider/services/riderDashboard.ser
 import { onlineDrivers } from "../../../utils/onlineDrivers.js";
 import { DriverProfile } from "../../driver/models/driverProfile.model.js";
 import { AuthUser } from "../../auth/authUsers.models.js";
+import mongoose from "mongoose";
 
 const createRideService = async ({
   passengerId,
@@ -423,7 +424,7 @@ export const getUserRideHistoryService = async ({
   status,
 }) => {
 
-  if (!userId) {
+  if (!mongoose.isValidObjectId(userId)) {
     throw new ApiError(400, "User ID is required");
   }
 
@@ -470,7 +471,7 @@ export const getDriverRideHistoryService = async ({
   status,
 }) => {
 
-  if (!driverId) {
+  if (!mongoose.isValidObjectId(driverId)) {
     throw new ApiError(400, "Driver ID is required");
   }
 
