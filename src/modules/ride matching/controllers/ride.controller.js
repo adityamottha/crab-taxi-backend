@@ -81,6 +81,32 @@ const getDriverRideHistoryController = AsyncHandler(async (req, res) => {
     );
 });
 
+// GET DRIVER RIDE HISTORY TO ADMIN =================================
+const getAdminDriverRideHistoryController = AsyncHandler(
+  async (req, res) => {
+
+    const { driverId } = req.params;
+
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const status = req.query.status;
+
+    const history = await getDriverRideHistoryService({
+      driverId,
+      page,
+      limit,
+      status,
+    });
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        history,
+        "Driver ride history fetched successfully"
+      )
+    );
+  }
+);
 export {
   createRideController,
   getUserRideHistoryController,
