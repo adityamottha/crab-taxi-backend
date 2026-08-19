@@ -110,5 +110,6 @@ const getAdminDriverRideHistoryController = AsyncHandler(
 export {
   createRideController,
   getUserRideHistoryController,
-  getDriverRideHistoryController
+  getDriverRideHistoryController,
+  getAdminDriverRideHistoryController
 };
