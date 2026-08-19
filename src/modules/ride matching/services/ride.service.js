@@ -212,6 +212,8 @@ const startRideService = async ({
   }
 
   ride.status = "started";
+
+  // RIDE STARTED AT 
   ride.startedAt = new Date();
 
   await ride.save();

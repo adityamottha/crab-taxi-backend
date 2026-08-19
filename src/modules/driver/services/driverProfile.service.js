@@ -277,6 +277,77 @@ const getDriverEarningsService = async (driverId) => {
     weeklyEarnings: weeklyResult[0]?.total || 0,
   };
 };
+
+
+// CALCULATE THE TOTAL TIME OF RIDES================================
+
+const getDriverTotalDrivingTimeService = async (driverId) => {
+  if (!driverId) {
+    throw new ApiError(400, "Driver ID is required");
+  }
+
+  const result = await Ride.aggregate([
+    {
+      $match: {
+        driverId,
+        startedAt: { $ne: null },
+        completedAt: { $ne: null },
+      },
+    },
+
+    {
+      $project: {
+        duration: {
+          $subtract: ["$completedAt", "$startedAt"],
+        },
+      },
+    },
+
+    {
+      $group: {
+        _id: null,
+        totalDrivingTime: {
+          $sum: "$duration",
+        },
+        totalRides: {
+          $sum: 1,
+        },
+      },
+    },
+  ]);
+
+  // No rides found
+  if (!result.length) {
+    return {
+      totalRides: 0,
+      totalDrivingTimeMs: 0,
+      totalDrivingMinutes: 0,
+      totalDrivingHours: 0,
+    };
+  }
+
+  const totalDrivingTimeMs = result[0].totalDrivingTime;
+
+  const totalDrivingMinutes = Math.floor(
+    totalDrivingTimeMs / (1000 * 60)
+  );
+
+  const totalDrivingHours = Math.floor(
+    totalDrivingMinutes / 60
+  );
+
+  const remainingMinutes = totalDrivingMinutes % 60;
+
+  return {
+    totalRides: result[0].totalRides,
+    totalDrivingTimeMs,
+    totalDrivingMinutes,
+    totalDrivingHours,
+    remainingMinutes,
+  };
+}
+
+
 export { 
     driverProfileService,
     changeAvatarService,
@@ -284,5 +355,6 @@ export {
     goOnlineService,
     updateDriverLocationService,
     goOfflineService,
-    getDriverEarningsService
+    getDriverEarningsService,
+    getDriverTotalDrivingTimeService
  }
