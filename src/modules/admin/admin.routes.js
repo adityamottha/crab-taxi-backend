@@ -17,7 +17,7 @@ import
     } 
     from "./controllers/adminDashboard.controller.js";
 import { createRideByAdminController, getRequestedRidesByAdminController } from "./controllers/adminRideBooking.controller.js";
-import { getAdminDriverRideHistoryController } from "../ride matching/controllers/ride.controller.js";
+import { getAdminDriverRideHistoryController, getUserRideHistoryController } from "../ride matching/controllers/ride.controller.js";
 
 const router = Router();
 
@@ -119,5 +119,12 @@ router.route("/:driverId/rides/history").get(
     verifyJWT,
     authorizeRole("ADMIN"),
     getAdminDriverRideHistoryController
+)
+
+// GET USER RIDE HISTORY (CONTROLLER WRITTEN INSIDE ride/controller/ride.controller.js )
+router.route("/:userId/rides/history").get(
+    verifyJWT,
+    authorizeRole("ADMIN"),
+    getUserRideHistoryController
 )
 export default router;
