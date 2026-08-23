@@ -1,7 +1,7 @@
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
-import { changeAvatarService, driverProfileService, getDriverEarningsService, getDriverProfileService, getDriverTotalDrivingTimeService, goOfflineService, goOnlineService, updateDriverLocationService } from "../services/driverProfile.service.js";
-import { response } from "express";
+import { changeAvatarService, driverProfileService, getDriverProfileService, getDriverTotalDrivingTimeService, goOfflineService, goOnlineService, updateDriverLocationService } from "../services/driverProfile.service.js";
+
 
 const driverProfileController = AsyncHandler(async (req,res)=>{
 
@@ -147,6 +147,5 @@ export {
     goOnlineController,
     updateDriverLocationController,
     goOfflineController,
-    getDriverEarningsController,
     getDriverTotalDrivingTimeController
 }

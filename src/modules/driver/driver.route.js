@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { changeAvatarController, driverProfileController, getDriverEarningsController, getDriverProfileController, getDriverTotalDrivingTimeController, goOfflineController, goOnlineController, updateDriverLocationController } from "./controllers/driverProfile.controller.js";
+import { changeAvatarController, driverProfileController, getDriverProfileController, getDriverTotalDrivingTimeController, goOfflineController, goOnlineController, updateDriverLocationController } from "./controllers/driverProfile.controller.js";
 import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
 import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
 import { upload } from "../../middlewares/multer.middleware.js";
@@ -8,6 +8,7 @@ import { isProfileCompleted } from "../../middlewares/profileComplete.middleware
 import { vehicleController, getDriverVehiclesController } from "./controllers/vehicle.controller.js";
 import { isDocumentSubmitted } from "../../middlewares/documentSubmitted.midddleware.js";
 import { getDriverRideHistoryController } from "../ride matching/controllers/ride.controller.js";
+import { getDriverEarningsController } from "./controllers/driverEarnings.controller.js";
 
 const router = Router();
 
@@ -127,7 +128,7 @@ router.route("/history").get(
 // DRIVER EARNINGS
 router.route("/earnings").get(
   verifyJWT,
-  authorizeRole("DRIVER","ADMIN"),
+  authorizeRole("DRIVER"),
   getDriverEarningsController
 )
 
