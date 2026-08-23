@@ -75,6 +75,24 @@ const rideSchema = new mongoose.Schema({
   cancellationReason: {
     type:String
   },
+
+  // DRIVER ASSIGNMENT --------
+
+  assignmentType:{
+    type:String,
+    enum:["AUTO","MANUAL"],
+    default:"AUTO"
+  },
+
+  assignedAt:{
+    type:Date,
+    default:Date.now
+  },
+
+  assignedBy:{
+    type:mongoose.Types.ObjectId,
+    ref:"AuthUser"
+  },
   
 }, { timestamps: true });
 
