@@ -81,12 +81,12 @@ const rideSchema = new mongoose.Schema({
   assignmentType:{
     type:String,
     enum:["AUTO","MANUAL"],
-    default:"AUTO"
+    default:null
   },
 
   assignedAt:{
     type:Date,
-    default:Date.now
+    default:null
   },
 
   assignedBy:{
