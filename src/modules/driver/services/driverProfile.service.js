@@ -285,6 +285,5 @@ export {
     goOnlineService,
     updateDriverLocationService,
     goOfflineService,
-    getDriverEarningsService,
     getDriverTotalDrivingTimeService
  }
