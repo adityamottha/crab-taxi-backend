@@ -6,6 +6,7 @@ import { onlineDrivers } from "../../../utils/onlineDrivers.js";
 import { DriverProfile } from "../../driver/models/driverProfile.model.js";
 import { AuthUser } from "../../auth/authUsers.models.js";
 import mongoose from "mongoose";
+import { updateDriverDailyEarningService } from "../../driver/services/driverEarnings.service.js";
 
 const createRideService = async ({
   passengerId,
@@ -236,37 +237,40 @@ const startRideService = async ({
   return ride;
 };
 
-// COMPLETE RIDE SERVICE ...........
+// =====================COMPLETE RIDE SERVICE ====================================
 
-const completeRideService = async ({ rideId,driverId} ) => {
-
+const completeRideService = async ({ rideId, driverId }) => {
   console.log("Ride ID:", rideId);
   console.log("Driver ID:", driverId);
 
-  // Check rideId is avaialable
-  if(!rideId){
+  // check ride id existed
+
+  if (!rideId) {
     throw new ApiError(
       400,
       "rideId is required!"
-    )
+    );
   }
 
-    // Check driverId is avaialable
-  if(!driverId){
+  // check driver id existed
+
+  if (!driverId) {
     throw new ApiError(
       400,
       "driverId is required!"
-    )
+    );
   }
 
-  // find ride by Ride schema fields will be => (rideId, driverId, status->"started")
+  //  find ride if started
+
   const ride = await Ride.findOne({
     _id: rideId,
     driverId,
-    status: "started"
+    status: "started",
   });
 
-  // check ride available
+  // check ride existed
+
   if (!ride) {
     throw new ApiError(
       400,
@@ -274,33 +278,41 @@ const completeRideService = async ({ rideId,driverId} ) => {
     );
   }
 
-  // marks status to completed and date to current date
+  //mark complete ride
   ride.status = "completed";
   ride.completedAt = new Date();
 
-  // save the ride
   await ride.save();
 
-  // Increase drivers total trips
+  //update driver trips
+
   await DriverProfile.findOneAndUpdate(
     {
-      authUserId: ride.driverId
+      authUserId: ride.driverId,
     },
     {
       $inc: {
-        totalTrips: 1
-      }
+        totalTrips: 1,
+      },
     },
     {
-      returnDocument: "after"
+      returnDocument: "after",
     }
   );
+
+  // Update driver earnings
+
+  await updateDriverDailyEarningService({
+    driverId: ride.driverId,
+    amount: ride.fare.amount,
+    currency: ride.fare.currency,
+    completedAt: ride.completedAt,
+  });
 
   console.log("Ride Completed Successfully");
   console.log("Completed At:", ride.completedAt);
   console.log("Status:", ride.status);
 
-  // return ride
   return ride;
 };
 
