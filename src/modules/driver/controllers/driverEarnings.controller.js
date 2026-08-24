@@ -23,7 +23,7 @@ const getDriverEarningsController = AsyncHandler( async (req, res) => {
 const getDriverEarningHistoryController = AsyncHandler(async (req,res) => {
 
   // get driver id
-  const driverId = req.user._id;
+  const driverId = req.user._id || req.params.driverId;
 
   // call service function 
   const history = await getDriverEarningHistoryService(driverId);
@@ -43,7 +43,7 @@ const getDriverEarningHistoryController = AsyncHandler(async (req,res) => {
 export const getDriverWeeklyEarningHistoryController = AsyncHandler(async (req, res) => {
 
     // driver id from user
-      const driverId = req.user._id;
+      const driverId = req.user._id || req.params.driverId;
 
       // get service and pass driver id
     const history = await getDriverWeeklyEarningHistoryService(
