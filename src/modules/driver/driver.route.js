@@ -8,7 +8,7 @@ import { isProfileCompleted } from "../../middlewares/profileComplete.middleware
 import { vehicleController, getDriverVehiclesController } from "./controllers/vehicle.controller.js";
 import { isDocumentSubmitted } from "../../middlewares/documentSubmitted.midddleware.js";
 import { getDriverRideHistoryController } from "../ride matching/controllers/ride.controller.js";
-import { getDriverEarningHistoryController, getDriverEarningsController } from "./controllers/driverEarnings.controller.js";
+import { getDriverEarningHistoryController, getDriverEarningsController, getDriverWeeklyEarningHistoryController } from "./controllers/driverEarnings.controller.js";
 
 const router = Router();
 
@@ -137,7 +137,14 @@ router.route("/earnings/history").get(
   verifyJWT,
   authorizeRole("DRIVER"),
   getDriverEarningHistoryController
-)
+);
+
+// WEEKLY EARNINGS HISTORY
+router.route("/earnings/weekly-history").get(
+    verifyJWT,
+    authorizeRole("DRIVER"),
+    getDriverWeeklyEarningHistoryController
+  );
 
 // TOTAL DRIVING TIME 
 router.route("/driving-time").get(
