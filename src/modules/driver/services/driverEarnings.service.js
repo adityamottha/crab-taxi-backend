@@ -125,8 +125,64 @@ const getDriverEarningHistoryService = async (driverId) => {
   return history;
 };
 
+// ============== WEEKLY EANINGS SERVICE ===============
+const getDriverWeeklyEarningHistoryService = async (
+  driverId
+) => {
+
+  // validate driverId
+    if(!ObjectId.isValid(driverId)){
+      throw new ApiError(400,"driverId is required")
+    };
+
+  // aggregate
+  const weeklyHistory = await DriverEarning.aggregate([
+    {
+      $match: {
+        driverId,
+      },
+    },
+
+    {
+      $group: {
+        _id: {
+          year: {
+            $isoWeekYear: "$date",
+          },
+
+          week: {
+            $isoWeek: "$date",
+          },
+        },
+
+        totalEarnings: {
+          $sum: "$amount",
+        },
+
+        totalRides: {
+          $sum: "$totalRides",
+        },
+
+        currency: {
+          $first: "$currency",
+        },
+      },
+    },
+
+    {
+      $sort: {
+        "_id.year": -1,
+        "_id.week": -1,
+      },
+    },
+  ]);
+
+  // return 
+  return weeklyHistory;
+};
 export {
     updateDriverDailyEarningService,
     getDriverEarningsService,
-    getDriverEarningHistoryService
+    getDriverEarningHistoryService,
+    getDriverWeeklyEarningHistoryService
 }
