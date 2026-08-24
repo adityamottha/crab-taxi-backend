@@ -1,4 +1,4 @@
-import { getDriverEarningHistoryService, getDriverEarningsService } from "../services/driverEarnings.service.js";
+import { getDriverEarningHistoryService, getDriverEarningsService, getDriverWeeklyEarningHistoryService } from "../services/driverEarnings.service.js";
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 
@@ -36,9 +36,32 @@ const getDriverEarningHistoryController = AsyncHandler(async (req,res) => {
       "Driver earning history fetched successfully"
     )
   );
-})
+});
+
+
+// =============== WEEKLY EARNINGS CONTROLLER =============
+export const getDriverWeeklyEarningHistoryController = AsyncHandler(async (req, res) => {
+
+    // driver id from user
+      const driverId = req.user._id;
+
+      // get service and pass driver id
+    const history = await getDriverWeeklyEarningHistoryService(
+        driverId
+      );
+
+      // return response
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        history,
+        "Weekly earning history fetched successfully"
+      )
+    );
+  })
 
 export {
     getDriverEarningsController,
     getDriverEarningHistoryController
 }
+
