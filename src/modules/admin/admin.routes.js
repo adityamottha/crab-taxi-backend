@@ -16,8 +16,24 @@ import
      allRejectedDriversController,
     } 
     from "./controllers/adminDashboard.controller.js";
-import { createRideByAdminController, getRequestedRidesByAdminController } from "./controllers/adminRideBooking.controller.js";
-import { getAdminDriverRideHistoryController, getAdminUserRideHistoryController, getUserRideHistoryController } from "../ride matching/controllers/ride.controller.js";
+import { 
+    createRideByAdminController, 
+    getRequestedRidesByAdminController 
+    } 
+    from "./controllers/adminRideBooking.controller.js";
+
+import { 
+    getAdminDriverRideHistoryController, 
+    getAdminUserRideHistoryController, 
+}
+     from "../ride matching/controllers/ride.controller.js";
+
+import {
+     getDriverEarningHistoryController, 
+     getDriverEarningsController, 
+     getDriverWeeklyEarningHistoryController
+     } 
+     from "../driver/controllers/driverEarnings.controller.js";
 
 const router = Router();
 
@@ -127,4 +143,26 @@ router.route("/rider/:userId/rides/history").get(
     authorizeRole("ADMIN"),
     getAdminUserRideHistoryController
 )
+
+// GET DRIVER EARNING HISTORY (CONTROLLER WRITTEN INSIDE driver/controller/driverEarnings.controller.js )
+router.route("/drivers/:driverId/earnings").get(
+    verifyJWT,
+    authorizeRole("ADMIN"),
+    getDriverEarningsController
+);
+
+// GET DRIVER EARNING HISTORY (CONTROLLER WRITTEN INSIDE driver/controller/driverEarnings.controller.js )
+router.route("/drivers/:driverId/earnings/history").get(
+    verifyJWT,
+    authorizeRole("ADMIN"),
+    getDriverEarningHistoryController
+);
+
+// GET DRIVER EARNING HISTORY (CONTROLLER WRITTEN INSIDE driver/controller/driverEarnings.controller.js )
+router.route("/drivers/:driverId/earnings/weekly-history").get(
+    verifyJWT,
+    authorizeRole("ADMIN"),
+    getDriverWeeklyEarningHistoryController
+);
+
 export default router;

@@ -5,7 +5,7 @@ import { ApiResponse } from "../../../utils/ApiResponse.js";
  // ================= GET-DRIVER-WEEK-DAY-TODAY's EARNINGS ==============
 const getDriverEarningsController = AsyncHandler( async (req, res) => {
 
-    const driverId = req.user._id;
+    const driverId = req.user._id || req.params.driverId;
 
     const earnings = await getDriverEarningsService(driverId);
 
