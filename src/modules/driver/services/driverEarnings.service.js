@@ -1,5 +1,6 @@
 import { DriverEarning } from "../models/driverEarnings.model.js";
-
+import { ApiError } from "../../../utils/ApiError.js"
+import { ObjectId } from "mongodb";
 const updateDriverDailyEarningService = async ({
   driverId,
   amount,
@@ -102,7 +103,30 @@ const getDriverEarningsService = async (driverId) => {
     weeklyRides: weeklyResult[0]?.totalRides || 0,
   };
 };
+
+// =============== DAILY EARNINGS HISTORY ================
+const getDriverEarningHistoryService = async (driverId) => {
+
+  // validate driverId
+  if(!ObjectId.isValid(driverId)){
+    throw new ApiError(400,"driverId is required")
+  };
+
+  // find daily history by driverId 
+  const history = await DriverEarning.find({
+    driverId,
+  })
+    .sort({ // sort in decending order 
+      date: -1,
+    })
+    .lean(); // lean for covert mdb to js object
+
+    // return 
+  return history;
+};
+
 export {
     updateDriverDailyEarningService,
-    getDriverEarningsService
+    getDriverEarningsService,
+    getDriverEarningHistoryService
 }
