@@ -1,6 +1,6 @@
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { AsyncHandler } from "../../../utils/AsyncHandler.js"
-import { getAllDriversService, getAllRejectedService, getAllUsersService, getSingleDriverService, notApprovedDriverService } from "../services/adminDashboard.service.js";
+import { getAllDriversService, getAllRejectedService, getAllUsersService, getAvailableDriversService, getSingleDriverService, notApprovedDriverService } from "../services/adminDashboard.service.js";
 import { driverDocumentsApprovedService, driverDocumentsRejectedService } from "../services/driverDocumentsApproved.service.js";
 import { driverProfileApprovedService, driverProfileRejectService } from "../services/driverProfileApproved.service.js"
 import { driverVehicleApprovedService, driverVehicleRejectService } from "../services/driverVehicleApproved.service.js";
@@ -155,7 +155,22 @@ const getAllUsersController = AsyncHandler(async (req, res) => {
 );
 
 
+// =================== GET AVAILABLE ONLINE DRIVER ==============
+export const getAvailableDriversController = async (
+  req,
+  res
+) => {
 
+  const drivers = await getAvailableDriversService();
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      drivers,
+      "Available drivers fetched successfully"
+    )
+  );
+};
 export { 
   getAllDriversController,
   getSingleDriverController,

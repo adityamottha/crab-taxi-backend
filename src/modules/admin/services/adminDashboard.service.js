@@ -298,6 +298,14 @@ export const getAvailableDriversService = async () => {
     })
     .lean();
 
+    // check if empty 
+    // if(drivers.length === 0){
+    //   throw new ApiError(
+    //     400,
+    //     "No drivers available!"
+    //   )
+    // };
+
     // return 
   return drivers;
 };
