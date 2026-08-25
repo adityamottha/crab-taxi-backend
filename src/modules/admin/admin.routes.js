@@ -30,12 +30,12 @@ import {
 }
      from "../ride matching/controllers/ride.controller.js";
 
-import {
-     getDriverEarningHistoryController, 
-     getDriverWeeklyEarningHistoryController
-     } 
-     from "../driver/controllers/driverEarnings.controller.js";
-import { getDriverEarningsByAdminController } from "./controllers/adminDriverEarnings.controller.js";
+import { 
+    getDriverEarningHistoryByAdminController, 
+    getDriverEarningsByAdminController,
+     getDriverWeeklyEarningHistoryByAdminController 
+    }
+      from "./controllers/adminDriverEarnings.controller.js";
 
 const router = Router();
 
@@ -157,14 +157,14 @@ router.route("/drivers/:driverId/earnings").get(
 router.route("/drivers/:driverId/earnings/history").get(
     verifyJWT,
     authorizeRole("ADMIN"),
-    getDriverEarningHistoryController
+    getDriverEarningHistoryByAdminController
 );
 
-// GET DRIVER EARNING HISTORY (CONTROLLER WRITTEN INSIDE driver/controller/driverEarnings.controller.js )
+// GET DRIVER EARNING HISTORY 
 router.route("/drivers/:driverId/earnings/weekly-history").get(
     verifyJWT,
     authorizeRole("ADMIN"),
-    getDriverWeeklyEarningHistoryController
+    getDriverWeeklyEarningHistoryByAdminController
 );
 
 // =================== GET AVAILABLE ONLINE DRIVER ==============
