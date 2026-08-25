@@ -1,6 +1,7 @@
 import { ApiError } from "../../../utils/ApiError.js";
 import { DriverProfile } from "../../driver/models/driverProfile.model.js";
 import { AuthUser } from "../../auth/authUsers.models.js";
+import { Ride } from "../../ride matching/models/ride.model.js";
 
 // GET ALL DRIVERS-------------------------------------------------
 const getAllDriversService = async () => {
@@ -286,7 +287,7 @@ return allUsers;
 }
 
 // =================== GET AVAILABLE ONLINE DRIVER ==============
-export const getAvailableDriversService = async () => {
+const getAvailableDriversService = async () => {
 
   // find by online
   const drivers = await DriverProfile.find({
@@ -310,10 +311,87 @@ export const getAvailableDriversService = async () => {
   return drivers;
 };
 
+// ====================== ASSIGN RIDE TO DRIVER ===============
+const assignDriverToRideService = async ({
+  rideId,
+  driverId,
+  adminId,
+}) => {
+
+  // check required data 
+  if (!rideId) {
+    throw new ApiError(
+      400,
+      "rideId is required"
+    );
+  }
+
+  if (!driverId) {
+    throw new ApiError(
+      400,
+      "driverId is required"
+    );
+  }
+
+  if (!adminId) {
+    throw new ApiError(
+      400,
+      "adminId is required"
+    );
+  }
+
+  // find requested ride 
+  const ride = await Ride.findOne({
+    _id: rideId,
+    status: "requested",
+    driverId: null,
+  });
+
+  if (!ride) {
+    throw new ApiError(
+      404,
+      "Requested ride not found or already assigned"
+    );
+  }
+
+
+// check driver is online
+  const driver = await DriverProfile.findOne({
+    authUserId: driverId,
+    driverStatus: "ONLINE",
+  });
+
+  if (!driver) {
+    throw new ApiError(
+      400,
+      "Driver is not available or offline"
+    );
+  }
+
+// assign driver 
+  ride.driverId = driverId;
+
+  ride.assignmentType = "MANUAL";
+
+  ride.assignedBy = adminId;
+
+  ride.assignedAt = new Date();
+
+
+ // save ride
+  await ride.save();
+
+// return 
+  return ride;
+};
+
+
 export { 
   getAllDriversService,
   notApprovedDriverService,
   getSingleDriverService,
   getAllUsersService,
-  getAllRejectedService
+  getAllRejectedService,
+  getAvailableDriversService,
+  assignDriverToRideService
  }
