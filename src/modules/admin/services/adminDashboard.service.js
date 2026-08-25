@@ -284,6 +284,24 @@ const allUsers = await AuthUser.aggregate([
 return allUsers;
 
 }
+
+// =================== GET AVAILABLE ONLINE DRIVER ==============
+export const getAvailableDriversService = async () => {
+
+  // find by online
+  const drivers = await DriverProfile.find({
+    driverStatus: "ONLINE",
+  })
+    .populate({
+      path: "authUserId",
+      select: "fullname avatar phoneNumber email",
+    })
+    .lean();
+
+    // return 
+  return drivers;
+};
+
 export { 
   getAllDriversService,
   notApprovedDriverService,
