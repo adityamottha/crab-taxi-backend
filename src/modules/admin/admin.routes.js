@@ -15,6 +15,7 @@ import
      getAllUsersController,
      allRejectedDriversController,
      getAvailableDriversController,
+     assignDriverToRideController,
     } 
     from "./controllers/adminDashboard.controller.js";
 import { 
@@ -171,6 +172,14 @@ router.route("/drivers/available").get(
     verifyJWT,
     authorizeRole("ADMIN"),
     getAvailableDriversController
+  );
+
+  // ====================== ASSIGN RIDE TO DRIVER ===============
+
+  router.route("/rides/:rideId/assign-driver").patch(
+    verifyJWT,
+    authorizeRole("ADMIN"),
+    assignDriverToRideController
   );
 
 export default router;

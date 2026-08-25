@@ -2,6 +2,7 @@ import { ApiError } from "../../../utils/ApiError.js";
 import { DriverProfile } from "../../driver/models/driverProfile.model.js";
 import { AuthUser } from "../../auth/authUsers.models.js";
 import { Ride } from "../../ride matching/models/ride.model.js";
+import mongoose from "mongoose";
 
 // GET ALL DRIVERS-------------------------------------------------
 const getAllDriversService = async () => {
@@ -319,21 +320,21 @@ const assignDriverToRideService = async ({
 }) => {
 
   // check required data 
-  if (!rideId) {
+  if (!mongoose.Types.ObjectId.isValid(rideId)) {
     throw new ApiError(
       400,
       "rideId is required"
     );
   }
 
-  if (!driverId) {
+  if (!mongoose.Types.ObjectId.isValid(driverId)) {
     throw new ApiError(
       400,
       "driverId is required"
     );
   }
 
-  if (!adminId) {
+  if (!mongoose.Types.ObjectId.isValid(adminId)) {
     throw new ApiError(
       400,
       "adminId is required"
