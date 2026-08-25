@@ -190,6 +190,14 @@ const assignDriverToRideController = AsyncHandler(async (
     adminId,
   });
 
+  // Send notification ONLY to selected driver
+  const io = global.io;
+
+  io.to(`driver-${driverId}`).emit(
+    "newRideAssigned",
+    ride
+  );
+
   return res.status(200).json(
     new ApiResponse(
       200,

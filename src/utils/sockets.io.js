@@ -10,6 +10,7 @@ import {
 } from "../modules/ride matching/services/ride.service.js";
 import { getNearbyDriversService } from "../modules/rider/services/riderDashboard.service.js";
 import { AuthUser } from "../modules/auth/authUsers.models.js";
+import { assignDriverToRideService } from "../modules/admin/services/adminDashboard.service.js";
 
 // CHAT SOCKET ---------------------------------------------
 const chatSocket = (io, socket) => {
@@ -30,6 +31,16 @@ const chatSocket = (io, socket) => {
 
 // =================RIDE SOCKET ===========================================
 const rideSocket = (io, socket) => {
+
+  // DRIVER ROOM +++++++++++++++++++++++++++++++++++++++++
+  socket.on("registerDriver", (driverId) => {
+
+    socket.join(`driver-${driverId}`);
+
+    console.log(
+      `Driver joined room: driver-${driverId}`
+    );
+  });
 
   // DRIVER ONLINE +++++++++++++++++++++++++++++++++++++
   socket.on("driver-online", (userId) => {
