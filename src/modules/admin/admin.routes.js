@@ -32,10 +32,10 @@ import {
 
 import {
      getDriverEarningHistoryController, 
-     getDriverEarningsController, 
      getDriverWeeklyEarningHistoryController
      } 
      from "../driver/controllers/driverEarnings.controller.js";
+import { getDriverEarningsByAdminController } from "./controllers/adminDriverEarnings.controller.js";
 
 const router = Router();
 
@@ -150,7 +150,7 @@ router.route("/rider/:userId/rides/history").get(
 router.route("/drivers/:driverId/earnings").get(
     verifyJWT,
     authorizeRole("ADMIN"),
-    getDriverEarningsController
+    getDriverEarningsByAdminController
 );
 
 // GET DRIVER EARNING HISTORY (CONTROLLER WRITTEN INSIDE driver/controller/driverEarnings.controller.js )
