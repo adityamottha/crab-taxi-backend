@@ -1,6 +1,6 @@
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { AsyncHandler } from "../../../utils/AsyncHandler.js"
-import { getAllDriversService, getAllRejectedService, getAllUsersService, getAvailableDriversService, getSingleDriverService, notApprovedDriverService } from "../services/adminDashboard.service.js";
+import { assignDriverToRideService, getAllDriversService, getAllRejectedService, getAllUsersService, getAvailableDriversService, getSingleDriverService, notApprovedDriverService } from "../services/adminDashboard.service.js";
 import { driverDocumentsApprovedService, driverDocumentsRejectedService } from "../services/driverDocumentsApproved.service.js";
 import { driverProfileApprovedService, driverProfileRejectService } from "../services/driverProfileApproved.service.js"
 import { driverVehicleApprovedService, driverVehicleRejectService } from "../services/driverVehicleApproved.service.js";
@@ -156,7 +156,7 @@ const getAllUsersController = AsyncHandler(async (req, res) => {
 
 
 // =================== GET AVAILABLE ONLINE DRIVER ==============
-export const getAvailableDriversController = async (
+const getAvailableDriversController = AsyncHandler( async (
   req,
   res
 ) => {
@@ -170,9 +170,34 @@ export const getAvailableDriversController = async (
       "Available drivers fetched successfully"
     )
   );
-};
+})
 
 // ====================== ASSIGN RIDE TO DRIVER ===============
+const assignDriverToRideController = AsyncHandler(async (
+  req,
+  res
+) => {
+
+  const { rideId } = req.params;
+
+  const { driverId } = req.body;
+
+  const adminId = req.user._id;
+
+  const ride = await assignDriverToRideService({
+    rideId,
+    driverId,
+    adminId,
+  });
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      ride,
+      "Driver assigned to ride successfully"
+    )
+  );
+})
 
 export { 
   getAllDriversController,
@@ -185,5 +210,7 @@ export {
   driverVehicleApprovedController,
   driverVehicleRejectController,
   getAllUsersController,
-  allRejectedDriversController
+  allRejectedDriversController,
+  getAvailableDriversController,
+  assignDriverToRideController
  }
