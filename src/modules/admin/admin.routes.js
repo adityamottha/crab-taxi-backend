@@ -14,6 +14,7 @@ import
      getSingleDriverController,
      getAllUsersController,
      allRejectedDriversController,
+     getAvailableDriversController,
     } 
     from "./controllers/adminDashboard.controller.js";
 import { 
@@ -164,5 +165,12 @@ router.route("/drivers/:driverId/earnings/weekly-history").get(
     authorizeRole("ADMIN"),
     getDriverWeeklyEarningHistoryController
 );
+
+// =================== GET AVAILABLE ONLINE DRIVER ==============
+router.route("/drivers/available").get(
+    verifyJWT,
+    authorizeRole("ADMIN"),
+    getAvailableDriversController
+  );
 
 export default router;
