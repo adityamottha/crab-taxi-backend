@@ -1,5 +1,5 @@
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
-import { ApiResponse } from "../../../utils/ApiResponse";
+import { ApiResponse } from "../../../utils/ApiResponse.js";
 
 import { 
      getDriverEarningHistoryService,
@@ -46,7 +46,7 @@ const getDriverEarningHistoryByAdminController = AsyncHandler(async (req,res) =>
 
 
 // =============== WEEKLY EARNINGS CONTROLLER =============
-export const getDriverWeeklyEarningHistoryByAdminController = AsyncHandler(async (req, res) => {
+ const getDriverWeeklyEarningHistoryByAdminController = AsyncHandler(async (req, res) => {
 
     // driver id from user
       const driverId = req.params.driverId;
