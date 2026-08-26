@@ -121,6 +121,12 @@ const getDriverEarningHistoryService = async (driverId) => {
     })
     .lean(); // lean for covert mdb to js object
 
+    if(history.length === 0){
+      throw new ApiError(
+        400,
+        "No daily earnings found!"
+      )
+    }
     // return 
   return history;
 };
@@ -176,6 +182,13 @@ const getDriverWeeklyEarningHistoryService = async (
       },
     },
   ]);
+
+  if(!weeklyHistory.length === 0){
+    ApiError(
+      400,
+      "No weekly earnings please check daily earnings!"
+    )
+  }
 
   // return 
   return weeklyHistory;
