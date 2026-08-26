@@ -43,6 +43,14 @@ const rideSchema = new mongoose.Schema({
       required:true
     },
   },
+
+  // TYPE OF VEHICLE 
+    vehicleCategory:{
+      type:String,
+      enum:["SEDAN","TWO_WHEELER","SUV","PREMIUM_SUV"],
+      required:true
+    },
+    
   status: {
     type: String,
     enum: ['requested', 'accepted', 'started', 'completed', 'cancelled'],
