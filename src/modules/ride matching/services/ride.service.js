@@ -12,6 +12,7 @@ const createRideService = async ({
   passengerId,
   pickup,
   dropoff,
+  vehicleType
 }) => {
 
   if (!pickup || !dropoff) {
@@ -20,6 +21,14 @@ const createRideService = async ({
       "Pickup and dropoff are required"
     );
   }
+
+  if(!mongoose.Types.ObjectId.isValid(passengerId)){
+    throw new ApiError(
+      409,
+      "passengerId is required!"
+    );
+  };
+
 
   const fareDetails =
     FareCalculator.calculateFare(
