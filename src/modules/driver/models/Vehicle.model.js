@@ -9,12 +9,16 @@ const vehicleSchema = new mongoose.Schema({
       index: true,
     },
 
-    vehicleType: {
-      type: String,
-      enum: ["CAR", "BIKE", "AUTO"],
-      required: true,
-      index: true,
-    },
+  vehicleCategory: {
+    type: String,
+    enum: [
+      "SEDAN",
+      "TWO_WHEELER",
+      "SUV",
+      "PREMIUM_SUV"
+    ],
+    required: true
+  },
 
     brand: {
       type: String,
