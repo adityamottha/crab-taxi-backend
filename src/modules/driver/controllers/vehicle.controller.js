@@ -6,7 +6,7 @@ const vehicleController = AsyncHandler(async (req,res)=>{
     console.log("BODY:", req.body);
 console.log("FILES:", req.files);
   const {
-    vehicleType,
+    vehicleCategory,
     brand,
     registrationNumber,
     color,
@@ -21,7 +21,7 @@ console.log("FILES:", req.files);
 
   const vehicle = await vehicleService({
      userId:req.user._id,
-      vehicleType,
+      vehicleCategory,
         brand,
         registrationNumber,
         color,

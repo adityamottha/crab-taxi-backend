@@ -5,11 +5,12 @@ import { getDriverProfileForUserService, getNearbyDriversService } from "../serv
 
 const getNearbyDrivers = AsyncHandler(async (req, res) => {
 
-  const { lng, lat } = req.query;
+  const { lng, lat, vehicleCategory } = req.query;
 
   const drivers = await getNearbyDriversService({
     lng,
-    lat
+    lat,
+    vehicleCategory
   });
 
   return res.status(200).json(

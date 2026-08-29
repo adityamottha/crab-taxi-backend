@@ -5,7 +5,7 @@ import { ApiResponse } from "../../../utils/ApiResponse.js";
 const createRideController =
   AsyncHandler(async (req, res) => {
 
-    const { pickup, dropoff } =
+    const { pickup, dropoff, vehicleCategory } =
       req.body;
 
     const ride =
@@ -13,6 +13,7 @@ const createRideController =
         passengerId: req.user._id,
         pickup,
         dropoff,
+        vehicleCategory
       });
 
     return res.status(201).json(
