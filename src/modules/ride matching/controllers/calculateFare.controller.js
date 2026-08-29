@@ -3,11 +3,12 @@ import { ApiResponse } from "../../../utils/ApiResponse.js"
 import { calculateFareService } from "../services/calculateFare.service.js";
 
 const calculateFareController = AsyncHandler(async (req,res)=>{
-    const { pickup, dropoff } = req.body;
+    const { pickup, dropoff , vehicleCategory} = req.body;
 
     const fareDetails = await calculateFareService({
       pickup,
-      dropoff
+      dropoff,
+      vehicleCategory
     });
 
     return res.status(200).json(
