@@ -8,13 +8,16 @@ import { AuthUser } from "../../auth/authUsers.models.js";
 import mongoose from "mongoose";
 import { updateDriverDailyEarningService } from "../../driver/services/driverEarnings.service.js";
 
+// CREATE RIDE SERVICE ========================================================
 const createRideService = async ({
   passengerId,
   pickup,
   dropoff,
-  vehicleType
+  vehicleCategory,
 }) => {
 
+
+  // validate the data 
   if (!pickup || !dropoff) {
     throw new ApiError(
       400,
@@ -22,88 +25,137 @@ const createRideService = async ({
     );
   }
 
-  if(!mongoose.Types.ObjectId.isValid(passengerId)){
+  if (
+    !mongoose.Types.ObjectId.isValid(passengerId)
+  ) {
     throw new ApiError(
-      409,
-      "passengerId is required!"
+      400,
+      "Valid passengerId is required!"
     );
-  };
+  }
+
+  if (!vehicleCategory) {
+    throw new ApiError(
+      400,
+      "Vehicle category is required!"
+    );
+  }
 
 
+
+  // fare calculate according to vehicle type 
   const fareDetails =
     FareCalculator.calculateFare(
       pickup,
-      dropoff
+      dropoff,
+      vehicleCategory
     );
 
+//  create ride 
   const ride = await Ride.create({
+
     passengerId,
+
     pickup,
+
     dropoff,
+
+    vehicleCategory,
+
     fare: {
       amount: fareDetails.amount,
+      currency: "INR",
       distance: fareDetails.distance,
       duration: fareDetails.duration,
     },
+
     status: "requested",
+
   });
+
 
   console.log("Ride ID:", ride._id);
   console.log("Passenger ID:", passengerId);
+  console.log("Vehicle Category:", vehicleCategory);
   console.log("Status:", ride.status);
 
+
+  // find nearby drivers 
   const nearbyDrivers =
     await getNearbyDriversService({
       lat: pickup.lat,
       lng: pickup.lng,
     });
 
+
   console.log(
     "Nearby Drivers Found:",
     nearbyDrivers.length
   );
 
+
+  // send ride to matching drivers 
   for (const driver of nearbyDrivers) {
 
     const driverId =
       driver.authUserId.toString();
 
+
+    // Get driver's socket
     const socketId =
       onlineDrivers.get(driverId);
+
 
     if (!socketId) {
 
       console.log(
-        "NO SOCKET FOUND FOR DRIVER"
+        "NO SOCKET FOUND FOR DRIVER:",
+        driverId
       );
 
       continue;
     }
 
+
+// send ride 
     global.io
       .to(socketId)
       .emit(
         "new-ride",
         {
           rideId: ride._id,
+
           pickup: ride.pickup,
+
           dropoff: ride.dropoff,
+
           fare: ride.fare,
+
+          vehicleCategory:
+            ride.vehicleCategory,
+
+          status: ride.status,
         }
       );
 
+
     console.log(
-      "NEW RIDE EMITTED"
+      "NEW RIDE EMITTED TO DRIVER:",
+      driverId
     );
+
   }
 
+  // return 
   return {
     ride,
     nearbyDrivers,
   };
+
 };
 
-// ACCEPT RIDE SERVICE
+
+// ACCEPT RIDE SERVICE =================================
 
 const acceptRideService = async ({
   rideId,
