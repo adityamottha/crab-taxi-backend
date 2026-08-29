@@ -85,6 +85,7 @@ const createRideService = async ({
     await getNearbyDriversService({
       lat: pickup.lat,
       lng: pickup.lng,
+      vehicleCategory
     });
 
 
