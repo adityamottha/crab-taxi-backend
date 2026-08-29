@@ -5,7 +5,7 @@ import { DriverProfile } from "../models/driverProfile.model.js";
 
 const vehicleService = async ({
     userId,
-    vehicleType,
+    vehicleCategory,
     brand,
     registrationNumber,
     color,
@@ -18,7 +18,7 @@ const vehicleService = async ({
 })=>{
 
     // check fields are not empty 
-    if([vehicleType,brand,registrationNumber,color,numberPlateNumber,model].some(fields=>!fields?.trim())){
+    if([vehicleCategory,brand,registrationNumber,color,numberPlateNumber,model].some(fields=>!fields?.trim())){
         throw new ApiError(404,"All fields are required!");
     };
 
@@ -41,8 +41,7 @@ const vehicleService = async ({
     // insert data in db
     const vehicle = await Vehicle.create({
         driverProfileId: driverProfile._id,
-
-        vehicleType,
+        vehicleCategory,
         brand,
         registrationNumber,
         color,
