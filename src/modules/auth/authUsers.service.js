@@ -9,6 +9,8 @@ import {
   sendPasswordChangedEmail,
   sendPasswordResetEmail
 } from "../notifications/notification.service.js";
+import { generateOTP, hashOTP } from "../../utils/generateOtp.js";
+import { sendVerificationEmail } from "../../utils/mailer.js";
 // import { checkValidEmail } from "../../utils/validEmailPassword.js";
 // import { parsePhoneNumberFromString } from "libphonenumber-js";
 
@@ -46,9 +48,18 @@ const registerService = async ({ phoneNumber, email, password, role }) => {
     $or: [{ phoneNumber }, { email }],
   });
 
+  // user existed but not verified ---------------
+  //  will do work here ->
+
   if (existedUser) {
     throw new ApiError(409, "User already exists!");
   }
+
+  // generate OTP 
+   const otp = generateOTP();
+
+  // hash OTP
+  const hashedOtp = hashOTP(otp);
 
   // Create user
   const user = await AuthUser.create({
@@ -60,6 +71,11 @@ const registerService = async ({ phoneNumber, email, password, role }) => {
     accountStatus: "ACTIVE",
     driverApprovalStatus: role === "DRIVER" ? "PENDING" : "NOT_APPLICABLE",
     kycRequired: role === "DRIVER",
+
+    // OTP section
+    emailVerificationCode:hashedOtp,
+    emailVerificationExpires:new Date(Date.now() + 10 * 60 * 1000),
+    lastEmailVerificationRequestedAt:new Date(),
   });
 
   // Remove sensitive data
@@ -69,9 +85,18 @@ const registerService = async ({ phoneNumber, email, password, role }) => {
     throw new ApiError(500, "User failed to register!");
   }
 
-  sendWelcomeEmail(createdUser).catch(err =>
+   // send verification email
+  await sendVerificationEmail(
+    email,
+    hashedOtp
+  );
+
+  // send welcome Message 
+if(user.isEmailVerified === true){
+  await sendWelcomeEmail(createdUser).catch(err =>
     console.log("Welcome email failed:", err.message)
   );
+}
 
   return createdUser;
 };

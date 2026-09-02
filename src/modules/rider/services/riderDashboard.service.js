@@ -2,7 +2,7 @@ import { DriverProfile } from "../../driver/models/driverProfile.model.js";
 import { ApiError } from "../../../utils/ApiError.js";
 import { AuthUser } from "../../auth/authUsers.models.js";
 import { mongoose } from "mongoose";
-import { Vehicle } from "../../driver/models/vehicle.model.js";
+import { Vehicle } from "../../driver/models/Vehicle.model.js";
 
 
 const getNearbyDriversService = async ({
