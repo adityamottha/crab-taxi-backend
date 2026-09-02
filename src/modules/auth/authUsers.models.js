@@ -82,16 +82,53 @@ const authUserSchema = new mongoose.Schema({
     default: []
   },
 
-  // Verfications 
+ // VERIFICATIONS
 
-  isOtpVerified: {
-    type: Boolean,
-    default: false
-  },
+isOtpVerified: {
+  type: Boolean,
+  default: false,
+},
 
-  phoneNumberVerifiedAt: {
-    type: Date
-  },
+phoneNumberVerifiedAt: {
+  type: Date,
+  default: null,
+},
+
+isEmailVerified: {
+  type: Boolean,
+  default: false,
+},
+
+emailVerifiedAt: {
+  type: Date,
+  default: null,
+},
+
+emailVerificationCode: {
+  type: String,
+  default: null,
+  select: false,
+},
+
+emailVerificationExpires: {
+  type: Date,
+  default: null,
+},
+
+emailVerificationAttempts: {
+  type: Number,
+  default: 0,
+},
+
+emailVerificationBlockedUntil: {
+  type: Date,
+  default: null,
+},
+
+lastEmailVerificationRequestedAt: {
+  type: Date,
+  default: null,
+},
 
   // ACCOUNT LIFECYCLE 
 
