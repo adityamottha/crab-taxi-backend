@@ -1,4 +1,4 @@
-import { randomInt } from "node:crypto";
+import { randomInt , createHash} from "node:crypto";
 
 // GENERATE OTP
 export const generateOTP = () => {
