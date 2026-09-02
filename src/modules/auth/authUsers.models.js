@@ -85,7 +85,7 @@ const authUserSchema = new mongoose.Schema({
   // Verfications 
 
   isOtpVerified: {
-    type: String,
+    type: Boolean,
     default: false
   },
 
