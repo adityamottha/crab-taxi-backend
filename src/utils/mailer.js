@@ -41,6 +41,46 @@ export const sendVerificationEmail = async (
   });
 };
 
+// --------- Welcome email ------------------------
+export const sendWelcomeEmail = async (email) => {
+  try {
+    await transporter.sendMail({
+      from: `"Crab Taxi" <${process.env.MAIL_FROM}>`,
+      to: email,
+      subject: "Welcome to Crab Taxi 🎉",
+
+      html:  `
+      <div style="font-family: Arial, sans-serif;">
+        <h2>Welcome to Crab Taxi! 🎉</h2>
+
+        <p>Hello,</p>
+
+        <p>
+          Your account has been successfully created.
+          We're happy to have you with us!
+        </p>
+
+        <p>
+          You can now start using Crab Taxi.
+        </p>
+
+        <br />
+
+        <p>
+          Best regards,<br />
+          <strong>Crab Taxi Team</strong>
+        </p>
+      </div>
+    `,
+    });
+
+    console.log(`Welcome email sent to ${email}`);
+  } catch (error) {
+    console.error("Failed to send welcome email:", error);
+    throw error;
+  }
+};
+
 export const sendEmail = async ({ to, subject, html }) => {
   await transporter.sendMail({
     from: process.env.SMTP_FROM,

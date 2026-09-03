@@ -10,12 +10,19 @@ import {
   sendPasswordResetEmail
 } from "../notifications/notification.service.js";
 import { generateOTP, hashOTP } from "../../utils/generateOtp.js";
-import { sendVerificationEmail } from "../../utils/mailer.js";
+import { sendEmail, sendVerificationEmail } from "../../utils/mailer.js";
 // import { checkValidEmail } from "../../utils/validEmailPassword.js";
 // import { parsePhoneNumberFromString } from "libphonenumber-js";
 
-const registerService = async ({ phoneNumber, email, password, role }) => {
 
+//================= REGISTER USER =======================================================
+
+const registerService = async ({
+  phoneNumber,
+  email,
+  password,
+  role,
+}) => {
   // Required checks
   if (!phoneNumber) {
     throw new ApiError(400, "Phone number is required!");
@@ -25,40 +32,35 @@ const registerService = async ({ phoneNumber, email, password, role }) => {
     throw new ApiError(400, "All fields are required!");
   }
 
-  // check ADMIN is not to allow for registration
-  if(role === "ADMIN"){
-    throw new ApiError(408,"You cannot able to register as ADMIN!")
-  };
-  // // Email validation 
-  // if (!checkValidEmail(email)) {
-  //   throw new ApiError(400, "Invalid email!");
-  // }
-
-  // // Phone validation + formatting
-  // const parsedPhone = parsePhoneNumberFromString(phoneNumber);
-
-  // if (!parsedPhone || !parsedPhone.isValid()) {
-  //   throw new ApiError(400, "Invalid phone number");
-  // }
-
-  // phoneNumber = parsedPhone.format("E.164");
+  // ADMIN registration not allowed
+  if (role === "ADMIN") {
+    throw new ApiError(
+      403,
+      "You cannot register as ADMIN!"
+    );
+  }
 
   // Check existing user
   const existedUser = await AuthUser.findOne({
-    $or: [{ phoneNumber }, { email }],
+    $or: [
+      { phoneNumber },
+      { email: email.toLowerCase() },
+    ],
   });
 
-  // user existed but not verified ---------------
-  //  will do work here ->
+  
 
-  if (existedUser) {
-    throw new ApiError(409, "User already exists!");
+    // Existing and already verified
+    throw new ApiError(
+      409,
+      "User already exists and is already verified!"
+    );
   }
 
-  // generate OTP 
-   const otp = generateOTP();
+  // Generate OTP
+  const otp = generateOTP();
 
-  // hash OTP
+  // Hash OTP for database
   const hashedOtp = hashOTP(otp);
 
   // Create user
@@ -67,40 +69,48 @@ const registerService = async ({ phoneNumber, email, password, role }) => {
     email: email.toLowerCase(),
     password,
     role,
+
     authProvider: "EMAIL",
+
     accountStatus: "ACTIVE",
-    driverApprovalStatus: role === "DRIVER" ? "PENDING" : "NOT_APPLICABLE",
+
+    driverApprovalStatus:
+      role === "DRIVER"
+        ? "PENDING"
+        : "NOT_APPLICABLE",
+
     kycRequired: role === "DRIVER",
 
-    // OTP section
-    emailVerificationCode:hashedOtp,
-    emailVerificationExpires:new Date(Date.now() + 10 * 60 * 1000),
-    lastEmailVerificationRequestedAt:new Date(),
+    // OTP
+    emailVerificationCode: hashedOtp,
+
+    emailVerificationExpires:
+      new Date(Date.now() + 10 * 60 * 1000),
+
+    lastEmailVerificationRequestedAt:
+      new Date(),
   });
 
-  // Remove sensitive data
-  const createdUser = await AuthUser.findById(user._id).select("-password");
+  // Remove password
+  const createdUser = await AuthUser
+    .findById(user._id)
+    .select("-password");
 
   if (!createdUser) {
-    throw new ApiError(500, "User failed to register!");
+    throw new ApiError(
+      500,
+      "User failed to register!"
+    );
   }
 
-   // send verification email
+  // Send ORIGINAL OTP
   await sendVerificationEmail(
-    email,
-    hashedOtp
+    createdUser.email,
+    otp
   );
-
-  // send welcome Message 
-if(user.isEmailVerified === true){
-  await sendWelcomeEmail(createdUser).catch(err =>
-    console.log("Welcome email failed:", err.message)
-  );
-}
 
   return createdUser;
 };
-
 
 // LOGIN SERVICE---------------
 const loginService = async ({ email, password }) => {
