@@ -9,7 +9,7 @@ import {
   sendPasswordChangedEmail,
   sendPasswordResetEmail
 } from "../notifications/notification.service.js";
-import { generateOTP, hashOTP } from "../../utils/generateOtp.js";
+import { generateOTP, hashOTP, verifyOTP } from "../../utils/generateOtp.js";
 import { sendVerificationEmail } from "../../utils/mailer.js";
 import { checkValidEmail } from "../../utils/validEmailPassword.js";
 // import { parsePhoneNumberFromString } from "libphonenumber-js";
@@ -147,6 +147,91 @@ const registerService = async ({
   return createdUser;
 };
 
+// ================ VERIFY  EMAIL OTP SERVICE ==========================
+const verifyEmailService = async ({
+  email,
+  otp,
+}) => {
+  
+  // validate data 
+  if(!email){
+    throw new ApiError(
+      400,
+      "Email is required!"
+    )
+  };
+
+   if(!otp){
+    throw new ApiError(
+      400,
+      "OTP is required!"
+    )
+  }
+
+  // find user by email address
+  const user = await AuthUser.findOne({
+    email: email.toLowerCase(),
+  });
+
+  // check is not existed
+  if (!user) {
+    throw new ApiError(404, "User not found!");
+  }
+
+  // if existed and isEmailVerified true throw error 
+  if (user.isEmailVerified === true) {
+    throw new ApiError(
+      400,
+      "Email is already verified!"
+    );
+  }
+
+  // check is OTP exired
+  if (
+    !user.emailVerificationExpires ||
+    user.emailVerificationExpires < new Date()
+  ) {
+    throw new ApiError(
+      400,
+      "OTP has expired!"
+    );
+  }
+
+  // Compare OTP with stored hash
+  const isValidOTP = verifyOTP(
+    otp,
+    user.emailVerificationCode
+  );
+
+  // if not same throw error
+  if (!isValidOTP) {
+    throw new ApiError(
+      400,
+      "Invalid OTP!"
+    );
+  }
+
+  // Verify user
+  user.isEmailVerified = true;
+
+  user.emailVerificationCode = null;
+  user.emailVerificationExpires = null;
+  user.lastEmailVerificationRequestedAt = null;
+  user.accountStatus = "ACTIVE"
+  await user.save();
+
+  // Send welcome email AFTER successful verification
+  await sendWelcomeEmail(user.email).catch((err) => {
+    console.log(
+      "Welcome email failed:",
+      err.message
+    );
+  });
+
+  return {
+    message: "Email verified successfully!",
+  };
+};
 
 // LOGIN SERVICE---------------
 const loginService = async ({ email, password }) => {
