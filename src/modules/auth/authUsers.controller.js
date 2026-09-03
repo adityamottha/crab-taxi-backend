@@ -22,9 +22,10 @@ const verifyEmailController = AsyncHandler(async (req,res)=>{
 
    //GET DATA
    const {email, otp} = req.body;
+   console.log("CONTROLLER_EMAIL: ", email)
 
    // pass the data to service 
-   const verify = await verifyEmailService(email,otp);
+   const verify = await verifyEmailService({email,otp});
 
    // send the response
    return res.status(200).json(

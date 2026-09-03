@@ -1,6 +1,5 @@
 import { ApiError } from "../../../utils/ApiError.js";
 import { uploadMultipleFilesWithUrl } from "../../../utils/uploadMultipleFiles.js";
-let otpUser = "567190"
 import { Vehicle } from "../models/Vehicle.model.js";
 import { DriverProfile } from "../models/driverProfile.model.js";
 

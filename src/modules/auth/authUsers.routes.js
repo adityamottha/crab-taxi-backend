@@ -8,7 +8,8 @@ import {
     refreshAccessTokenController,
     registerController,
     forgotPasswordController,
-    resetPasswordController 
+    resetPasswordController, 
+    verifyEmailController
 
     } from "./authUsers.controller.js";
 import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
@@ -17,6 +18,9 @@ const router = Router();
 
 //REGISTER ROUTE
 router.route("/register").post(registerController);
+
+// VERIFY EMAIL OTP
+router.route("/verify-email").post(verifyEmailController);
 
 //LOGIN ROUTE
 router.route("/login").post(loginController);
@@ -41,6 +45,7 @@ router.route("/forgot-password").post(forgotPasswordController);
 
 //RESET PASSWORD
 router.route("/reset-password/:token").post(resetPasswordController);
+
 
 export default router;
 
