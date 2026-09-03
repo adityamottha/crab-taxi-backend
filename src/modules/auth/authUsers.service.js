@@ -10,8 +10,8 @@ import {
   sendPasswordResetEmail
 } from "../notifications/notification.service.js";
 import { generateOTP, hashOTP } from "../../utils/generateOtp.js";
-import { sendEmail, sendVerificationEmail } from "../../utils/mailer.js";
-// import { checkValidEmail } from "../../utils/validEmailPassword.js";
+import { sendVerificationEmail } from "../../utils/mailer.js";
+import { checkValidEmail } from "../../utils/validEmailPassword.js";
 // import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 
@@ -31,6 +31,14 @@ const registerService = async ({
   if (!email?.trim() || !password?.trim() || !role) {
     throw new ApiError(400, "All fields are required!");
   }
+
+  // check email is valid
+   if(!checkValidEmail(email)){
+    throw new ApiError(
+      422,
+      "Invalid email-address!"
+    );
+   };
 
   // ADMIN registration not allowed
   if (role === "ADMIN") {
@@ -138,6 +146,7 @@ const registerService = async ({
 
   return createdUser;
 };
+
 
 // LOGIN SERVICE---------------
 const loginService = async ({ email, password }) => {
@@ -426,5 +435,6 @@ export {
   changeEmailService,
   changePhoneNumberService,
   forgotPasswordService,
-  resetPasswordService
+  resetPasswordService,
+  verifyEmailService
 };

@@ -11,3 +11,16 @@ export const hashOTP = (otp) => {
     .update(otp)
     .digest("hex");
 };
+
+
+export const verifyOTP = (otp, hashedOtp) => {
+  if (!otp || !hashedOtp) {
+    return false;
+  }
+
+  const hashedInput = createHash("sha256")
+    .update(otp.toString())
+    .digest("hex");
+
+  return hashedInput === hashedOtp;
+};
