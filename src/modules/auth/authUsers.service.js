@@ -49,7 +49,36 @@ const registerService = async ({
   });
 
   
+// Existing user
+  if (existedUser) {
 
+    // Existing but email not verified
+    if (existedUser.isEmailVerified !== true) {
+
+      const otp = generateOTP();
+      const hashedOtp = hashOTP(otp);
+
+      existedUser.emailVerificationCode = hashedOtp;
+      existedUser.emailVerificationExpires =
+        new Date(Date.now() + 10 * 60 * 1000);
+
+      existedUser.lastEmailVerificationRequestedAt =
+        new Date();
+
+      await existedUser.save();
+
+      // Send ORIGINAL OTP
+      await sendVerificationEmail(
+        existedUser.email,
+        otp
+      );
+
+      return {
+        message: "Verification OTP sent again.",
+      };
+    }
+
+    
     // Existing and already verified
     throw new ApiError(
       409,
