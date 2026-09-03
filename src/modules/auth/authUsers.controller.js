@@ -1,5 +1,5 @@
 import { AsyncHandler } from "../../utils/AsyncHandler.js";
-import { registerService, loginService, logoutService, refreshAccessTokenService, changePasswordService, changeEmailService, changePhoneNumberService, forgotPasswordService, resetPasswordService } from "./authUsers.service.js";
+import { registerService, loginService, logoutService, refreshAccessTokenService, changePasswordService, changeEmailService, changePhoneNumberService, forgotPasswordService, resetPasswordService, verifyEmailService } from "./authUsers.service.js";
 import { ApiResponse } from "../../utils/ApiResponse.js"
 // import { ApiError } from "../../utils/ApiError.js";
 
@@ -16,6 +16,26 @@ const registerController = AsyncHandler(async (req,res)=>{
     new ApiResponse(200,createdUser,"User register successfully!")
    );
 });
+
+// VERIFY EMAIL CONTROLLER
+const verifyEmailController = AsyncHandler(async (req,res)=>{
+
+   //GET DATA
+   const {email, otp} = req.body;
+
+   // pass the data to service 
+   const verify = await verifyEmailService(email,otp);
+
+   // send the response
+   return res.status(200).json(
+      new ApiResponse(
+         200,
+         verify,
+         "User verified successfully!"
+     )
+   )
+})
+
 
 // LOGIN CONTROLLER--------------
 const loginController = AsyncHandler(async (req,res)=>{
@@ -200,5 +220,6 @@ export {
    changeEmailController,
    changePhoneNumberController,
    forgotPasswordController,
-   resetPasswordController
+   resetPasswordController,
+   verifyEmailController
 }
