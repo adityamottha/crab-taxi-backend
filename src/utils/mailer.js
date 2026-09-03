@@ -6,6 +6,14 @@ dotenv.config({
   path: path.resolve(process.cwd(), "../../.env"),
 });
 
+console.log({
+  SMTP_HOST: process.env.SMTP_HOST,
+  SMTP_PORT: process.env.SMTP_PORT,
+  SMTP_USER: process.env.SMTP_USER,
+  SMTP_PASS: process.env.SMTP_PASS ? "DEFINED" : "MISSING",
+  MAIL_FROM: process.env.MAIL_FROM,
+});
+
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT),
@@ -47,11 +55,11 @@ export const sendWelcomeEmail = async (email) => {
     await transporter.sendMail({
       from: `"Crab Taxi" <${process.env.MAIL_FROM}>`,
       to: email,
-      subject: "Welcome to Crab Taxi 🎉",
+      subject: "Welcome to Crab Taxi ",
 
       html:  `
       <div style="font-family: Arial, sans-serif;">
-        <h2>Welcome to Crab Taxi! 🎉</h2>
+        <h2>Welcome to Crab Taxi!</h2>
 
         <p>Hello,</p>
 

@@ -78,7 +78,7 @@ const registerService = async ({
       };
     }
 
-    
+
     // Existing and already verified
     throw new ApiError(
       409,
@@ -100,8 +100,6 @@ const registerService = async ({
     role,
 
     authProvider: "EMAIL",
-
-    accountStatus: "ACTIVE",
 
     driverApprovalStatus:
       role === "DRIVER"
