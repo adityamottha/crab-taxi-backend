@@ -1,22 +1,5 @@
 import { sendEmail } from "../../utils/mailer.js";
 
-export const sendWelcomeEmail = async (user) => {
-  const html = `
-    <h2>Welcome to Crab Taxi 🚕</h2>
-    <p>Hello ${user.email},</p>
-    <p>Your account has been successfully created.</p>
-    <p>We're happy to have you onboard!</p>
-    <br/>
-    <p>Thanks,</p>
-    <p>Crab Taxi Team</p>
-  `;
-
-  await sendEmail({
-    to: user.email,
-    subject: "Welcome to Crab Taxi 🚕",
-    html,
-  });
-};
 
 export const sendPasswordResetEmail = async (user, resetUrl) => {
 

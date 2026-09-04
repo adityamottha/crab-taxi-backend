@@ -5,12 +5,11 @@ import jwt from "jsonwebtoken";
 import { ONE_DAY } from "../../constants.js";
 import crypto from "crypto";
 import { 
-  sendWelcomeEmail,
   sendPasswordChangedEmail,
   sendPasswordResetEmail
 } from "../notifications/notification.service.js";
 import { generateOTP, hashOTP} from "../../utils/generateOtp.js";
-import { sendVerificationEmail } from "../../utils/mailer.js";
+import { sendVerificationEmail, sendWelcomeEmail } from "../../utils/mailer.js";
 import { checkValidEmail } from "../../utils/validEmailPassword.js";
 // import { parsePhoneNumberFromString } from "libphonenumber-js";
 
@@ -181,8 +180,8 @@ const verifyEmailService = async ({
     throw new ApiError(404, "User not found!");
   }
 
-  console.log("USER_OTP: ",userOtp)
-  console.log("USER_DATABASE_OTP: ",user.emailVerificationCode)
+  // console.log("USER_OTP: ",userOtp)
+  // console.log("USER_DATABASE_OTP: ",user.emailVerificationCode)
   
   // if existed and isEmailVerified true throw error 
   if (user.isEmailVerified === true) {
@@ -221,6 +220,7 @@ const verifyEmailService = async ({
   await user.save();
 
   // Send welcome email AFTER successful verification
+  // console.log("USER_EMAIL: ", user.email)
   await sendWelcomeEmail(user.email).catch((err) => {
     console.log(
       "Welcome email failed:",
