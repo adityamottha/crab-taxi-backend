@@ -6,13 +6,13 @@ dotenv.config({
   path: path.resolve(process.cwd(), "../../.env"),
 });
 
-console.log({
-  SMTP_HOST: process.env.SMTP_HOST,
-  SMTP_PORT: process.env.SMTP_PORT,
-  SMTP_USER: process.env.SMTP_USER,
-  SMTP_PASS: process.env.SMTP_PASS ? "DEFINED" : "MISSING",
-  MAIL_FROM: process.env.MAIL_FROM,
-});
+// console.log({
+//   SMTP_HOST: process.env.SMTP_HOST,
+//   SMTP_PORT: process.env.SMTP_PORT,
+//   SMTP_USER: process.env.SMTP_USER,
+//   SMTP_PASS: process.env.SMTP_PASS ? "DEFINED" : "MISSING",
+//   MAIL_FROM: process.env.MAIL_FROM,
+// });
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,

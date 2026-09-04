@@ -9,7 +9,7 @@ import {
   sendPasswordChangedEmail,
   sendPasswordResetEmail
 } from "../notifications/notification.service.js";
-import { generateOTP, hashOTP, verifyOTP } from "../../utils/generateOtp.js";
+import { generateOTP, hashOTP} from "../../utils/generateOtp.js";
 import { sendVerificationEmail } from "../../utils/mailer.js";
 import { checkValidEmail } from "../../utils/validEmailPassword.js";
 // import { parsePhoneNumberFromString } from "libphonenumber-js";
@@ -168,16 +168,22 @@ const verifyEmailService = async ({
     )
   }
 
+  // hashOTP 
+   const userOtp = hashOTP(otp);
+
   // find user by email address
   const user = await AuthUser.findOne({
     email: email.toLowerCase(),
-  });
+  }).select("+emailVerificationCode")
 
   // check is not existed
   if (!user) {
     throw new ApiError(404, "User not found!");
   }
 
+  console.log("USER_OTP: ",userOtp)
+  console.log("USER_DATABASE_OTP: ",user.emailVerificationCode)
+  
   // if existed and isEmailVerified true throw error 
   if (user.isEmailVerified === true) {
     throw new ApiError(
@@ -198,13 +204,7 @@ const verifyEmailService = async ({
   }
 
   // Compare OTP with stored hash
-  const isValidOTP = verifyOTP(
-    otp,
-    user.emailVerificationCode
-  );
-
-  // if not same throw error
-  if (!isValidOTP) {
+  if(userOtp !== user.emailVerificationCode){
     throw new ApiError(
       400,
       "Invalid OTP!"
