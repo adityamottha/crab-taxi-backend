@@ -65,7 +65,7 @@ const getNearbyDriversService = async ({
 
     vehicleApproved: "APPROVED",
 
-    isActive: true,
+    // isActive: true,
 
   }).lean();
 
