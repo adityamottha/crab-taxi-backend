@@ -350,7 +350,7 @@ const forgotPasswordService = async (email) => {
 
   await user.save({ validateBeforeSave: false });
 
-  const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+  const resetUrl = `${process.env.RESET_PASSWORD_URI}${resetToken}`;
 
   sendPasswordResetEmail(user, resetUrl).catch(err =>
     console.log("Password reset email failed:", err.message)
