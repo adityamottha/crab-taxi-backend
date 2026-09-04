@@ -1,5 +1,5 @@
 import { ApiError } from "../../../utils/ApiError.js";
-import { Vehicle } from "../../driver/models/vehicle.model.js";
+import { Vehicle } from "../../driver/models/Vehicle.model.js";
  
 const driverVehicleApprovedService = async ({userId})=>{
     // check userId is not empty
@@ -16,6 +16,9 @@ const driverVehicleApprovedService = async ({userId})=>{
 
     // approved status
     vehicle.vehicleApproved = "APPROVED";
+
+    // isActive true
+    vehicle.isActive = true;
 
     // update time of approval
     vehicle.vehicleApprovedAt = new Date();
