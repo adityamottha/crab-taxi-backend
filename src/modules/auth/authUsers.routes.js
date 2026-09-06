@@ -9,7 +9,8 @@ import {
     registerController,
     forgotPasswordController,
     resetPasswordController, 
-    verifyEmailController
+    verifyEmailController,
+    resendEmailVerificationController
 
     } from "./authUsers.controller.js";
 import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
@@ -21,6 +22,9 @@ router.route("/register").post(registerController);
 
 // VERIFY EMAIL OTP
 router.route("/verify-email").post(verifyEmailController);
+
+// RESEND EMAIL OTP
+router.route("/resend-verification").post(resendEmailVerificationController);
 
 //LOGIN ROUTE
 router.route("/login").post(loginController);

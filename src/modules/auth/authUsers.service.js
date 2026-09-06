@@ -236,12 +236,10 @@ const verifyEmailService = async ({
 };
 
 // RECENT EMAIL OTP ----------------------------------
-export const resendEmailVerificationService = async ({
-  email,
-}) => {
+const resendEmailVerificationService = async ({email}) => {
   
   // validate email 
-  if(!checkValidEmail(email.trim())){
+  if(!checkValidEmail(email)){
     throw new ApiError(
       400,
       "Email is not valid!"
@@ -339,7 +337,7 @@ export const resendEmailVerificationService = async ({
   //  send email
 
   try {
-    await sendVerificationEmail(user, otp);
+    await sendVerificationEmail(user.email, otp);
   } catch (error) {
 
     // Rollback OTP data if email fails

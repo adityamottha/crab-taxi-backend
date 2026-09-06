@@ -50,19 +50,19 @@ const verifyEmailController = AsyncHandler(async (req,res)=>{
 })
 
 //  RESEND OTP -----------------
-const resendEmailVerificationController = async () =>{
+const resendEmailVerificationController = AsyncHandler(async (req,res) =>{
 
    // data email from body
-   const email = req.body;
+   const {email} = req.body;
 
    // get service pass data
    const resend = await resendEmailVerificationService({email});
 
    // send response
-   res.status(200).json(
+  return res.status(200).json(
       new ApiResponse(200,resend,"OTP sent again.")
    )
-}
+})
 
 // LOGIN CONTROLLER--------------
 const loginController = AsyncHandler(async (req,res)=>{
