@@ -1,7 +1,19 @@
 import { AsyncHandler } from "../../utils/AsyncHandler.js";
-import { registerService, loginService, logoutService, refreshAccessTokenService, changePasswordService, changeEmailService, changePhoneNumberService, forgotPasswordService, resetPasswordService, verifyEmailService } from "./authUsers.service.js";
 import { ApiResponse } from "../../utils/ApiResponse.js"
-// import { ApiError } from "../../utils/ApiError.js";
+import { 
+   registerService, 
+   loginService, 
+   logoutService, 
+   refreshAccessTokenService, 
+   changePasswordService, 
+   changeEmailService, 
+   changePhoneNumberService, 
+   forgotPasswordService, 
+   resetPasswordService, 
+   verifyEmailService,
+    resendEmailVerificationService
+    } from "./authUsers.service.js";
+
 
 const registerController = AsyncHandler(async (req,res)=>{
 
@@ -37,6 +49,20 @@ const verifyEmailController = AsyncHandler(async (req,res)=>{
    )
 })
 
+//  RESEND OTP -----------------
+const resendEmailVerificationController = async () =>{
+
+   // data email from body
+   const email = req.body;
+
+   // get service pass data
+   const resend = await resendEmailVerificationService({email});
+
+   // send response
+   res.status(200).json(
+      new ApiResponse(200,resend,"OTP sent again.")
+   )
+}
 
 // LOGIN CONTROLLER--------------
 const loginController = AsyncHandler(async (req,res)=>{
@@ -222,5 +248,6 @@ export {
    changePhoneNumberController,
    forgotPasswordController,
    resetPasswordController,
-   verifyEmailController
+   verifyEmailController,
+   resendEmailVerificationController
 }
