@@ -10,6 +10,7 @@ export const createRideByAdminService = async ({
   passengerId,
   pickup,
   dropoff,
+  vehicleCategory
 }) => {
 
   if (!passengerId) {
@@ -40,7 +41,8 @@ export const createRideByAdminService = async ({
   const fareDetails =
     FareCalculator.calculateFare(
       pickup,
-      dropoff
+      dropoff,
+      vehicleCategory
     );
 
   const ride = await Ride.create({
@@ -54,17 +56,20 @@ export const createRideByAdminService = async ({
       duration: fareDetails.duration,
     },
 
+    vehicleCategory,
     status: "requested",
+
   });
 
-  console.log("Ride ID:", ride._id);
-  console.log("Passenger ID:", passengerId);
-  console.log("Status:", ride.status);
+  // console.log("Ride ID:", ride._id);
+  // console.log("Passenger ID:", passengerId);
+  // console.log("Status:", ride.status);
 
   const nearbyDrivers =
     await getNearbyDriversService({
       lat: pickup.lat,
       lng: pickup.lng,
+      vehicleCategory
     });
 
   console.log(
