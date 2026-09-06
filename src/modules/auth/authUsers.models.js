@@ -130,6 +130,11 @@ lastEmailVerificationRequestedAt: {
   default: null,
 },
 
+emailVerificationResendAttempts: {
+  type: Number,
+  default: 0,
+},
+
   // ACCOUNT LIFECYCLE 
 
   accountStatus: {
