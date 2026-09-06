@@ -241,7 +241,7 @@ const recentEmailOtpService = async ({email}) =>{
   // throw err if not registered
   // thr err if already verified
   // create otp
-  //
+  // null the previus otp 
 }
 
 // LOGIN SERVICE---------------
