@@ -8,7 +8,9 @@ const createRideByAdminController =
     const {
       passengerId,
       pickup,
-      dropoff
+      dropoff,
+      vehicleCategory
+
     } = req.body;
 
     const result =
@@ -16,6 +18,7 @@ const createRideByAdminController =
         passengerId,
         pickup,
         dropoff,
+        vehicleCategory
       });
 
     return res.status(201).json(

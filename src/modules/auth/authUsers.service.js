@@ -11,6 +11,7 @@ import {
 import { generateOTP, hashOTP} from "../../utils/generateOtp.js";
 import { sendVerificationEmail, sendWelcomeEmail } from "../../utils/mailer.js";
 import { checkValidEmail } from "../../utils/validEmailPassword.js";
+import { register } from "module";
 // import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 
@@ -232,6 +233,16 @@ const verifyEmailService = async ({
     message: "Email verified successfully!",
   };
 };
+
+// RECENT EMAIL OTP ----------------------------------
+const recentEmailOtpService = async ({email}) =>{
+  // validate email
+  // find user by email
+  // throw err if not registered
+  // thr err if already verified
+  // create otp
+  //
+}
 
 // LOGIN SERVICE---------------
 const loginService = async ({ email, password }) => {
@@ -521,5 +532,6 @@ export {
   changePhoneNumberService,
   forgotPasswordService,
   resetPasswordService,
-  verifyEmailService
+  verifyEmailService,
+  recentEmailOtpService,
 };
