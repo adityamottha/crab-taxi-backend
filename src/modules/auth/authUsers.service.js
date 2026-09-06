@@ -11,7 +11,8 @@ import {
 import { generateOTP, hashOTP} from "../../utils/generateOtp.js";
 import { sendVerificationEmail, sendWelcomeEmail } from "../../utils/mailer.js";
 import { checkValidEmail } from "../../utils/validEmailPassword.js";
-import { register } from "module";
+import { OTP_CONFIG } from "../../constants.js";
+import { getRemainingMinutes, getRemainingSeconds } from "../../utils/timeCalculation.js";
 // import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 
@@ -235,21 +236,133 @@ const verifyEmailService = async ({
 };
 
 // RECENT EMAIL OTP ----------------------------------
-const recentEmailOtpService = async ({email}) =>{
-  // validate email
-  // find user by email
-  // throw err if not registered
-  // thr err if already verified
-  // create otp
-  // hashed otp
-  // null previus stored otp
-  // replace otp with hashed otp
-  // send email
-  // update otpAttempt
+export const resendEmailVerificationService = async ({
+  email,
+}) => {
   
-  // save  data
-  // return message 
-}
+  // validate email 
+  if(!checkValidEmail(email.trim())){
+    throw new ApiError(
+      400,
+      "Email is not valid!"
+    );
+  };
+
+  // find user 
+  const user = await AuthUser.findOne({
+    email: email
+  }).select("+emailVerificationCode");
+
+  // throw err if not found
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+//  check verification status 
+  if (user.isEmailVerified) {
+    throw new ApiError(
+      400,
+      "Email is already verified"
+    );
+  }
+
+  // create current date 
+  const now = new Date();
+
+// check temprory blocks
+  if (
+    user.emailVerificationBlockedUntil &&
+    user.emailVerificationBlockedUntil > now
+  ) {
+    const remainingMinutes = getRemainingMinutes(
+      user.emailVerificationBlockedUntil
+      );
+
+    throw new ApiError(
+      429,
+      `Too many OTP requests. Please try again in ${remainingMinutes} minute(s).`
+    );
+  }
+
+
+  // check 30 min cooldown counting
+  if (user.lastEmailVerificationRequestedAt) {
+    const elapsed = now.getTime() - user.lastEmailVerificationRequestedAt.getTime();
+
+    if (
+      elapsed < OTP_CONFIG.RESEND_COOLDOWN_MS
+    ) {
+      const remainingSeconds =
+        getRemainingSeconds(
+          user.lastEmailVerificationRequestedAt,
+          OTP_CONFIG.RESEND_COOLDOWN_MS
+        );
+
+      throw new ApiError(
+        429,
+        `Please wait ${remainingSeconds} seconds before requesting another OTP.`
+      );
+    }
+  }
+
+
+  // blocked user for 1hour if max attempt hit
+  if (
+    user.emailVerificationResendAttempts >= OTP_CONFIG.MAX_RESEND_ATTEMPTS
+  ) {
+     
+    user.emailVerificationBlockedUntil =
+    new Date( now.getTime() + OTP_CONFIG.BLOCK_DURATION_MS );
+
+    await user.save();
+
+    throw new ApiError(
+      429,
+      "Too many OTP requests. Please try again after 1 hour."
+    );
+  }
+
+ // generate and hashed OTP
+  const otp = generateOTP();
+  const hashedOTP = hashOTP(otp)
+
+  // set expiry after 1hour
+  user.emailVerificationCode = hashedOTP;
+  user.emailVerificationExpires = new Date( now.getTime() + OTP_CONFIG.EXPIRY_MS);
+
+  // update requested information
+  user.lastEmailVerificationRequestedAt = now;
+  user.emailVerificationResendAttempts += 1;
+
+  await user.save();
+
+  //  send email
+
+  try {
+    await sendVerificationEmail(user, otp);
+  } catch (error) {
+
+    // Rollback OTP data if email fails
+    user.emailVerificationCode = null;
+    user.emailVerificationExpires = null;
+    user.lastEmailVerificationRequestedAt =null;
+    user.emailVerificationResendAttempts -= 1;
+
+    await user.save();
+
+    throw new ApiError(
+      500,
+      "Failed to send verification email"
+    );
+  }
+
+//  return message 
+  return {
+    message:
+      "Verification OTP sent successfully",
+  };
+
+};
 
 // LOGIN SERVICE---------------
 const loginService = async ({ email, password }) => {
@@ -540,5 +653,5 @@ export {
   forgotPasswordService,
   resetPasswordService,
   verifyEmailService,
-  recentEmailOtpService,
+  resendEmailVerificationService,
 };
