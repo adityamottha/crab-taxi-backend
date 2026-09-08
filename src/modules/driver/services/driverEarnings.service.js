@@ -132,20 +132,21 @@ const getDriverEarningHistoryService = async (driverId) => {
 };
 
 // ============== WEEKLY EANINGS SERVICE ===============
-const getDriverWeeklyEarningHistoryService = async (
-  driverId
-) => {
+const getDriverWeeklyEarningHistoryService = async (driverId) => {
 
-  // validate driverId
-    if(!ObjectId.isValid(driverId)){
-      throw new ApiError(400,"driverId is required")
-    };
+  // Validate driverId
+  if (!ObjectId.isValid(driverId)) {
+    throw new ApiError(400, "Invalid driverId");
+  }
 
-  // aggregate
+  // Convert string to ObjectId
+  const driverObjectId = new ObjectId(driverId);
+
+  // Aggregate weekly earnings
   const weeklyHistory = await DriverEarning.aggregate([
     {
       $match: {
-        driverId,
+        driverId: driverObjectId,
       },
     },
 
@@ -155,7 +156,6 @@ const getDriverWeeklyEarningHistoryService = async (
           year: {
             $isoWeekYear: "$date",
           },
-
           week: {
             $isoWeek: "$date",
           },
@@ -183,14 +183,14 @@ const getDriverWeeklyEarningHistoryService = async (
     },
   ]);
 
-  if(!weeklyHistory.length === 0){
-    ApiError(
-      400,
-      "No weekly earnings please check daily earnings!"
-    )
+  // Check result
+  if (weeklyHistory.length === 0) {
+    throw new ApiError(
+      404,
+      "No weekly earnings found. Please check daily earnings!"
+    );
   }
 
-  // return 
   return weeklyHistory;
 };
 export {
