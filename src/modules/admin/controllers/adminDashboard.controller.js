@@ -195,11 +195,19 @@ const assignDriverToRideController = AsyncHandler(async (
 
   // Send notification ONLY to selected driver
   const io = global.io;
+//       const room = `driver-${driverId}`;
+
+// const sockets = await io.in(room).fetchSockets();
+
+// console.log("ROOM:", room);
+// console.log("SOCKETS IN ROOM:", sockets.map(s => s.id));
 
   io.to(`driver-${driverId}`).emit(
     "newRideAssigned",
     ride
   );
+
+  console.log("EMIT EXECUTED");
 
   return res.status(200).json(
     new ApiResponse(
