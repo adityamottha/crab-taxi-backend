@@ -3,6 +3,7 @@ import { ApiError } from "../../../utils/ApiError.js"
 import { uploadOnCloudinary } from "../../../utils/cloudinary.js";
 import { AuthUser } from "../../auth/authUsers.models.js";
 import { Ride } from "../../ride matching/models/ride.model.js";
+import mongoose from "mongoose";
 
 const driverProfileService =async ({fullname,dateOfBirth,driverAvatar,address,user})=>{
     
@@ -277,6 +278,46 @@ const getDriverTotalDrivingTimeService = async (driverId) => {
   };
 }
 
+// DRIVER BREAK ON SERVICE ---------------------------------
+const startDriverBreakService = async (driverId) => {
+
+  // validate driverId
+  if(!mongoose.Types.ObjectId.isValid(driverId)){
+    throw new ApiError(
+      400,
+      "driverId is required!"
+    )
+  }
+
+  // find driver by Id
+  const driver = await DriverProfile.findOne({
+    authUserId: driverId,
+  });
+
+  // throw err if not found
+  if (!driver) {
+    throw new ApiError(404, "Driver not found");
+  }
+
+  // thr err if already on break
+  if (driver.isOnBreak) {
+    throw new ApiError(400, "Driver is already on break");
+  }
+
+  // mark isOnBreak true
+  driver.isOnBreak = true;
+
+  // start session of break
+  driver.breakSessions.push({
+    startedAt: new Date(),
+  });
+
+  // save driver
+  await driver.save();
+
+  // return 
+  return driver;
+};
 
 export { 
     driverProfileService,
@@ -285,5 +326,7 @@ export {
     goOnlineService,
     updateDriverLocationService,
     goOfflineService,
-    getDriverTotalDrivingTimeService
+    getDriverTotalDrivingTimeService,
+    startDriverBreakService 
+
  }
