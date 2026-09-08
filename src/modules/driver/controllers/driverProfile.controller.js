@@ -1,7 +1,6 @@
 import { AsyncHandler } from "../../../utils/AsyncHandler.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
-import { changeAvatarService, driverProfileService, getDriverProfileService, getDriverTotalDrivingTimeService, goOfflineService, goOnlineService, updateDriverLocationService } from "../services/driverProfile.service.js";
-
+import { changeAvatarService, driverProfileService, getDriverProfileService, getDriverTotalDrivingTimeService, goOfflineService, goOnlineService, startDriverBreakService, updateDriverLocationService } from "../services/driverProfile.service.js";
 
 const driverProfileController = AsyncHandler(async (req,res)=>{
 
@@ -139,6 +138,23 @@ const getDriverTotalDrivingTimeController = AsyncHandler(
   }
 );
 
+// DRIVER BREAK START CONTROLLER _____________________________________
+const startDriverBreakController = AsyncHandler(async () =>{
+  // get driverId 
+  const { driverId } = req.body
+
+  // get service function
+  const startBreak = await startDriverBreakService(driverId);
+
+  // return res
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      startBreak,
+      "Driver is on-break"
+    )
+  )
+})
 
 export { 
     driverProfileController,
@@ -147,5 +163,6 @@ export {
     goOnlineController,
     updateDriverLocationController,
     goOfflineController,
-    getDriverTotalDrivingTimeController
+    getDriverTotalDrivingTimeController,
+    startDriverBreakController
 }
