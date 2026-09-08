@@ -12,6 +12,9 @@ import { app } from "./app.js";
 import { chatSocket } from "./utils/sockets.io.js";
 import { rideSocket } from "./utils/sockets.io.js";
 import { startDriverStatusJob } from "./utils/driverStatus.job.js";
+import { startTempCleanup } from "./utils/tempCleanup.js";
+
+startTempCleanup();
 
 const PORT = process.env.PORT || 8000;
 
