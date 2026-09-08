@@ -366,10 +366,10 @@ const endDriverBreakService = async (driverId) => {
   // End break
   currentBreak.endedAt = now;
 
-  // Calculate break duration in milliseconds
-  currentBreak.duration =
-    now.getTime() -
-    currentBreak.startedAt.getTime();
+  // Calculate break duration in minutes
+  currentBreak.duration = Math.floor(
+  (now.getTime() - currentBreak.startedAt.getTime()) / (1000 * 60)
+);
 
   // Driver is no longer on break
   driver.isOnBreak = false;
