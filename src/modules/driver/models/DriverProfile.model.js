@@ -157,7 +157,30 @@ const driverProfileSchema = new mongoose.Schema({
     },
     suspensionReason:{
         type:String
-    }
+    },
+
+    // BREAK TIME
+    breakSessions: [
+    {
+        startedAt: {
+        type: Date,
+        required: true,
+        },
+        endedAt: {
+        type: Date,
+        default: null,
+        },
+        duration: {
+        type: Number, // milliseconds
+        default: null,
+        },
+        },
+    ],
+
+    isOnBreak: {
+    type: Boolean,
+    default: false,
+    },
 },{timestamps:true});
 
 driverProfileSchema.index({ location: "2dsphere" });
