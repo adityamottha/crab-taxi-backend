@@ -308,15 +308,18 @@ const startDriverBreakService = async (driverId) => {
   driver.isOnBreak = true;
 
   // start session of break
+  const startedAt = new Date();
   driver.breakSessions.push({
-    startedAt: new Date(),
+    startedAt,
   });
 
   // save driver
   await driver.save();
 
   // return 
-  return driver;
+  return {
+    message:`Driver started break at ${startedAt}`
+  };
 };
 
 export { 

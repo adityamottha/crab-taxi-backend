@@ -139,9 +139,9 @@ const getDriverTotalDrivingTimeController = AsyncHandler(
 );
 
 // DRIVER BREAK START CONTROLLER _____________________________________
-const startDriverBreakController = AsyncHandler(async () =>{
+const startDriverBreakController = AsyncHandler(async (req,res) =>{
   // get driverId 
-  const { driverId } = req.body
+  const driverId  = req.user?._id
 
   // get service function
   const startBreak = await startDriverBreakService(driverId);

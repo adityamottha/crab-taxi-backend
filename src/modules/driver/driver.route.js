@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { changeAvatarController, driverProfileController, getDriverProfileController, getDriverTotalDrivingTimeController, goOfflineController, goOnlineController, updateDriverLocationController } from "./controllers/driverProfile.controller.js";
+import { changeAvatarController, driverProfileController, getDriverProfileController, getDriverTotalDrivingTimeController, goOfflineController, goOnlineController, startDriverBreakController, updateDriverLocationController } from "./controllers/driverProfile.controller.js";
 import { verifyJWT } from "../../middlewares/authVerifyJwt.middleware.js";
 import { authorizeRole } from "../../middlewares/authorizeRole.middleware.js";
 import { upload } from "../../middlewares/multer.middleware.js";
@@ -152,4 +152,12 @@ router.route("/driving-time").get(
   authorizeRole("DRIVER","ADMIN"),
   getDriverTotalDrivingTimeController
 )
+
+// DRIVER START BREAK 
+router.route("/on-break").patch(
+  verifyJWT,
+  authorizeRole("DRIVER"),
+  startDriverBreakController
+)
+
 export default router;
