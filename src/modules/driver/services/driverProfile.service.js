@@ -379,11 +379,6 @@ const endDriverBreakService = async (driverId) => {
 
   return {
     message: `Driver ended break at ${currentBreak.endedAt}`,
-    break: {
-      startedAt: currentBreak.startedAt,
-      endedAt: currentBreak.endedAt,
-      duration: currentBreak.duration,
-    },
   };
 };
 export { 
