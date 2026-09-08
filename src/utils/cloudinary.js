@@ -10,29 +10,62 @@ cloudinary.config({
 });
 
 // console.log("API_KEY: ",process.env.CLOUDINARY_API_KEY);
-const uploadOnCloudinary = async (localFilePath)=>{
+const uploadOnCloudinary = async (localFilePath) => {
+  if (!localFilePath) return null;
+
+  try {
+    console.log("Uploading file:", localFilePath);
+
+    const response = await cloudinary.uploader.upload(localFilePath, {
+      resource_type: "auto",
+    });
+
+    console.log(
+      "FILE SUCCESSFULLY UPLOADED:",
+      response.secure_url
+    );
+
+    // Delete local file after successful upload
     try {
-        if(!localFilePath) return null;
-
-        const response = await cloudinary.uploader.upload(localFilePath,{
-            resource_type:"auto"
-        });
-        console.log("FILE SUCCESSFULY UPLOADED ON CLOUDINARY! ",response.secure_url);
-
-        if(fs.existsSync(localFilePath)){
-            fs.unlinkSync(localFilePath);
-        };
-
-        return response;
-        
-    } catch (error) {
-        console.log("CLOUDINARY FAILED TO UPLOAD FILE! - ERROR:- ",error.message);
-        if(fs.existsSync(localFilePath)){
-            fs.unlinkSync(localFilePath);
-        }
-
-         throw error;
+      await fs.unlink(localFilePath);
+      console.log("Local file deleted successfully");
+    } catch (deleteError) {
+      console.error(
+        "Failed to delete local file:",
+        deleteError.message
+      );
     }
-}
 
-export { uploadOnCloudinary }
+    return response;
+
+  } catch (error) {
+    console.error(
+      "CLOUDINARY UPLOAD FAILED:",
+      error.message
+    );
+
+    // Delete local file even if Cloudinary upload fails
+    try {
+      if (fsSync.existsSync(localFilePath)) {
+        await fs.unlink(localFilePath);
+        console.log(
+          "Local file deleted after Cloudinary failure"
+        );
+      } else {
+        console.log(
+          "Local file does not exist:",
+          localFilePath
+        );
+      }
+    } catch (deleteError) {
+      console.error(
+        "FAILED TO DELETE LOCAL FILE:",
+        deleteError.message
+      );
+    }
+
+    throw error;
+  }
+};
+
+export { uploadOnCloudinary };
