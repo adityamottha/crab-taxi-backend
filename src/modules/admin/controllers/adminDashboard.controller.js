@@ -181,13 +181,16 @@ const assignDriverToRideController = AsyncHandler(async (
   const { rideId } = req.params;
 
   const { driverId } = req.body;
+  const { vehicleCategory } = req.body;
 
+  console.log("VEHCILE CONTROLLER : ", vehicleCategory)
   const adminId = req.user._id;
 
   const ride = await assignDriverToRideService({
     rideId,
     driverId,
     adminId,
+    vehicleCategory
   });
 
   // Send notification ONLY to selected driver

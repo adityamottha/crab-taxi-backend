@@ -13,6 +13,7 @@ export const createRideByAdminService = async ({
   vehicleCategory
 }) => {
 
+  
   if (!passengerId) {
     throw new ApiError(
       400,
@@ -72,24 +73,21 @@ export const createRideByAdminService = async ({
       vehicleCategory
     });
 
-  console.log(
-    "Nearby Drivers Found:",
-    nearbyDrivers.length
-  );
+  console.log("Nearby Drivers Found:",nearbyDrivers.length );
 
   for (const driver of nearbyDrivers) {
 
-    const driverId =
-      driver.authUserId.toString();
+    const driverId = driver.authUserId.toString();
 
-    const socketId =
-      onlineDrivers.get(driverId);
+    //  console.log("Driver authUserId:", driverId);
+    //  console.log("onlineDrivers:", onlineDrivers);
+    //  console.log("Socket ID:", onlineDrivers.get(driverId));
+
+    const socketId = onlineDrivers.get(driverId);
+    // console.log("SOCKET_ID: ", socketId)
 
     if (!socketId) {
-      console.log(
-        "NO SOCKET FOUND FOR DRIVER"
-      );
-
+      console.log("NO SOCKET FOUND FOR DRIVER");
       continue;
     }
 
@@ -105,9 +103,7 @@ export const createRideByAdminService = async ({
         }
       );
 
-    console.log(
-      "NEW RIDE EMITTED"
-    );
+   console.log("NEW RIDE EMITTED TO:", driverId);
   }
 
   return {

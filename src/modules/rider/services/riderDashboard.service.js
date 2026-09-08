@@ -70,7 +70,6 @@ const getNearbyDriversService = async ({
   }).lean();
 
 
-   
   // get drivers who has matching vehicle 
 
   const matchingDriverIds = new Set(

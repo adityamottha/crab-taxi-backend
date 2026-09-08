@@ -317,8 +317,10 @@ const assignDriverToRideService = async ({
   rideId,
   driverId,
   adminId,
+  vehicleCategory
 }) => {
 
+  console.log("VEHICLE CATEGORY SERVICE : ", vehicleCategory)
   // check required data 
   if (!mongoose.Types.ObjectId.isValid(rideId)) {
     throw new ApiError(
@@ -341,11 +343,19 @@ const assignDriverToRideService = async ({
     );
   }
 
+  if(!vehicleCategory){
+    throw new ApiError(
+      400,
+      "vehcile category is required!"
+    )
+  }
+
   // find requested ride 
   const ride = await Ride.findOne({
     _id: rideId,
     status: "requested",
     driverId: null,
+    vehicleCategory
   });
 
   if (!ride) {
@@ -378,6 +388,7 @@ const assignDriverToRideService = async ({
 
   ride.assignedAt = new Date();
 
+  ride.vehicleCategory = vehicleCategory;
 
  // save ride
   await ride.save();
