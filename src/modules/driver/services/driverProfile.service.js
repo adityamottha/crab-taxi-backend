@@ -322,6 +322,70 @@ const startDriverBreakService = async (driverId) => {
   };
 };
 
+// DRIVER BREAK ENDED SERVICE -------------------------
+const endDriverBreakService = async (driverId) => {
+  // Validate driverId
+  if (!driverId) {
+    throw new ApiError(400, "driverId is required!");
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(driverId)) {
+    throw new ApiError(400, "Invalid driverId!");
+  }
+
+  // Find driver
+  const driver = await DriverProfile.findOne({
+    authUserId: driverId,
+  });
+
+  // Check if driver exists
+  if (!driver) {
+    throw new ApiError(404, "Driver not found");
+  }
+
+  // Check if driver is currently on break
+  if (!driver.isOnBreak) {
+    throw new ApiError(400, "Driver is not on break");
+  }
+
+  // Find active break
+  const currentBreak = driver.breakSessions.find(
+    (breakSession) => !breakSession.endedAt
+  );
+
+  if (!currentBreak) {
+    throw new ApiError(
+      400,
+      "Active break session not found"
+    );
+  }
+
+  // Current time
+  const now = new Date();
+
+  // End break
+  currentBreak.endedAt = now;
+
+  // Calculate break duration in milliseconds
+  currentBreak.duration =
+    now.getTime() -
+    currentBreak.startedAt.getTime();
+
+  // Driver is no longer on break
+  driver.isOnBreak = false;
+
+  // Save
+  await driver.save();
+
+  return {
+    message: `Driver ended break at ${currentBreak.endedAt}`,
+    break: {
+      startedAt: currentBreak.startedAt,
+      endedAt: currentBreak.endedAt,
+      duration: currentBreak.duration,
+    },
+  };
+};
 export { 
     driverProfileService,
     changeAvatarService,
@@ -330,6 +394,6 @@ export {
     updateDriverLocationService,
     goOfflineService,
     getDriverTotalDrivingTimeService,
-    startDriverBreakService 
-
+    startDriverBreakService,
+    endDriverBreakService
  }
