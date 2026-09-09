@@ -179,6 +179,7 @@ export const getRequestedRidesByAdminService = async () => {
         otp: ride.otp,
         createdAt: ride.createdAt,
         updatedAt: ride.updatedAt,
+        vehicleCategory:ride.vehicleCategory
       },
 
       passenger: {
