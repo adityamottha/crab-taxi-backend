@@ -120,6 +120,7 @@ export const getRequestedRidesByAdminService = async () => {
   // Get only requested rides
   const rides = await Ride.find({
     status: "requested",
+    driverId:null
   })
     .populate({
       path: "passengerId",
