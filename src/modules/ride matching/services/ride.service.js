@@ -109,7 +109,7 @@ const createRideService = async ({
 
 // ACCEPT RIDE SERVICE =================================
 
-const acceptRideService = async ({ rideId, driverId, vehicleCategory }) => {
+const acceptRideService = async ({ rideId, driverId }) => {
   console.log("Ride ID:", rideId);
   console.log("Driver ID:", driverId);
 
@@ -123,7 +123,6 @@ const acceptRideService = async ({ rideId, driverId, vehicleCategory }) => {
     {
       _id: rideId,
       status: "requested",
-      vehicleCategory: vehicleCategory,
     },
     {
       driverId,
