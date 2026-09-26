@@ -4,9 +4,9 @@ import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 
 cloudinary.config({
-    cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
-    api_key:process.env.CLOUDINARY_API_KEY,
-    api_secret:process.env.CLOUDINARY_API_SECRET
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 // console.log("API_KEY: ",process.env.CLOUDINARY_API_KEY);
@@ -20,48 +20,31 @@ const uploadOnCloudinary = async (localFilePath) => {
       resource_type: "auto",
     });
 
-    console.log(
-      "FILE SUCCESSFULLY UPLOADED:",
-      response.secure_url
-    );
+    console.log("FILE SUCCESSFULLY UPLOADED:", response.secure_url);
 
     // Delete local file after successful upload
     try {
       await fs.unlink(localFilePath);
       console.log("Local file deleted successfully");
     } catch (deleteError) {
-      console.error(
-        "Failed to delete local file:",
-        deleteError.message
-      );
+      console.error("Failed to delete local file:", deleteError.message);
     }
+    c;
 
     return response;
-
   } catch (error) {
-    console.error(
-      "CLOUDINARY UPLOAD FAILED:",
-      error.message
-    );
+    console.error("CLOUDINARY UPLOAD FAILED:", error.message);
 
     // Delete local file even if Cloudinary upload fails
     try {
       if (fsSync.existsSync(localFilePath)) {
         await fs.unlink(localFilePath);
-        console.log(
-          "Local file deleted after Cloudinary failure"
-        );
+        console.log("Local file deleted after Cloudinary failure");
       } else {
-        console.log(
-          "Local file does not exist:",
-          localFilePath
-        );
+        console.log("Local file does not exist:", localFilePath);
       }
     } catch (deleteError) {
-      console.error(
-        "FAILED TO DELETE LOCAL FILE:",
-        deleteError.message
-      );
+      console.error("FAILED TO DELETE LOCAL FILE:", deleteError.message);
     }
 
     throw error;

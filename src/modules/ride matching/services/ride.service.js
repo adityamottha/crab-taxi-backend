@@ -15,45 +15,28 @@ const createRideService = async ({
   dropoff,
   vehicleCategory,
 }) => {
-
-
-  // validate the data 
+  // validate the data
   if (!pickup || !dropoff) {
-    throw new ApiError(
-      400,
-      "Pickup and dropoff are required"
-    );
+    throw new ApiError(400, "Pickup and dropoff are required");
   }
 
-  if (
-    !mongoose.Types.ObjectId.isValid(passengerId)
-  ) {
-    throw new ApiError(
-      400,
-      "Valid passengerId is required!"
-    );
+  if (!mongoose.Types.ObjectId.isValid(passengerId)) {
+    throw new ApiError(400, "Valid passengerId is required!");
   }
 
   if (!vehicleCategory) {
-    throw new ApiError(
-      400,
-      "Vehicle category is required!"
-    );
+    throw new ApiError(400, "Vehicle category is required!");
   }
 
+  // fare calculate according to vehicle type
+  const fareDetails = FareCalculator.calculateFare(
+    pickup,
+    dropoff,
+    vehicleCategory,
+  );
 
-
-  // fare calculate according to vehicle type 
-  const fareDetails =
-    FareCalculator.calculateFare(
-      pickup,
-      dropoff,
-      vehicleCategory
-    );
-
-//  create ride 
+  //  create ride
   const ride = await Ride.create({
-
     passengerId,
 
     pickup,
@@ -70,231 +53,153 @@ const createRideService = async ({
     },
 
     status: "requested",
-
   });
-
 
   console.log("Ride ID:", ride._id);
   console.log("Passenger ID:", passengerId);
   console.log("Vehicle Category:", vehicleCategory);
   console.log("Status:", ride.status);
 
+  // find nearby drivers
+  const nearbyDrivers = await getNearbyDriversService({
+    lat: pickup.lat,
+    lng: pickup.lng,
+    vehicleCategory,
+  });
 
-  // find nearby drivers 
-  const nearbyDrivers =
-    await getNearbyDriversService({
-      lat: pickup.lat,
-      lng: pickup.lng,
-      vehicleCategory
-    });
+  console.log("Nearby Drivers Found:", nearbyDrivers.length);
 
-
-  console.log(
-    "Nearby Drivers Found:",
-    nearbyDrivers.length
-  );
-
-
-  // send ride to matching drivers 
+  // send ride to matching drivers
   for (const driver of nearbyDrivers) {
-
-    const driverId =
-      driver.authUserId.toString();
-
+    const driverId = driver.authUserId.toString();
 
     // Get driver's socket
-    const socketId =
-      onlineDrivers.get(driverId);
-
+    const socketId = onlineDrivers.get(driverId);
 
     if (!socketId) {
-
-      console.log(
-        "NO SOCKET FOUND FOR DRIVER:",
-        driverId
-      );
+      console.log("NO SOCKET FOUND FOR DRIVER:", driverId);
 
       continue;
     }
 
+    // send ride
+    global.io.to(socketId).emit("new-ride", {
+      rideId: ride._id,
 
-// send ride 
-    global.io
-      .to(socketId)
-      .emit(
-        "new-ride",
-        {
-          rideId: ride._id,
+      pickup: ride.pickup,
 
-          pickup: ride.pickup,
+      dropoff: ride.dropoff,
 
-          dropoff: ride.dropoff,
+      fare: ride.fare,
 
-          fare: ride.fare,
+      vehicleCategory: ride.vehicleCategory,
 
-          vehicleCategory:
-            ride.vehicleCategory,
+      status: ride.status,
+    });
 
-          status: ride.status,
-        }
-      );
-
-
-    console.log(
-      "NEW RIDE EMITTED TO DRIVER:",
-      driverId
-    );
-
+    console.log("NEW RIDE EMITTED TO DRIVER:", driverId);
   }
 
-  // return 
+  // return
   return {
     ride,
     nearbyDrivers,
   };
-
 };
-
 
 // ACCEPT RIDE SERVICE =================================
 
-const acceptRideService = async ({
-  rideId,
-  driverId,
-}) => {
-
+const acceptRideService = async ({ rideId, driverId, vehicleCategory }) => {
   console.log("Ride ID:", rideId);
   console.log("Driver ID:", driverId);
 
   if (!rideId) {
-    throw new ApiError(
-      400,
-      "Ride ID is required"
-    );
+    throw new ApiError(400, "Ride ID is required");
   }
 
-  const otp =
-    FareCalculator.generateOTP();
+  const otp = FareCalculator.generateOTP();
 
-  const ride =
-    await Ride.findOneAndUpdate(
-      {
-        _id: rideId,
-        status: "requested",
-      },
-      {
-        driverId,
-        status: "accepted",
-        otp,
-      },
-      {
-        new: true,
-      }
-    );
+  const ride = await Ride.findOneAndUpdate(
+    {
+      _id: rideId,
+      status: "requested",
+      vehicleCategory: vehicleCategory,
+    },
+    {
+      driverId,
+      status: "accepted",
+      otp,
+    },
+    {
+      new: true,
+    },
+  );
 
   if (!ride) {
-    throw new ApiError(
-      400,
-      "Ride already accepted or not found"
-    );
+    throw new ApiError(400, "Ride already accepted or not found");
   }
 
-  console.log(
-    "Ride Accepted Successfully"
-  );
+  console.log("Ride Accepted Successfully");
 
-  console.log(
-    "Generated OTP:",
-    ride.otp
-  );
+  console.log("Generated OTP:", ride.otp);
 
-  console.log(
-    "Status:",
-    ride.status
-  );
+  console.log("Status:", ride.status);
 
   return ride;
 };
 
 // REJECT RIDE SERVICE ...........
-const rejectRideService = async ({
+const rejectRideService = async ({ rideId, driverId }) => {
+  const ride = await Ride.findByIdAndUpdate(
     rideId,
-    driverId
-}) => {
+    {
+      $addToSet: {
+        rejectedDrivers: driverId,
+      },
+    },
+    {
+      new: true,
+    },
+  );
 
-    const ride =
-        await Ride.findByIdAndUpdate(
-            rideId,
-            {
-                $addToSet: {
-                    rejectedDrivers: driverId
-                }
-            },
-            {
-                new: true
-            }
-        );
+  if (!ride) {
+    throw new ApiError(404, "Ride not found");
+  }
 
-    if (!ride) {
-        throw new ApiError(
-            404,
-            "Ride not found"
-        );
-    }
-
-    return ride;
+  return ride;
 };
 
 // START RIDE SERVICE ...........
 
-const startRideService = async ({
-  rideId,
-  otp
-}) => {
-
+const startRideService = async ({ rideId, otp }) => {
   console.log("Ride ID:", rideId);
   console.log("OTP:", otp);
 
-  const ride =
-    await Ride.findOne({
-      _id: rideId,
-      status: "accepted"
-    });
+  const ride = await Ride.findOne({
+    _id: rideId,
+    status: "accepted",
+  });
 
   if (!ride) {
-    throw new ApiError(
-      400,
-      "Ride not accepted"
-    );
+    throw new ApiError(400, "Ride not accepted");
   }
 
   if (ride.otp !== otp) {
-    throw new ApiError(
-      400,
-      "Invalid OTP"
-    );
+    throw new ApiError(400, "Invalid OTP");
   }
 
   ride.status = "started";
 
-  // RIDE STARTED AT 
+  // RIDE STARTED AT
   ride.startedAt = new Date();
 
   await ride.save();
 
-  console.log(
-    "Ride Started Successfully"
-  );
+  console.log("Ride Started Successfully");
 
-  console.log(
-    "Status:",
-    ride.status
-  );
+  console.log("Status:", ride.status);
 
-  console.log(
-    "Started At:",
-    ride.startedAt
-  );
+  console.log("Started At:", ride.startedAt);
 
   return ride;
 };
@@ -308,19 +213,13 @@ const completeRideService = async ({ rideId, driverId }) => {
   // check ride id existed
 
   if (!rideId) {
-    throw new ApiError(
-      400,
-      "rideId is required!"
-    );
+    throw new ApiError(400, "rideId is required!");
   }
 
   // check driver id existed
 
   if (!driverId) {
-    throw new ApiError(
-      400,
-      "driverId is required!"
-    );
+    throw new ApiError(400, "driverId is required!");
   }
 
   //  find ride if started
@@ -334,10 +233,7 @@ const completeRideService = async ({ rideId, driverId }) => {
   // check ride existed
 
   if (!ride) {
-    throw new ApiError(
-      400,
-      "Ride not started"
-    );
+    throw new ApiError(400, "Ride not started");
   }
 
   //mark complete ride
@@ -359,7 +255,7 @@ const completeRideService = async ({ rideId, driverId }) => {
     },
     {
       returnDocument: "after",
-    }
+    },
   );
 
   // Update driver earnings
@@ -378,16 +274,14 @@ const completeRideService = async ({ rideId, driverId }) => {
   return ride;
 };
 
-
 // ============================ CANCEL RIDE ===============
 
 const cancelRideService = async ({
   rideId,
   userId,
   userRole, // "driver" or "passenger"
-  cancellationReason
+  cancellationReason,
 }) => {
-
   if (!rideId) {
     throw new ApiError(400, "RideId is required");
   }
@@ -397,7 +291,10 @@ const cancelRideService = async ({
   }
 
   if (!userRole || !["driver", "passenger"].includes(userRole)) {
-    throw new ApiError(400, "Valid user role is required (driver or passenger)");
+    throw new ApiError(
+      400,
+      "Valid user role is required (driver or passenger)",
+    );
   }
 
   if (!cancellationReason || !cancellationReason.trim()) {
@@ -408,7 +305,7 @@ const cancelRideService = async ({
   const user = await AuthUser.findOne({
     _id: userId,
     isDeleted: false,
-    accountStatus: "ACTIVE"
+    accountStatus: "ACTIVE",
   });
 
   if (!user) {
@@ -423,7 +320,7 @@ const cancelRideService = async ({
 
   // Build query based on user role
   let query = { _id: rideId };
-  
+
   if (userRole === "driver") {
     query.driverId = userId;
     // Driver can only cancel if ride is accepted or started
@@ -458,14 +355,14 @@ const cancelRideService = async ({
     await DriverProfile.findOneAndUpdate(
       { authUserId: userId },
       { driverStatus: "ONLINE" },
-      { returnDocument: "after" }
+      { returnDocument: "after" },
     );
   }
 
   // Populate the ride with user details
   const populatedRide = await Ride.findById(ride._id)
-    .populate('passengerId', 'phoneNumber email role userProfileId')
-    .populate('driverId', 'phoneNumber email role driverProfileId');
+    .populate("passengerId", "phoneNumber email role userProfileId")
+    .populate("driverId", "phoneNumber email role driverProfileId");
 
   return {
     ride: populatedRide,
@@ -474,8 +371,8 @@ const cancelRideService = async ({
       id: user._id,
       phoneNumber: user.phoneNumber,
       email: user.email,
-      role: user.role
-    }
+      role: user.role,
+    },
   };
 };
 export {
@@ -484,10 +381,8 @@ export {
   rejectRideService,
   startRideService,
   completeRideService,
-  cancelRideService
+  cancelRideService,
 };
-
-
 
 // ==================== USER / PASSENGER RIDE HISTORY ====================
 
@@ -497,7 +392,6 @@ export const getUserRideHistoryService = async ({
   limit = 10,
   status,
 }) => {
-
   if (!mongoose.isValidObjectId(userId)) {
     throw new ApiError(400, "User ID is required");
   }
@@ -535,7 +429,6 @@ export const getUserRideHistoryService = async ({
   };
 };
 
-
 // ==================== DRIVER RIDE HISTORY ====================
 
 export const getDriverRideHistoryService = async ({
@@ -544,7 +437,6 @@ export const getDriverRideHistoryService = async ({
   limit = 10,
   status,
 }) => {
-
   if (!mongoose.isValidObjectId(driverId)) {
     throw new ApiError(400, "Driver ID is required");
   }

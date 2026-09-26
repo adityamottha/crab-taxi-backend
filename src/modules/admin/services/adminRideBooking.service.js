@@ -10,22 +10,14 @@ export const createRideByAdminService = async ({
   passengerId,
   pickup,
   dropoff,
-  vehicleCategory
+  vehicleCategory,
 }) => {
-
-  
   if (!passengerId) {
-    throw new ApiError(
-      400,
-      "Passenger ID is required"
-    );
+    throw new ApiError(400, "Passenger ID is required");
   }
 
   if (!pickup || !dropoff) {
-    throw new ApiError(
-      400,
-      "Pickup and dropoff are required"
-    );
+    throw new ApiError(400, "Pickup and dropoff are required");
   }
 
   // Optional but recommended:
@@ -33,18 +25,14 @@ export const createRideByAdminService = async ({
   const passenger = await AuthUser.findById(passengerId);
 
   if (!passenger) {
-    throw new ApiError(
-      404,
-      "Passenger not found"
-    );
+    throw new ApiError(404, "Passenger not found");
   }
 
-  const fareDetails =
-    FareCalculator.calculateFare(
-      pickup,
-      dropoff,
-      vehicleCategory
-    );
+  const fareDetails = FareCalculator.calculateFare(
+    pickup,
+    dropoff,
+    vehicleCategory,
+  );
 
   const ride = await Ride.create({
     passengerId,
@@ -59,24 +47,21 @@ export const createRideByAdminService = async ({
 
     vehicleCategory,
     status: "requested",
-
   });
 
   // console.log("Ride ID:", ride._id);
   // console.log("Passenger ID:", passengerId);
   // console.log("Status:", ride.status);
 
-  const nearbyDrivers =
-    await getNearbyDriversService({
-      lat: pickup.lat,
-      lng: pickup.lng,
-      vehicleCategory
-    });
+  const nearbyDrivers = await getNearbyDriversService({
+    lat: pickup.lat,
+    lng: pickup.lng,
+    vehicleCategory,
+  });
 
-  console.log("Nearby Drivers Found:",nearbyDrivers.length );
+  console.log("Nearby Drivers Found:", nearbyDrivers.length);
 
   for (const driver of nearbyDrivers) {
-
     const driverId = driver.authUserId.toString();
 
     //  console.log("Driver authUserId:", driverId);
@@ -91,19 +76,14 @@ export const createRideByAdminService = async ({
       continue;
     }
 
-    global.io
-      .to(socketId)
-      .emit(
-        "new-ride",
-        {
-          rideId: ride._id,
-          pickup: ride.pickup,
-          dropoff: ride.dropoff,
-          fare: ride.fare,
-        }
-      );
+    global.io.to(socketId).emit("new-ride", {
+      rideId: ride._id,
+      pickup: ride.pickup,
+      dropoff: ride.dropoff,
+      fare: ride.fare,
+    });
 
-   console.log("NEW RIDE EMITTED TO:", driverId);
+    console.log("NEW RIDE EMITTED TO:", driverId);
   }
 
   return {
@@ -116,11 +96,10 @@ export const createRideByAdminService = async ({
 //===========================================================
 
 export const getRequestedRidesByAdminService = async () => {
-
   // Get only requested rides
   const rides = await Ride.find({
     status: "requested",
-    driverId:null
+    driverId: null,
   })
     .populate({
       path: "passengerId",
@@ -151,24 +130,14 @@ export const getRequestedRidesByAdminService = async () => {
   const profileMap = new Map();
 
   profiles.forEach((profile) => {
-    profileMap.set(
-      profile.authUserId.toString(),
-      profile
-    );
+    profileMap.set(profile.authUserId.toString(), profile);
   });
 
   // Combine ride + AuthUser + profile
   const result = rides.map((ride) => {
+    const passenger = ride.passengerId;
 
-    const passenger =
-      ride.passengerId;
-
-    const profile =
-      passenger
-        ? profileMap.get(
-            passenger._id.toString()
-          )
-        : null;
+    const profile = passenger ? profileMap.get(passenger._id.toString()) : null;
 
     return {
       ride: {
@@ -180,7 +149,7 @@ export const getRequestedRidesByAdminService = async () => {
         otp: ride.otp,
         createdAt: ride.createdAt,
         updatedAt: ride.updatedAt,
-        vehicleCategory:ride.vehicleCategory
+        vehicleCategory: ride.vehicleCategory,
       },
 
       passenger: {

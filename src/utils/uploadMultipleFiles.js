@@ -19,10 +19,7 @@ const uploadMultipleFiles = async (files = []) => {
 
       urls.push(uploadedFile.secure_url);
     } catch (error) {
-      console.error(
-        `Failed to upload file: ${file.path}`,
-        error.message
-      );
+      console.error(`Failed to upload file: ${file.path}`, error.message);
 
       // Don't continue if one upload fails
       throw error;
@@ -31,7 +28,6 @@ const uploadMultipleFiles = async (files = []) => {
 
   return urls;
 };
-
 
 // Upload multiple files with URL + upload date
 const uploadMultipleFilesWithUrl = async (files = []) => {
@@ -53,12 +49,8 @@ const uploadMultipleFilesWithUrl = async (files = []) => {
         url: result.secure_url,
         uploadedAt: new Date(),
       });
-
     } catch (error) {
-      console.error(
-        `Failed to upload file: ${file.path}`,
-        error.message
-      );
+      console.error(`Failed to upload file: ${file.path}`, error.message);
 
       throw error;
     }
@@ -67,8 +59,4 @@ const uploadMultipleFilesWithUrl = async (files = []) => {
   return uploadedImages;
 };
 
-
-export {
-  uploadMultipleFiles,
-  uploadMultipleFilesWithUrl,
-};
+export { uploadMultipleFiles, uploadMultipleFilesWithUrl };
