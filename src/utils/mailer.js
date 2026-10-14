@@ -36,9 +36,9 @@ export const sendVerificationEmail = async (email, verifyCode) => {
     }
 
     const mailOptions = {
-      from: `"Crab Taxi" <${process.env.MAIL_FROM}>`,
+      from: `"Cam-Cabs" <${process.env.MAIL_FROM}>`,
       to: email.trim(),
-      subject: "Verify your email | Crab Taxi",
+      subject: "Verify your email | camCabs",
 
       // Fallback for email clients that don't support HTML
 
@@ -504,251 +504,503 @@ CamCabs Support Team
 // --------- Welcome email ------------------------
 export const sendWelcomeEmail = async (email) => {
   try {
-    if (!email?.trim()) {
+    if (typeof email !== "string" || !email.trim()) {
       throw new Error("Welcome email recipient is required");
     }
 
-    console.log("WELCOME EMAIL RECEIVED:", email);
+    const recipient = email.trim();
+
+    const currentYear = new Date().getFullYear();
+
+    const appUrl = process.env.APP_URL;
+
+    const mailFrom = process.env.MAIL_FROM;
+
+    if (!mailFrom) {
+      throw new Error("MAIL_FROM is not configured");
+    }
+
+    if (!appUrl) {
+      throw new Error("APP_URL is not configured");
+    }
 
     const mailOptions = {
-      from: `"Crab Taxi" <${process.env.MAIL_FROM}>`,
-      to: email.trim(),
-      subject: "Welcome to Crab Taxi",
+      from: `"CamCabs" <${mailFrom}>`,
+      to: recipient,
+      subject: "Welcome to CamCabs — Your journey starts here!",
+
+      text: `
+Welcome to CamCabs!
+
+Your account has been successfully created and your email address has been verified.
+
+You're all set to start using CamCabs and enjoy a convenient, comfortable, and reliable travel experience.
+
+Get started: ${appUrl}
+
+If you have any questions or need assistance, please contact our support team.
+
+Best regards,
+CamCabs Support Team
+
+This is an automated email. Please do not reply directly to this message.
+
+© ${currentYear} CamCabs. All rights reserved.
+      `.trim(),
+
       html: `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-          <meta charset="UTF-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <title>Welcome to Crab Taxi</title>
-        </head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <meta name="supported-color-schemes" content="light" />
 
-        <body style="
-          margin: 0;
-          padding: 0;
-          background-color: #f4f6f8;
-          font-family: Arial, Helvetica, sans-serif;
-        ">
+  <title>Welcome to CamCabs</title>
+</head>
 
-          <table
-            width="100%"
-            cellpadding="0"
-            cellspacing="0"
-            border="0"
-            style="padding: 40px 16px; background-color: #f4f6f8;"
-          >
-            <tr>
-              <td align="center">
+<body style="
+  margin: 0;
+  padding: 0;
+  background-color: #F3F4F6;
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+">
 
-                <table
-                  width="100%"
-                  cellpadding="0"
-                  cellspacing="0"
-                  border="0"
-                  style="
-                    max-width: 600px;
-                    background-color: #ffffff;
-                    border-radius: 12px;
-                    overflow: hidden;
-                  "
-                >
+  <!-- Preheader -->
+  <div style="
+    display: none;
+    max-height: 0;
+    max-width: 0;
+    overflow: hidden;
+    opacity: 0;
+    color: #F3F4F6;
+    font-size: 1px;
+    line-height: 1px;
+    mso-hide: all;
+  ">
+    Welcome to CamCabs! Your account is verified and ready to go.
+  </div>
 
-                  <!-- Header -->
-                  <tr>
-                    <td
-                      align="center"
+  <!-- Email Background -->
+  <table
+    role="presentation"
+    width="100%"
+    cellpadding="0"
+    cellspacing="0"
+    border="0"
+    style="
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #F3F4F6;
+    "
+  >
+    <tr>
+      <td align="center" style="padding: 36px 12px;">
+
+        <!-- Main Container -->
+        <table
+          role="presentation"
+          width="600"
+          cellpadding="0"
+          cellspacing="0"
+          border="0"
+          style="
+            width: 100%;
+            max-width: 600px;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            overflow: hidden;
+          "
+        >
+
+          <!-- Brand Header -->
+          <tr>
+            <td align="center" style="
+              padding: 32px 24px 28px;
+              background-color: #FFFFFF;
+              border-bottom: 1px solid #F3F4F6;
+            ">
+
+              <table
+                role="presentation"
+                cellpadding="0"
+                cellspacing="0"
+                border="0"
+                style="border-collapse: collapse;"
+              >
+                <tr>
+                  <td
+                    width="5"
+                    style="
+                      width: 5px;
+                      background-color: #F97316;
+                      border-radius: 3px;
+                    "
+                  ></td>
+
+                  <td style="padding-left: 12px;">
+                    <h1 style="
+                      margin: 0;
+                      color: #111827;
+                      font-size: 28px;
+                      line-height: 34px;
+                      font-weight: 800;
+                      letter-spacing: -0.8px;
+                    ">
+                      Cam<span style="color: #F97316;">Cabs</span>
+                    </h1>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="
+                margin: 10px 0 0;
+                color: #6B7280;
+                font-size: 13px;
+                line-height: 20px;
+              ">
+                Your journey starts here.
+              </p>
+
+            </td>
+          </tr>
+
+          <!-- Welcome Content -->
+          <tr>
+            <td style="padding: 36px 32px 32px;">
+
+              <!-- Welcome Label -->
+              <p style="
+                margin: 0 0 12px;
+                color: #F97316;
+                font-size: 12px;
+                line-height: 18px;
+                font-weight: 700;
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+              ">
+                You're officially on board
+              </p>
+
+              <h2 style="
+                margin: 0 0 20px;
+                color: #111827;
+                font-size: 27px;
+                line-height: 35px;
+                font-weight: 700;
+                letter-spacing: -0.5px;
+              ">
+                Welcome to CamCabs!
+              </h2>
+
+              <p style="
+                margin: 0 0 16px;
+                color: #374151;
+                font-size: 15px;
+                line-height: 25px;
+              ">
+                Hello,
+              </p>
+
+              <p style="
+                margin: 0 0 16px;
+                color: #4B5563;
+                font-size: 15px;
+                line-height: 25px;
+              ">
+                We're delighted to have you with us. Your CamCabs
+                account has been successfully created, and your
+                email address has been verified.
+              </p>
+
+              <p style="
+                margin: 0 0 26px;
+                color: #4B5563;
+                font-size: 15px;
+                line-height: 25px;
+              ">
+                You're all set! Get ready to discover a more
+                convenient way to travel, with a simple booking
+                experience designed around your journey.
+              </p>
+
+              <!-- Welcome Highlight -->
+              <table
+                role="presentation"
+                width="100%"
+                cellpadding="0"
+                cellspacing="0"
+                border="0"
+                style="
+                  width: 100%;
+                  border-collapse: separate;
+                  border-spacing: 0;
+                  margin: 0 0 28px;
+                "
+              >
+                <tr>
+                  <td style="
+                    padding: 20px;
+                    background-color: #FFF7ED;
+                    border: 1px solid #FED7AA;
+                    border-radius: 10px;
+                  ">
+
+                    <p style="
+                      margin: 0 0 7px;
+                      color: #9A3412;
+                      font-size: 14px;
+                      line-height: 21px;
+                      font-weight: 700;
+                    ">
+                      Your next journey starts here.
+                    </p>
+
+                    <p style="
+                      margin: 0;
+                      color: #78716C;
+                      font-size: 13px;
+                      line-height: 21px;
+                    ">
+                      Your account is ready. Sign in to CamCabs
+                      and get started whenever you're ready.
+                    </p>
+
+                  </td>
+                </tr>
+              </table>
+
+              <!-- CTA Button -->
+              <table
+                role="presentation"
+                cellpadding="0"
+                cellspacing="0"
+                border="0"
+                align="center"
+                style="
+                  margin: 0 auto 28px;
+                  border-collapse: separate;
+                  border-spacing: 0;
+                "
+              >
+                <tr>
+                  <td
+                    align="center"
+                    bgcolor="#F97316"
+                    style="
+                      background-color: #F97316;
+                      border-radius: 7px;
+                    "
+                  >
+                    <a
+                      href="${appUrl}"
+                      target="_blank"
                       style="
-                        padding: 32px 24px;
-                        background-color: #111827;
+                        display: inline-block;
+                        padding: 15px 32px;
+                        color: #FFFFFF;
+                        font-family: Arial, Helvetica, sans-serif;
+                        font-size: 15px;
+                        line-height: 20px;
+                        font-weight: 700;
+                        text-decoration: none;
+                        border-radius: 7px;
                       "
                     >
-                      <h1 style="
-                        margin: 0;
-                        color: #ffffff;
-                        font-size: 28px;
-                      ">
-                        Crab Taxi
-                      </h1>
+                      Get Started &rarr;
+                    </a>
+                  </td>
+                </tr>
+              </table>
 
-                      <p style="
-                        margin: 8px 0 0;
-                        color: #d1d5db;
-                        font-size: 14px;
-                      ">
-                        Ride smarter. Travel better.
-                      </p>
-                    </td>
-                  </tr>
+              <p style="
+                margin: 0;
+                color: #6B7280;
+                font-size: 13px;
+                line-height: 22px;
+              ">
+                If the button doesn't work, copy and paste this
+                address into your browser:
+              </p>
 
-                  <!-- Content -->
-                  <tr>
-                    <td style="padding: 40px 32px;">
+              <p style="
+                margin: 8px 0 28px;
+                font-size: 13px;
+                line-height: 21px;
+                overflow-wrap: anywhere;
+                word-break: break-word;
+              ">
+                <a
+                  href="${appUrl}"
+                  target="_blank"
+                  style="
+                    color: #EA580C;
+                    text-decoration: underline;
+                  "
+                >${appUrl}</a>
+              </p>
 
-                      <h2 style="
-                        margin: 0 0 20px;
-                        color: #111827;
-                        font-size: 24px;
-                      ">
-                        Welcome to Crab Taxi! 👋
-                      </h2>
+              <!-- Support Information -->
+              <table
+                role="presentation"
+                width="100%"
+                cellpadding="0"
+                cellspacing="0"
+                border="0"
+                style="
+                  width: 100%;
+                  border-collapse: collapse;
+                  margin: 0 0 28px;
+                "
+              >
+                <tr>
+                  <td style="
+                    padding: 16px 18px;
+                    background-color: #F9FAFB;
+                    border: 1px solid #E5E7EB;
+                    border-left: 3px solid #F97316;
+                    border-radius: 5px;
+                  ">
+                    <p style="
+                      margin: 0 0 5px;
+                      color: #111827;
+                      font-size: 13px;
+                      line-height: 20px;
+                      font-weight: 700;
+                    ">
+                      Need a hand?
+                    </p>
 
-                      <p style="
-                        margin: 0 0 16px;
-                        color: #374151;
-                        font-size: 16px;
-                        line-height: 1.6;
-                      ">
-                        Hello,
-                      </p>
+                    <p style="
+                      margin: 0;
+                      color: #6B7280;
+                      font-size: 13px;
+                      line-height: 21px;
+                    ">
+                      If you have any questions or need assistance,
+                      our support team will be happy to help.
+                    </p>
+                  </td>
+                </tr>
+              </table>
 
-                      <p style="
-                        margin: 0 0 16px;
-                        color: #374151;
-                        font-size: 16px;
-                        line-height: 1.6;
-                      ">
-                        Your Crab Taxi account has been successfully created
-                        and your email address has been verified.
-                      </p>
+              <!-- Sign-off -->
+              <p style="
+                margin: 0;
+                color: #4B5563;
+                font-size: 14px;
+                line-height: 23px;
+              ">
+                Thank you for choosing CamCabs.<br />
+                Best regards,<br />
+                <strong style="color: #111827;">
+                  CamCabs Support Team
+                </strong>
+              </p>
 
-                      <p style="
-                        margin: 0 0 24px;
-                        color: #374151;
-                        font-size: 16px;
-                        line-height: 1.6;
-                      ">
-                        You're all set! You can now start using Crab Taxi
-                        and enjoy a convenient and reliable transportation
-                        experience.
-                      </p>
+            </td>
+          </tr>
 
-                      <!-- CTA -->
-                      <table
-                        cellpadding="0"
-                        cellspacing="0"
-                        border="0"
-                        style="margin: 0 auto 28px;"
-                      >
-                        <tr>
-                          <td
-                            align="center"
-                            style="
-                              background-color: #111827;
-                              border-radius: 8px;
-                            "
-                          >
-                            <a
-                              href="https://your-app-domain.com"
-                              target="_blank"
-                              style="
-                                display: inline-block;
-                                padding: 14px 28px;
-                                color: #ffffff;
-                                text-decoration: none;
-                                font-size: 15px;
-                                font-weight: 600;
-                              "
-                            >
-                              Get Started
-                            </a>
-                          </td>
-                        </tr>
-                      </table>
+          <!-- Footer Divider -->
+          <tr>
+            <td style="padding: 0 32px;">
+              <div style="
+                height: 1px;
+                background-color: #E5E7EB;
+                font-size: 0;
+                line-height: 1px;
+              ">&nbsp;</div>
+            </td>
+          </tr>
 
-                      <p style="
-                        margin: 0;
-                        color: #6b7280;
-                        font-size: 14px;
-                        line-height: 1.6;
-                      ">
-                        If you have any questions or need assistance,
-                        our support team is here to help.
-                      </p>
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="
+              padding: 25px 24px 28px;
+              background-color: #FFFFFF;
+            ">
 
-                    </td>
-                  </tr>
+              <p style="
+                margin: 0 0 8px;
+                color: #6B7280;
+                font-size: 12px;
+                line-height: 19px;
+              ">
+                This is an automated account email.
+                Please do not reply directly to this message.
+              </p>
 
-                  <!-- Divider -->
-                  <tr>
-                    <td style="padding: 0 32px;">
-                      <div style="
-                        height: 1px;
-                        background-color: #e5e7eb;
-                      "></div>
-                    </td>
-                  </tr>
+              <p style="
+                margin: 0 0 8px;
+                color: #9CA3AF;
+                font-size: 11px;
+                line-height: 18px;
+              ">
+                You're receiving this email because you created
+                a CamCabs account.
+              </p>
 
-                  <!-- Footer -->
-                  <tr>
-                    <td
-                      align="center"
-                      style="padding: 28px 32px;"
-                    >
+              <p style="
+                margin: 0;
+                color: #9CA3AF;
+                font-size: 11px;
+                line-height: 18px;
+              ">
+                &copy; ${currentYear} CamCabs.
+                All rights reserved.
+              </p>
 
-                      <p style="
-                        margin: 0 0 8px;
-                        color: #374151;
-                        font-size: 14px;
-                      ">
-                        Best regards,
-                      </p>
+            </td>
+          </tr>
 
-                      <p style="
-                        margin: 0 0 16px;
-                        color: #111827;
-                        font-size: 15px;
-                        font-weight: 600;
-                      ">
-                        Crab Taxi Team
-                      </p>
+        </table>
 
-                      <p style="
-                        margin: 0;
-                        color: #9ca3af;
-                        font-size: 12px;
-                      ">
-                        This is an automated email.
-                        Please do not reply directly to this message.
-                      </p>
+        <!-- Bottom Tagline -->
+        <table
+          role="presentation"
+          width="600"
+          cellpadding="0"
+          cellspacing="0"
+          border="0"
+          style="width: 100%; max-width: 600px;"
+        >
+          <tr>
+            <td align="center" style="
+              padding: 16px 12px 0;
+              color: #9CA3AF;
+              font-size: 11px;
+              line-height: 17px;
+            ">
+              Travel confidently. Travel with CamCabs.
+            </td>
+          </tr>
+        </table>
 
-                      <p style="
-                        margin: 12px 0 0;
-                        color: #9ca3af;
-                        font-size: 12px;
-                      ">
-                        © ${new Date().getFullYear()} Crab Taxi.
-                        All rights reserved.
-                      </p>
+      </td>
+    </tr>
+  </table>
 
-                    </td>
-                  </tr>
-
-                </table>
-
-              </td>
-            </tr>
-          </table>
-
-        </body>
-        </html>
-      `,
+</body>
+</html>
+      `.trim(),
     };
-
-    // console.log("WELCOME MAIL OPTIONS:", mailOptions);
 
     const info = await transporter.sendMail(mailOptions);
 
-    // console.log(
-    //   "WELCOME EMAIL SENT:",
-    //   info.messageId
-    // );
-
     return info;
   } catch (error) {
-    console.error("FAILED WELCOME EMAIL:", error);
+    console.error("FAILED TO SEND WELCOME EMAIL:", error.message);
+
     throw error;
   }
 };
+
 export const sendEmail = async ({ to, subject, html }) => {
   await transporter.sendMail({
     from: process.env.MAIL_FROM,
